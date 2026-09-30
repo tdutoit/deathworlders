@@ -2,6 +2,15 @@
 
 *Version 0.1. Turns the main spec (v1.0) and Sub-specs A–C into an ordered build plan for Godot 4.x, to be executed with Claude Code + Godot MCP.*
 
+**Change log**
+- 2026-09-30 (WP1): autoload Node shells live in `res://autoload/` (Nodes are banned from `sim/`).
+- 2026-09-30 (WP2): `FixedMath.mul_permille` / `lerp_permille` floor (Sub-spec A0); added `floor_div`
+  because GDScript `/` truncates toward zero. `div_round` rounds exact halves away from zero.
+- 2026-09-30 (WP2): `mul32` / `rotl32` / `mix32` live in `sim/core/bits32.gd` (`Bits32`), shared by DetRng and DetHash.
+- 2026-09-30 (WP2): `IdMap` uses `put` / `get_or` (Object already defines `set` / `get`); keys are all int
+  or all String per map. `DetHash.hash_value` hashes a type tag plus a length prefix for strings, arrays and
+  maps; an IdMap hashes the same as a Dictionary with the same entries; floats are rejected.
+
 ---
 
 ## Goal of M1
