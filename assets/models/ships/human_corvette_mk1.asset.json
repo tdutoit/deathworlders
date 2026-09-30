@@ -1,0 +1,34 @@
+{
+  "id": "human_corvette_mk1",
+  "kind": "ship",
+  "class": "corvette",
+  "style": "human",
+  "lods": {
+    "LOD0": 436,
+    "LOD1": 164,
+    "LOD2": 112
+  },
+  "hardpoints": [
+    "HP_W_S_01",
+    "HP_W_S_02",
+    "HP_D_S_01"
+  ],
+  "markers": [
+    "ENGINE_01",
+    "ENGINE_02",
+    "BRIDGE",
+    "LIGHT_01",
+    "LIGHT_02"
+  ],
+  "dimensions_units": {
+    "width_x": 2.09,
+    "length_y": 6.76,
+    "height_z": 1.475
+  },
+  "dimensions_m": {
+    "width": 20.9,
+    "length": 67.6,
+    "height": 14.8
+  },
+  "glb": "human_corvette_mk1.glb"
+}

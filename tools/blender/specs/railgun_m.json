@@ -1,0 +1,15 @@
+{
+  "id": "railgun_m",
+  "kind": "turret",
+  "class": "turret",
+  "style": "human",
+  "lods": 2,
+  "sections": [
+    {"type": "cylinder", "axis": "z", "radius": 0.45, "length": 0.25, "segments": 8, "pos": [0, 0, 0.12], "mat": "DARK"},
+    {"type": "box", "size": [0.6, 0.7, 0.35], "pos": [0, 0.05, 0.42], "bevel": 0.04, "mat": "FACTION"},
+    {"type": "box", "size": [0.12, 1.6, 0.12], "pos": [0.1, 1.1, 0.45]},
+    {"type": "box", "size": [0.12, 1.6, 0.12], "pos": [-0.1, 1.1, 0.45]},
+    {"type": "box", "size": [0.34, 0.2, 0.2], "pos": [0, 1.4, 0.45], "mat": "DARK", "detail": 1}
+  ],
+  "markers": {"LIGHT": [0, 1.95, 0.45]}
+}

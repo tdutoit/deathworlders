@@ -1,0 +1,31 @@
+{
+  "id": "vesskar_corvette_mk1",
+  "kind": "ship",
+  "class": "corvette",
+  "style": "vesskar",
+  "lods": {
+    "LOD0": 232,
+    "LOD1": 232,
+    "LOD2": 196
+  },
+  "hardpoints": [
+    "HP_W_S_01",
+    "HP_W_S_02",
+    "HP_D_S_01"
+  ],
+  "markers": [
+    "ENGINE_01",
+    "BRIDGE"
+  ],
+  "dimensions_units": {
+    "width_x": 3.391,
+    "length_y": 7.36,
+    "height_z": 1.1
+  },
+  "dimensions_m": {
+    "width": 33.9,
+    "length": 73.6,
+    "height": 11.0
+  },
+  "glb": "vesskar_corvette_mk1.glb"
+}

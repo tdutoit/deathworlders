@@ -1,0 +1,25 @@
+{
+  "id": "railgun_m",
+  "kind": "turret",
+  "class": "turret",
+  "style": "human",
+  "lods": {
+    "LOD0": 108,
+    "LOD1": 76
+  },
+  "hardpoints": [],
+  "markers": [
+    "LIGHT_01"
+  ],
+  "dimensions_units": {
+    "width_x": 0.9,
+    "length_y": 2.35,
+    "height_z": 0.6
+  },
+  "dimensions_m": {
+    "width": 9.0,
+    "length": 23.5,
+    "height": 6.0
+  },
+  "glb": "railgun_m.glb"
+}

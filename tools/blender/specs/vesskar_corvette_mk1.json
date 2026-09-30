@@ -1,0 +1,18 @@
+{
+  "id": "vesskar_corvette_mk1",
+  "kind": "ship",
+  "class": "corvette",
+  "style": "vesskar",
+  "sections": [
+    {"type": "sphere", "radius": 1.0, "subdivisions": 2, "scale": [0.8, 3.2, 0.45], "pos": [0, 0.5, 0]},
+    {"type": "sphere", "radius": 0.5, "subdivisions": 1, "scale": [0.7, 1.4, 0.6], "pos": [0, -0.6, 0.35], "mat": "DARK"},
+    {"type": "wedge",  "size": [1.6, 1.8, 0.12], "pos": [1.1, -1.2, 0], "rot": [0, 0, -12], "taper_front": [0.2, 1], "mat": "FACTION", "mirror_x": true},
+    {"type": "cylinder", "radius": 0.28, "radius_end": 0.18, "length": 1.6, "segments": 10, "pos": [0, -2.6, 0]}
+  ],
+  "engines": [{"pos": [0, -3.45, 0], "radius": 0.3, "segments": 10}],
+  "hardpoints": [
+    {"slot": "W", "size": "S", "pos": [0.5, 1.8, 0.2], "dir": "up", "mirror_x": true},
+    {"slot": "D", "size": "S", "pos": [0, 0.0, 0.45], "dir": "up"}
+  ],
+  "markers": {"BRIDGE": [0, -0.6, 0.65]}
+}

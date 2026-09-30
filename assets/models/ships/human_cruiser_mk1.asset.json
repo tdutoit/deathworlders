@@ -1,0 +1,40 @@
+{
+  "id": "human_cruiser_mk1",
+  "kind": "ship",
+  "class": "cruiser",
+  "style": "human",
+  "lods": {
+    "LOD0": 828,
+    "LOD1": 268,
+    "LOD2": 144
+  },
+  "hardpoints": [
+    "HP_W_M_01",
+    "HP_W_M_02",
+    "HP_W_S_01",
+    "HP_D_M_01",
+    "HP_D_M_02",
+    "HP_U_S_01",
+    "HP_C_M_01"
+  ],
+  "markers": [
+    "ENGINE_01",
+    "ENGINE_02",
+    "ENGINE_03",
+    "BRIDGE",
+    "DOCK",
+    "LIGHT_01",
+    "LIGHT_02"
+  ],
+  "dimensions_units": {
+    "width_x": 5.033,
+    "length_y": 20.09,
+    "height_z": 4.25
+  },
+  "dimensions_m": {
+    "width": 50.3,
+    "length": 200.9,
+    "height": 42.5
+  },
+  "glb": "human_cruiser_mk1.glb"
+}
