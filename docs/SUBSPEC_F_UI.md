@@ -2,6 +2,9 @@
 
 *Version 0.3 (Control Room style; Fleet Command OS concept; three instruments). Companion to the main Game Design Spec v1.1 (sections 3, 15, 16.7) and Sub-specs A–E. Wireframes are layout sketches, not visual design.*
 
+**Change log**
+- 2026-09-30 (M1 WP1): F17 gains `open_menu` = F10 (controller binding tbd). Esc stays `view_up` only; there is no Esc fallback to the menu at the Galaxy view.
+
 ---
 
 ## F1. UX Principles
@@ -301,6 +304,7 @@ Two columns: **Galaxy** (size, shape, pace, seed, crisis, fog, victory toggles, 
 | view_up | Esc / Backspace | B |
 | pause | Space | Start |
 | speed_up / down | + / − | RB / LB |
+| open_menu | F10 | (tbd) |
 | map_mode_1…9 | 1–9 | D-pad radial |
 | open_outliner | Tab | Y (hold) |
 | open_alerts | A | Back |
