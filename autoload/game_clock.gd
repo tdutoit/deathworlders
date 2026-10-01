@@ -39,6 +39,11 @@ func run_frame(delta: float) -> int:
 	return ticks
 
 
+## Time since the last hour tick as a fraction (0..1), for drawing units between ticks.
+func tick_fraction() -> float:
+	return clampf(_accum, 0.0, 1.0)
+
+
 ## Whole ticks to run for this frame's delta at the given speed, capped per frame.
 func consume(delta: float, speed: int) -> int:
 	_accum += delta * HOURS_PER_SECOND_AT_1X * speed

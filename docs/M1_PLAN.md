@@ -48,6 +48,13 @@
   `sim/galaxy/sol_template.gd` for M1. Names come from a `name_list` Def (syllables) in
   `data/core/defs/name_list/`, not `data/core/names/`. Standard homeworlds convert the planet orbiting
   closest to radius 90 into a large planet of the species' `home_planet_type`.
+- 2026-10-01 (WP8): the map views follow the Control Room style (F21/F22), not "glowing nodes". Galaxy and
+  Cluster are one orthographic `MapView` with continuous zoom (operational plot below a 360-unit view
+  height); Solar is a separate 3D `SolarView`; one `CameraRig` switches projection under a short fade.
+  Labels are screen-space Controls. Selection goes out on `EventBus.selection_changed`. Deferred F22
+  extras: APP-6 frames and echelon marks, grid-morph transition, drop lines, glass blur, edge pan,
+  territory wash. `main.gd` has dev flags (`--quickstart`, `--screenshot`, `--perf`) until WP9's menu.
+  Measured: Huge galaxy 144 fps (monitor cap) in all three views.
 - 2026-10-01 (WP3): game version lives in `application/config/version` (0.1.0); core has a `mod.json` like any mod.
 
 ---

@@ -4,6 +4,10 @@
 
 **Change log**
 - 2026-09-30 (M1 WP1): F17 gains `open_menu` = F10 (controller binding tbd). Esc stays `view_up` only; there is no Esc fallback to the menu at the Galaxy view.
+- 2026-10-01 (M1 WP8): F17 gains `dive` = Enter / keypad Enter (enter whatever is under the centre reticle;
+  needed for keyboard-only navigation, `ui_accept` can't be used because it includes Space = pause),
+  `zoom_in` / `zoom_out` also on PageUp / PageDown, and `pan_drag` = middle mouse. Right-click orders the
+  selected unit to the system under the cursor; with no unit selected it backs out (like `view_up`).
 
 ---
 
@@ -305,6 +309,8 @@ Two columns: **Galaxy** (size, shape, pace, seed, crisis, fog, victory toggles, 
 | pause | Space | Start |
 | speed_up / down | + / − | RB / LB |
 | open_menu | F10 | (tbd) |
+| dive | Enter | A (tbd) |
+| pan_drag | MMB drag | (none) |
 | map_mode_1…9 | 1–9 | D-pad radial |
 | open_outliner | Tab | Y (hold) |
 | open_alerts | A | Back |

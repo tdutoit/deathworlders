@@ -1,7 +1,34 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://main.gd" id="1_main"]
+[ext_resource type="Script" path="res://views/view_manager.gd" id="2_vm"]
+[ext_resource type="Script" path="res://views/map/map_view.gd" id="3_map"]
+[ext_resource type="Script" path="res://views/solar/solar_view.gd" id="4_solar"]
+[ext_resource type="Script" path="res://views/camera_rig.gd" id="5_rig"]
+
 [node name="Main" type="Node"]
+script = ExtResource("1_main")
 
 [node name="ViewContainer" type="Node3D" parent="."]
+script = ExtResource("2_vm")
+
+[node name="MapView" type="Node3D" parent="ViewContainer"]
+script = ExtResource("3_map")
+
+[node name="SolarView" type="Node3D" parent="ViewContainer"]
+visible = false
+script = ExtResource("4_solar")
+
+[node name="CameraRig" type="Node3D" parent="ViewContainer"]
+script = ExtResource("5_rig")
+
+[node name="Camera3D" type="Camera3D" parent="ViewContainer/CameraRig"]
+current = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="ViewContainer"]
+
+[node name="Sun" type="DirectionalLight3D" parent="ViewContainer"]
+transform = Transform3D(0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, -0.433, 0.75, 0, 50, 0)
+light_energy = 1.1
 
 [node name="UI" type="CanvasLayer" parent="."]
