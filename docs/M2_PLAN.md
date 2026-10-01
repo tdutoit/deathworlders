@@ -317,8 +317,8 @@ screen with WP7, colonise screen with WP8, alerts last.
 
 - [x] All WP acceptance criteria met (WP12 leaves route throughput, map modes 2/5/6/8, alert muting and
       breakdown tooltips for later; Sub-spec F change log).
-- [ ] `tools/run_tests.sh` green (249 tests); determinism harness green (20 seeds × 4 sizes, with economy
-      checksums): the 6-case check passes after every change; the full run is in progress.
+- [x] `tools/run_tests.sh` green (249 tests); determinism harness green (20 seeds × 4 sizes, with economy
+      checksums): 80 cases × 4 runs × 60 months identical (2026-10-01, 7,719 s).
 - [x] Economy harness meets the B20 targets: **accepted at 66 of 80 empires (82.5%)** on 20 seeds by the owner
       (2026-10-01; the bar was 90%). Tighter AI production planning moves to M4 (see Sub-spec B change log).
 - [x] Huge galaxy, 8 autopilot empires, year 15: 8× speed 138 fps average (worst frame 66 ms, the month
