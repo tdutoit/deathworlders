@@ -5,6 +5,10 @@ extends SceneTree
 
 const SPECIES: Array[String] = ["human", "krothi", "vesskar", "thessari", "ohlan", "human", "krothi", "vesskar"]
 const ALLOYS := "core:resource/alloys"
+# B20 freighters (owner decision 2026-10-01): logistics health over the last year instead of a count.
+const BUSY_AVG_MAX := 80  # average share of freighters busy, percent
+const BUSY_HIGH := 95  # a month above this is a shortage month
+const SHORT_MONTHS_MAX := 3
 
 
 func _init() -> void:
@@ -24,9 +28,9 @@ func _init() -> void:
 		print("seed %d (%s, %d years, %.1f s, month tick avg %.1f ms, worst %.1f ms):" % [seed_value + 1, size, years, r["seconds"],
 				r["avg_month_ms"], r["worst_month_ms"]])
 		for e: Dictionary in r["empires"]:
-			print("  %-10s first colony m%-3s colonies %2d shipyards %d freighters %2d (busy %3d%%) alloys/mo %4d credits %6d lost %d  %s" % [
+			print("  %-10s first colony m%-3s colonies %2d shipyards %d freighters %2d (busy %3d%%, year avg %3d%%, %d short) alloys/mo %4d credits %6d lost %2d  %s" % [
 				e["species"], str(e["first_colony_month"]), e["colonies"], e["shipyards"], e["freighters"], e["busy_pct"],
-				e["alloys_per_month"], e["credits"], e["lost"], "OK" if e["ok"] else "-"])
+				e["busy_avg"], e["short_months"], e["alloys_per_month"], e["credits"], e["lost"], "OK" if e["ok"] else "-"])
 			total += 1
 			if e["ok"]:
 				met += 1
@@ -49,6 +53,7 @@ static func run(db: DefDatabase, seed_value: int, years: int, size: String, play
 	var t0 := Time.get_ticks_usec()
 	var worst := 0.0
 	var month_ms_total := 0.0
+	var busy_hist := {}  # empire id -> busy percent per month, last 12 months
 	for month in years * Calendar.MONTHS_PER_YEAR:
 		for h in Calendar.HOURS_PER_MONTH - 1:
 			Sim.step(s, none)
@@ -60,6 +65,11 @@ static func run(db: DefDatabase, seed_value: int, years: int, size: String, play
 		for eid: int in s.empires:
 			if not first_colony.has(eid) and _colonies(s, eid) > start_colonies[eid]:
 				first_colony[eid] = month + 1
+			var hist: Array = busy_hist.get(eid, [])
+			hist.append(_freight(s, eid)[1])
+			if hist.size() > Calendar.MONTHS_PER_YEAR:
+				hist.pop_front()
+			busy_hist[eid] = hist
 	var out := []
 	for eid: int in s.empires:
 		var e: Empire = s.empires.get_or(eid)
@@ -67,27 +77,43 @@ static func run(db: DefDatabase, seed_value: int, years: int, size: String, play
 		for c: Colony in s.colonies.values():
 			if c.owner == eid:
 				alloys += int(c.last_produced.get(ALLOYS, 0)) - int(c.last_consumed.get(ALLOYS, 0))
-		var freighters := 0
-		var busy := 0
-		for u: Unit in s.units.values():
-			if u.owner == eid and u.kind == "freighter":
-				freighters += 1
-				if not Freight.plan(s, u).is_empty():
-					busy += 1
+		var fr := _freight(s, eid)
+		var hist: Array = busy_hist.get(eid, [0])
+		var sum := 0
+		var short := 0
+		for b: int in hist:
+			sum += b
+			if b > BUSY_HIGH:
+				short += 1
 		var shipyards := s.stations.values().filter(func(x: Station) -> bool:
 			return x.owner == eid and x.operational and (db.get_def(StringName(x.def_id)) as StationDef).function == &"shipyard").size()
 		var row := {
 			"species": e.species.get_slice("/", 1), "first_colony_month": first_colony.get(eid, "-"),
-			"colonies": _colonies(s, eid), "shipyards": shipyards, "freighters": freighters,
-			"busy_pct": FixedMath.floor_div(busy * 100, maxi(1, freighters)), "alloys_per_month": FixedMath.floor_div(alloys, 1000),
+			"colonies": _colonies(s, eid), "shipyards": shipyards, "freighters": fr[0], "busy_pct": fr[1],
+			"busy_avg": FixedMath.floor_div(sum, maxi(1, hist.size())), "short_months": short,
+			"alloys_per_month": FixedMath.floor_div(alloys, 1000),
 			"credits": FixedMath.floor_div(int(e.treasury.get("core:resource/credits", 0)), 1000), "lost": e.losses.size(),
 		}
-		# B20 (year 15): first colony by month 12; 6-10 colonies; 2-3 shipyards; 20-40 freighters; 60-120 alloys/month.
+		# B20 (year 15): first colony by month 12; 6-10 colonies; 2-3 shipyards; 60-120 alloys/month; freighters
+		# not a bottleneck (last year: average use <= 80%, at most 3 months over 95%).
 		row["ok"] = first_colony.get(eid, 999) <= 12 and row["colonies"] >= 6 and row["colonies"] <= 10 and shipyards >= 2 \
-				and freighters >= 20 and freighters <= 40 and row["alloys_per_month"] >= 60 and row["alloys_per_month"] <= 120
+				and fr[0] > 0 and row["busy_avg"] <= BUSY_AVG_MAX and short <= SHORT_MONTHS_MAX \
+				and row["alloys_per_month"] >= 60 and row["alloys_per_month"] <= 120
 		out.append(row)
 	return {"empires": out, "seconds": (Time.get_ticks_usec() - t0) / 1000000.0, "worst_month_ms": worst,
 		"avg_month_ms": month_ms_total / maxi(1, years * Calendar.MONTHS_PER_YEAR)}
+
+
+## [freighters, percent of them busy right now]
+static func _freight(s: MatchState, eid: int) -> Array:
+	var n := 0
+	var busy := 0
+	for u: Unit in s.units.values():
+		if u.owner == eid and u.kind == "freighter":
+			n += 1
+			if not Freight.plan(s, u).is_empty():
+				busy += 1
+	return [n, FixedMath.floor_div(busy * 100, maxi(1, n))]
 
 
 static func _colonies(s: MatchState, eid: int) -> int:

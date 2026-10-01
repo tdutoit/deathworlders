@@ -66,6 +66,10 @@
     Freighters 7-21 at 0-100% use (mostly 25-70%). B19 puts a Light Freighter at ~300 units/month; a year-15
     small-map economy moves ~500/month, so 20-40 freighters would mostly sit idle. Proposed: B20's freighter
     band applies to Medium+ maps, or becomes "freighters >= 80% busy is a shortage" (owner to decide).
+- 2026-10-01 (owner decisions):
+  - B20: the year-15 freighter target is **logistics health, not a count**: over the last year freighters
+    average at most 80% busy, with at most 3 months above 95% (the harness checks this).
+  - B17: the stock reading above is **confirmed** (production surplus or a 3-month food buffer on hand).
 
 ---
 
@@ -378,7 +382,9 @@ Jobs: 6 Farmers, 2 Miners, 6 Workers, 2 Engineers, 1 Munitions, 4 Researchers, 3
 
 - First colony founded: by month 6–12.
 - First cruiser: by year 2–3 (Standard).
-- Mid-game (year 15): ~6–10 colonies, 2–3 shipyards, 20–40 freighters, 60–120 alloys/month.
+- Mid-game (year 15): ~6–10 colonies, 2–3 shipyards, 60–120 alloys/month, and freight that isn't a bottleneck:
+  over the last year freighters average ≤ 80% busy, with at most 3 months above 95% (was "20–40 freighters";
+  changed 2026-10-01, see change log).
 - **Logistics should cap growth, not block it:** an empire with half the needed freighters should run at ~70% efficiency, not collapse.
 - Food should never be a surprise: 3-month early warning before starvation.
 - Harness: `tests/economy_harness.gd` runs AI empires for 50 in-game years across seeds; reports resource curves, freighter utilisation, time-to-milestones.

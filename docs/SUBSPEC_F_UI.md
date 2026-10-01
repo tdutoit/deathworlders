@@ -12,7 +12,7 @@
   (`ControlRoomTheme`) instead of a saved `control_room.tres`, so palettes swap without a re-export.
   Fonts bundled in `assets/fonts/` with their OFL texts. Glass blur is not implemented yet (flat
   translucent panels). `open_outliner` = Tab is in the InputMap; Esc returns focus to the map.
-- 2026-10-01 (M2 WP12, provisional, owner to confirm): F17 gains `open_sectors` = F6, `open_logistics` = F7,
+- 2026-10-01 (M2 WP12, confirmed by the owner): F17 gains `open_sectors` = F6, `open_logistics` = F7,
   `open_stockpile` = F9 and `open_alerts` = **F12** (F17's "A" clashes with `pan_left` = A in WASD). The
   management screens (F6, F7, F9, F12, and F8 opened from the planet panel's "Colonise..." button) are glass
   panels over the map centre, one at a time, Esc closes; the top bar's global resources open F9 and its alert
@@ -326,7 +326,8 @@ Two columns: **Galaxy** (size, shape, pace, seed, crisis, fog, victory toggles, 
 | pan_drag | MMB drag | (none) |
 | map_mode_1…9 | 1–9 | D-pad radial |
 | open_outliner | Tab | Y (hold) |
-| open_alerts | A | Back |
+| open_alerts | F12 (was A: clashed with pan_left) | Back |
+| open_sectors / open_logistics / open_stockpile | F6 / F7 / F9 | (tbd) |
 | search | Ctrl+F | L3 |
 | ping (co-op) | Alt+Click | R3 |
 
