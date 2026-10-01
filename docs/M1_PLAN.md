@@ -62,6 +62,12 @@
 - 2026-10-01 (WP10): `io/save_game.gd` (`SaveGame`) writes/reads saves; `GameState.save_to/load_from`
   and the archive screen use it. Load errors are shown with English reasons inside a loc'd message
   (M1 shortcut; error codes later).
+- 2026-10-01 (WP11): `tools/determinism_test.gd` (+ `tools/determinism_harness.gd`) runs each case four
+  ways (fresh, repeat, save/load at the midpoint, replay from seed + log) with a scripted driver (scouts,
+  weekly moves, monthly speed changes, pause blips) and diffs per-subsystem checksums monthly. Checksum
+  files go to `user://determinism/` for cross-machine diffs. Full run (20 seeds x 4 sizes x 60 months)
+  takes ~45 min, so the GUT suite runs one short case. Pathfinder switched to a binary heap (tie-break by
+  system ID) after the harness exposed O(V^2 log V) routing.
 - 2026-10-01 (WP3): game version lives in `application/config/version` (0.1.0); core has a `mod.json` like any mod.
 
 ---
