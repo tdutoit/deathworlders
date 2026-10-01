@@ -31,6 +31,7 @@ static func advance(state: MatchState) -> int:
 	if state.defs != null:
 		Freight.tick(state)
 		Colonisation.tick(state)
+		Pirates.tick(state)
 	state.tick += 1
 	var flags := 0
 	if Calendar.is_day_start(state.tick):
@@ -66,6 +67,7 @@ static func _month_tick(state: MatchState) -> void:
 		return
 	Economy.month_tick(state)
 	Supply.month_tick(state)
+	Pirates.month_tick(state)
 	Sectors.update_membership(state)
 	Governor.month_tick(state)
 

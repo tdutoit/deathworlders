@@ -9,11 +9,12 @@ var capital_planet: int = StateIO.NONE
 var color: String  # "#rrggbb", cosmetic
 var treasury := {}  # global resource ID (credits, research, influence) -> milli-units (B0, B13-B16)
 var deficit_months := 0  # consecutive months that upkeep couldn't be paid (B13)
+var losses: Array[Dictionary] = []  # convoy losses, newest last (B9; kept to LOSS_LOG entries)
 
 
 func to_dict() -> Dictionary:
 	return {"id": id, "species": species, "player_slot": player_slot, "capital_planet": capital_planet, "color": color,
-		"treasury": treasury.duplicate(), "deficit_months": deficit_months}
+		"treasury": treasury.duplicate(), "deficit_months": deficit_months, "losses": losses.duplicate(true)}
 
 
 static func from_dict(d: Dictionary) -> Empire:
@@ -25,4 +26,7 @@ static func from_dict(d: Dictionary) -> Empire:
 	e.color = String(d["color"])
 	e.treasury = StateIO.int_map(d.get("treasury", {}))
 	e.deficit_months = int(d.get("deficit_months", 0))
+	for l: Dictionary in d.get("losses", []):
+		e.losses.append({"tick": int(l["tick"]), "unit": int(l["unit"]), "system": int(l["system"]),
+			"hull": String(l["hull"]), "cargo": StateIO.int_map(l["cargo"])})
 	return e

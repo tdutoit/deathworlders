@@ -22,6 +22,9 @@ var cargo := {}  # resource ID -> milli-units aboard
 var job := {}  # one-shot auto-logistics trip {source, dest, resource, amount (milli)}; empty when none
 var target_planet: int = StateIO.NONE  # colony ships: the planet to settle
 var out_of_fuel := false  # last fuel draw failed: half speed until resupplied (M2 rule)
+var raid_checked: int = StateIO.NONE  # freighters: last system a raider passage roll was made in (B9)
+var target_owner: int = StateIO.NONE  # raiders: the empire they hunt
+var months_left := 0  # raiders: months before leaving (0 = stays, e.g. a base's guard)
 
 
 func is_moving() -> bool:
@@ -40,7 +43,8 @@ func to_dict() -> Dictionary:
 		"id": id, "owner": owner, "kind": kind, "system_id": system_id, "path": path.duplicate(),
 		"progress": progress, "speed": speed, "hull_id": hull_id, "home": home,
 		"body": body, "route": route, "phase": phase, "wait_hours": wait_hours, "impulse_to": impulse_to,
-		"cargo": cargo.duplicate(), "job": job.duplicate(), "target_planet": target_planet, "out_of_fuel": out_of_fuel,
+		"cargo": cargo.duplicate(), "job": job.duplicate(), "target_planet": target_planet, "out_of_fuel": out_of_fuel, "raid_checked": raid_checked,
+		"target_owner": target_owner, "months_left": months_left,
 	}
 
 
@@ -63,6 +67,9 @@ static func from_dict(d: Dictionary) -> Unit:
 	u.cargo = StateIO.int_map(d.get("cargo", {}))
 	u.target_planet = int(d.get("target_planet", StateIO.NONE))
 	u.out_of_fuel = d.get("out_of_fuel", false) == true
+	u.raid_checked = int(d.get("raid_checked", StateIO.NONE))
+	u.target_owner = int(d.get("target_owner", StateIO.NONE))
+	u.months_left = int(d.get("months_left", 0))
 	u.job = {}
 	var j: Dictionary = d.get("job", {})
 	if not j.is_empty():

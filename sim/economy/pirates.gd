@@ -1,0 +1,145 @@
+class_name Pirates
+extends RefCounted
+## Frontier security and pirates (Sub-spec B9, D9; M2 rules agreed 2026-10-01). Pirate units belong to no
+## empire (owner PIRATES) and hunt one empire (target_owner). All randomness uses the `events` stream.
+##   Monthly: own frontier systems (reach >= pirate_min_reach) with security < threshold roll
+##   (threshold - security) x chance permille to spawn a raider (max per hunted empire); raiders move toward the
+##   neighbouring frontier system with the most of their target's freight, may found a base, or leave.
+##   Hourly: a freighter in a raider's system rolls once per passage (B9); detected = lost with its cargo.
+
+const PIRATES := -1  # owner of pirate units
+const LOSS_LOG := 50
+
+
+## D9 security of a system for its owner (M2 terms: base, garrisons, station security, reach 7+ halves it).
+static func security(state: MatchState, system_id: int, reach: Dictionary = {}) -> int:
+	var r := Economy.rules(state.defs)
+	var sys := state.galaxy.system(system_id)
+	var sec := r.security_base
+	for pid in sys.planet_ids:
+		var c := state.colony(pid)
+		if c != null and c.owner == sys.owner:
+			sec += r.security_per_garrison * PlanetMods.of(c, state.defs).add("planet.garrison")
+	for sid: int in state.stations:
+		var st: Station = state.stations.get_or(sid)
+		if st.system_id == system_id and st.operational and st.owner == sys.owner:
+			sec += (state.defs.get_def(StringName(st.def_id)) as StationDef).security
+	if sys.owner != StateIO.NONE and Economy.reach_of(state, reach, sys.owner, system_id) >= r.reach_3:
+		sec = FixedMath.floor_div(sec, 2)
+	return clampi(sec, 0, 100)
+
+
+static func raiders_hunting(state: MatchState, eid: int) -> int:
+	var n := 0
+	for uid: int in state.units:
+		var u: Unit = state.units.get_or(uid)
+		if u.kind == "raider" and u.target_owner == eid:
+			n += 1
+	return n
+
+
+static func month_tick(state: MatchState) -> void:
+	var r := Economy.rules(state.defs)
+	var rng := state.rng(DetRng.EVENTS)
+	var reach := {}
+	# Raiders: leave, found a base, or move toward freight traffic.
+	for uid: int in state.units.keys():
+		var u: Unit = state.units.get_or(uid)
+		if u.kind != "raider":
+			continue
+		if u.months_left > 0:
+			u.months_left -= 1
+			if u.months_left == 0:
+				state.units.erase(uid)
+				continue
+		if not state.pirate_bases.has(u.system_id) and rng.range(0, 1000) < r.pirate_base_chance_permille:
+			state.pirate_bases[u.system_id] = r.pirate_base_spawn_months
+			u.months_left = 0  # guards its base from now on
+		elif not u.is_moving():
+			_hunt(state, u, reach)
+	# Bases send out raiders.
+	for sys_id: int in IdMap.sort_keys(state.pirate_bases.keys()):
+		state.pirate_bases[sys_id] -= 1
+		if state.pirate_bases[sys_id] <= 0:
+			state.pirate_bases[sys_id] = r.pirate_base_spawn_months
+			var owner := state.galaxy.system(sys_id).owner
+			if owner != StateIO.NONE and raiders_hunting(state, owner) < r.max_raiders_per_empire:
+				spawn_raider(state, sys_id, owner)
+	# Frontier systems roll (D9).
+	for eid: int in state.empires:
+		for sys_id: int in state.galaxy.systems:
+			if raiders_hunting(state, eid) >= r.max_raiders_per_empire:
+				break
+			if state.galaxy.system(sys_id).owner != eid or Economy.reach_of(state, reach, eid, sys_id) < r.pirate_min_reach:
+				continue
+			var sec := security(state, sys_id, reach)
+			if sec < r.pirate_threshold and rng.range(0, 1000) < (r.pirate_threshold - sec) * r.pirate_chance_per_point_permille:
+				spawn_raider(state, sys_id, eid)
+
+
+static func spawn_raider(state: MatchState, system_id: int, target: int) -> Unit:
+	var u := Unit.new()
+	u.id = state.alloc_id()
+	u.owner = PIRATES
+	u.kind = "raider"
+	u.system_id = system_id
+	u.speed = CmdDebugSpawnScout.SCOUT_SPEED
+	u.target_owner = target
+	u.months_left = Economy.rules(state.defs).raider_months
+	state.units.put(u.id, u)
+	return u
+
+
+## Move one lane toward the frontier neighbour with the most of the target's freighters (in it or passing).
+static func _hunt(state: MatchState, u: Unit, reach: Dictionary) -> void:
+	var r := Economy.rules(state.defs)
+	var best := u.system_id
+	var best_traffic := _traffic(state, u.target_owner, u.system_id)
+	for lid in state.galaxy.system(u.system_id).lane_ids:
+		var nxt := state.galaxy.lane(lid).other_end(u.system_id)
+		if Economy.reach_of(state, reach, u.target_owner, nxt) < r.pirate_min_reach:
+			continue  # raiders stay on the frontier
+		var t := _traffic(state, u.target_owner, nxt)
+		if t > best_traffic or (t == best_traffic and best != u.system_id and nxt < best):
+			best = nxt
+			best_traffic = t
+	if best != u.system_id:
+		u.path = [best] as Array[int]
+		u.progress = 0
+
+
+static func _traffic(state: MatchState, eid: int, system_id: int) -> int:
+	var n := 0
+	for uid: int in state.units:
+		var f: Unit = state.units.get_or(uid)
+		if f.owner == eid and f.kind == "freighter" and (f.system_id == system_id or system_id in f.path):
+			n += 1
+	return n
+
+
+## Hourly: passage rolls for freighters sharing a system with a raider hunting their owner (B9).
+static func tick(state: MatchState) -> void:
+	var hunted := {}  # "system:owner" -> true
+	for uid: int in state.units:
+		var u: Unit = state.units.get_or(uid)
+		if u.kind == "raider" and not u.is_moving():
+			hunted["%d:%d" % [u.system_id, u.target_owner]] = true
+	if hunted.is_empty():
+		return
+	var r := Economy.rules(state.defs)
+	var chance := FixedMath.floor_div(r.raider_sensor * 1000, r.raider_sensor + 50)
+	for uid: int in state.units.keys():
+		var f: Unit = state.units.get_or(uid)
+		if f.kind != "freighter" or f.raid_checked == f.system_id:
+			continue
+		f.raid_checked = f.system_id
+		if hunted.has("%d:%d" % [f.system_id, f.owner]) and state.rng(DetRng.EVENTS).range(0, 1000) < chance:
+			_lose(state, f)
+
+
+static func _lose(state: MatchState, f: Unit) -> void:
+	var e := state.empire(f.owner)
+	e.losses.append({"tick": state.tick, "unit": f.id, "system": f.system_id, "hull": f.hull_id, "cargo": f.cargo.duplicate()})
+	if e.losses.size() > LOSS_LOG:
+		e.losses.remove_at(0)
+	state.units.erase(f.id)

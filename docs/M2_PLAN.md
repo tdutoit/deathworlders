@@ -72,6 +72,13 @@ into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.m
   stockpile in supply range (owned planet 1 lane per B12, stations by `supply_range`: outpost 1, depot 2/3/4).
   Out of fuel: half speed until a later draw succeeds. Moving-warship fuel (B12 by size) and attrition come
   with M3.
+- 2026-10-01 (WP10, agreed with the owner): pirates are frontier-only in M2: only own systems at reach >= 3
+  roll D9's monthly chance, and at most 3 raiders hunt one empire (both data). Security (D9, M2 terms) = 20 +
+  5 per garrison company + station `security` (0 until platforms/listening posts), halved at reach 7+.
+  Raiders (owner -1, a non-playable faction) move monthly toward the frontier neighbour with the most of their
+  target's freight, may found a base (10%/month) that sends out a raider every 6 months, and otherwise leave
+  after 6 months. A freighter rolls once per passage through a raider's system (B9: 500 permille at sensor 50);
+  detected = lost with its cargo (logged per empire, last 50). No escorts or captures until M3/M4.
 
 ---
 

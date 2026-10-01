@@ -57,6 +57,17 @@ const ID := &"core:economy_rules/default"
 @export var new_colony_growth_permille: int  # B17: +100% growth
 @export var new_colony_growth_years: int  # B17: for 5 years
 @export var planet_supply_range: int  # B12: an owned planet supplies units 1 lane away
+# Security and pirates (B9, D9; M2: frontier only, agreed 2026-10-01)
+@export var security_base: int  # D9: 20
+@export var security_per_garrison: int  # D9: +5 per garrison company
+@export var pirate_threshold: int  # D9: systems below 30 roll
+@export var pirate_chance_per_point_permille: int  # D9: (30 - security) x 10 permille
+@export var pirate_min_reach: int  # M2: only frontier systems (reach >= 3) roll
+@export var max_raiders_per_empire: int  # M2: at most 3 raiders hunting one empire
+@export var raider_sensor: int  # B9: detection = sensor x 1000 / (sensor + 50) permille per passage
+@export var raider_months: int  # a raider without a base leaves after this long
+@export var pirate_base_chance_permille: int  # monthly chance a raider founds a base
+@export var pirate_base_spawn_months: int  # a base sends out a raider this often (cap permitting)
 
 
 func category() -> String:
@@ -75,6 +86,9 @@ func schema() -> Dictionary:
 			"core_hub_lanes", "reach_1", "reach_2", "reach_3", "reach_upkeep_1", "reach_upkeep_2", "reach_upkeep_3",
 			"reach_stability_1", "reach_stability_2", "reach_stability_3", "input_buffer_months",
 			"food_buffer_months", "hub_collect_permille", "claim_influence_base", "claim_influence_per_system_permille",
-			"new_colony_upkeep_credits", "new_colony_growth_permille", "new_colony_growth_years", "planet_supply_range"]:
+			"new_colony_upkeep_credits", "new_colony_growth_permille", "new_colony_growth_years", "planet_supply_range",
+			"security_base", "security_per_garrison", "pirate_threshold", "pirate_chance_per_point_permille",
+			"pirate_min_reach", "max_raiders_per_empire", "raider_sensor", "raider_months", "pirate_base_chance_permille",
+			"pirate_base_spawn_months"]:
 		s[field] = {"type": "int"}
 	return s
