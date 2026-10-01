@@ -30,6 +30,9 @@ var command_log: Array[Dictionary] = []  # executed commands {tick, type_id, pla
 var defs: DefDatabase
 var _scratch := {}
 var _scratch_tick := -1
+## Runtime only: system -> {system: lanes} (AutoLogistics._hops_from). Lanes never change after generation,
+## so it lives as long as this state object; never saved or hashed.
+var hop_cache := {}
 
 
 ## Forget the cache. Sim.execute and Sim.advance call this first, so data cached by views or tools between

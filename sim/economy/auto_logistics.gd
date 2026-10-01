@@ -18,11 +18,11 @@ static func day_tick(state: MatchState) -> void:
 
 
 ## What auto-logistics must leave at a holder: the player's reserve, or the default share of the cap.
-static func reserve_milli(state: MatchState, holder: int, res: String) -> int:
+static func reserve_milli(state: MatchState, holder: int, res: String, mods_cache: Variant = null) -> int:
 	var key := "%d:%s" % [holder, res]
 	if state.reserves.has(key):
 		return int(state.reserves[key]) * Stockpile.MILLI
-	var cap := Holders.cap_milli(state, holder, res)
+	var cap := Holders.cap_milli(state, holder, res, mods_cache)
 	return FixedMath.mul_permille(cap, Economy.rules(state.defs).reserve_default_permille) if cap > 0 else 0
 
 
@@ -106,19 +106,32 @@ static func _assign(state: MatchState, eid: int) -> void:
 	var holders := _own_holders(state, eid)
 	var hops := {}  # system -> {system: lanes}, filled on demand
 	var cut := {}  # "from>to" -> blocked by raiders (B8 route safety), filled on demand
+	var base := {}  # "holder:res" -> stock minus reserve; stocks and caps don't change during assignment
+	var min_cap := FAR  # smallest idle hold: a lower bound for every freighter's minimum load below
+	for u in idle:
+		min_cap = mini(min_cap, Freight.capacity_milli(state, u))
+	var trip_permille := Economy.rules(state.defs).min_trip_permille
 	for d: Dictionary in open:
 		while d["deficit"] > 0 and not idle.is_empty():
 			var assigned := false
-			for src in _sources(state, holders, d, promised, hops):
-				var leg := "%d>%d" % [Holders.system(state, src), Holders.system(state, d["holder"])]
+			for src in _sources(state, holders, d, promised, hops, base, raided):
+				var src_sys := _sys_of(state, base, src)
+				var dest_sys := _sys_of(state, base, d["holder"])
+				var leg := "%d>%d" % [src_sys, dest_sys]
 				if not cut.has(leg):
-					cut[leg] = Freight.blocked(state, eid, Holders.system(state, src), Holders.system(state, d["holder"]))
+					cut[leg] = Freight.blocked(state, eid, src_sys, dest_sys)
 				if cut[leg]:
 					continue
-				var f := _pick_freighter(state, idle, src, d["holder"], hops)
+				# Same test as below, before the freighter search: if no idle freighter could take a load worth
+				# the trip from here, skip the source (identical outcome, far cheaper with many idle freighters).
+				var upper := mini(int(d["deficit"]), _surplus(state, src, d["resource"], promised, base))
+				var finishing: bool = d.get("build", false) and int(d["deficit"]) <= upper
+				if not finishing and upper < mini(FixedMath.mul_permille(min_cap, trip_permille), int(d["target"]) / 2):
+					continue
+				var f := _pick_freighter(state, idle, src, d["holder"], hops, base)
 				if f == null:
 					continue
-				var load := mini(mini(Freight.capacity_milli(state, f), d["deficit"]), _surplus(state, src, d["resource"], promised))
+				var load := mini(mini(Freight.capacity_milli(state, f), d["deficit"]), _surplus(state, src, d["resource"], promised, base))
 				# Not worth a trip yet (the deficit keeps growing): under min_trip of capacity and under half the target.
 				# Critical demands too, or daily consumption sends a freighter per day. Builds may send a small load
 				# that covers all they still lack (their target shrinks with the stock, so it would never grow).
@@ -151,27 +164,49 @@ static func _own_holders(state: MatchState, eid: int) -> Array[int]:
 	return out
 
 
-static func _surplus(state: MatchState, holder: int, res: String, promised: Dictionary) -> int:
-	var stock := Holders.stockpile(state, holder).milli(res)
-	return stock - reserve_milli(state, holder, res) - int(promised.get("%d:%s" % [holder, res], 0))
+## Stock minus reserve minus what auto jobs will still pick up. `base` (optional) caches stock minus reserve
+## per holder and resource for one assignment pass (cap lookups resolve planet modifiers: not cheap).
+static func _surplus(state: MatchState, holder: int, res: String, promised: Dictionary, base: Variant = null) -> int:
+	var key := "%d:%s" % [holder, res]
+	var free: int
+	if base != null and (base as Dictionary).has(key):
+		free = base[key]
+	else:
+		var mods_cache: Variant = null
+		if base != null:
+			if not (base as Dictionary).has("mods"):
+				base["mods"] = {}
+			mods_cache = base["mods"]
+		free = Holders.stockpile(state, holder).milli(res) - reserve_milli(state, holder, res, mods_cache)
+		if base != null:
+			base[key] = free
+	return free - int(promised.get(key, 0))
 
 
 ## Sources with surplus for a demand, nearest first (same system by impulse days, then by lanes), then ID.
-static func _sources(state: MatchState, holders: Array[int], d: Dictionary, promised: Dictionary, hops: Dictionary) -> Array[int]:
-	var dest_sys := Holders.system(state, d["holder"])
+static func _sources(state: MatchState, holders: Array[int], d: Dictionary, promised: Dictionary, hops: Dictionary,
+		base: Dictionary, raided: Dictionary) -> Array[int]:
+	var dest_sys := _sys_of(state, base, d["holder"])
 	var dest_body := Holders.body(state, d["holder"])
 	var scored := []
 	var sector: Sector = state.sectors.get_or(d["sector"]) if d.has("sector") else null
-	for h in holders:
-		if h == d["holder"] or _surplus(state, h, d["resource"], promised) <= 0:
+	var cand_key := "cand:" + String(d["resource"])  # holders with any surplus before promises, once per pass
+	if not base.has(cand_key):
+		var cand: Array[int] = []
+		for h in holders:
+			if _surplus(state, h, d["resource"], {}, base) > 0:
+				cand.append(h)
+		base[cand_key] = cand
+	for h: int in base[cand_key]:
+		if h == d["holder"] or _surplus(state, h, d["resource"], promised, base) <= 0:
 			continue
 		if d.has("sources") and not h in d["sources"]:
 			continue
-		if sector != null and not Holders.system(state, h) in sector.systems:
+		var sys := _sys_of(state, base, h)
+		if sector != null and not sys in sector.systems:
 			continue
-		if Pirates.raided_systems(state, state.empire(Holders.owner(state, h)).id).has(Holders.system(state, h)):
+		if raided.has(sys):  # own holders only: the empire's raided set
 			continue
-		var sys := Holders.system(state, h)
 		var dist := Holders.impulse_days(state, Holders.body(state, h), dest_body) if sys == dest_sys \
 				else 1000 + int(_hops_from(state, dest_sys, hops).get(sys, FAR))
 		scored.append([dist, h])
@@ -183,14 +218,18 @@ static func _sources(state: MatchState, holders: Array[int], d: Dictionary, prom
 
 
 ## The idle freighter nearest the source whose hub range covers source and destination (B8).
-static func _pick_freighter(state: MatchState, idle: Array[Unit], src: int, dest: int, hops: Dictionary) -> Unit:
-	var src_sys := Holders.system(state, src)
-	var dest_sys := Holders.system(state, dest)
+static func _pick_freighter(state: MatchState, idle: Array[Unit], src: int, dest: int, hops: Dictionary,
+		base: Dictionary = {}) -> Unit:
+	var src_sys := _sys_of(state, base, src)
+	var dest_sys := _sys_of(state, base, dest)
 	var best: Unit = null
 	var best_dist := FAR
 	for u in idle:
-		var hub_hops := _hops_from(state, Holders.system(state, u.home), hops)
-		var reach := hub_range(state, u.home)
+		var hub_key := "hub:%d" % u.home  # [lanes from the home hub, its range], once per pass
+		if not base.has(hub_key):
+			base[hub_key] = [_hops_from(state, Holders.system(state, u.home), hops), hub_range(state, u.home)]
+		var hub_hops: Dictionary = base[hub_key][0]
+		var reach: int = base[hub_key][1]
 		if int(hub_hops.get(src_sys, FAR)) > reach or int(hub_hops.get(dest_sys, FAR)) > reach:
 			continue
 		var dist := int(_hops_from(state, u.system_id, hops).get(src_sys, FAR)) * 100
@@ -200,6 +239,14 @@ static func _pick_freighter(state: MatchState, idle: Array[Unit], src: int, dest
 			best = u
 			best_dist = dist
 	return best
+
+
+## A holder's system, cached for one assignment pass in `base` (Holders.system looks up colony then station).
+static func _sys_of(state: MatchState, base: Dictionary, h: int) -> int:
+	var key := "sys:%d" % h
+	if not base.has(key):
+		base[key] = Holders.system(state, h)
+	return base[key]
 
 
 ## Lanes a hub's freighters serve: the logistics station's tier range, or the rules' range for a colony hub.
@@ -229,7 +276,10 @@ static func hops_within(state: MatchState, system_id: int, max_depth: int, cache
 	return cache[key]
 
 
-static func _hops_from(state: MatchState, system_id: int, cache: Dictionary) -> Dictionary:
+## Lanes from a system to every reachable system. Cached on the state for the whole match (lanes are fixed);
+## `_cache` is kept for the callers' signatures.
+static func _hops_from(state: MatchState, system_id: int, _cache: Dictionary) -> Dictionary:
+	var cache := state.hop_cache
 	if not cache.has(system_id):
 		var dist := {system_id: 0}
 		var queue: Array[int] = [system_id]

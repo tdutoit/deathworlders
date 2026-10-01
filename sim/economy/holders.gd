@@ -38,11 +38,19 @@ static func system(state: MatchState, id: int) -> int:
 	return state.galaxy.planet(b).system_id if b != StateIO.NONE else StateIO.NONE
 
 
-## Stockpile cap for a resource in milli-units; 0 = uncapped.
-static func cap_milli(state: MatchState, id: int, res: String) -> int:
+## Stockpile cap for a resource in milli-units; 0 = uncapped. `mods_cache` (optional): colony ID ->
+## PlanetMods, for callers that ask about many resources of the same colonies in one pass.
+static func cap_milli(state: MatchState, id: int, res: String, mods_cache: Variant = null) -> int:
 	var c := state.colony(id)
 	if c != null:
-		return Economy.cap_milli(c, state.defs, PlanetMods.of(c, state.defs), res)
+		var mods: PlanetMods
+		if mods_cache != null and (mods_cache as Dictionary).has(id):
+			mods = mods_cache[id]
+		else:
+			mods = PlanetMods.of(c, state.defs)
+			if mods_cache != null:
+				mods_cache[id] = mods
+		return Economy.cap_milli(c, state.defs, mods, res)
 	var s := state.station(id)
 	return StationOps.cap_milli(state, s, res) if s != null else 0
 

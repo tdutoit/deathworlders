@@ -77,10 +77,28 @@ static func blocked(state: MatchState, eid: int, from_system: int, to_system: in
 		return false  # the common case: no pathfinding
 	if raided.has(to_system):
 		return true
-	var scratch := state.scratch()  # many freighters share legs within a tick
-	var key := "blocked:%d:%d:%d" % [eid, from_system, to_system]
+	return not _safe_reach(state, eid, from_system, raided).has(to_system)
+
+
+## Systems reachable from `from_system` without passing through a raided one (searched once per empire and
+## start system per tick; same answer as Pathfinder.route(..., raided) being non-empty for a target that is
+## not raided itself).
+static func _safe_reach(state: MatchState, eid: int, from_system: int, raided: Dictionary) -> Dictionary:
+	var scratch := state.scratch()
+	var key := "safe:%d:%d" % [eid, from_system]
 	if not scratch.has(key):
-		scratch[key] = Pathfinder.route(state.galaxy, from_system, to_system, raided).is_empty()
+		var seen := {from_system: true}
+		var queue: Array[int] = [from_system]
+		while not queue.is_empty():
+			var at: int = queue.pop_back()
+			for lid in state.galaxy.system(at).lane_ids:
+				var nxt := state.galaxy.lane(lid).other_end(at)
+				if seen.has(nxt):
+					continue
+				seen[nxt] = true
+				if not raided.has(nxt):
+					queue.append(nxt)  # a raided system can be the goal, never a waypoint
+		scratch[key] = seen
 	return scratch[key]
 
 
