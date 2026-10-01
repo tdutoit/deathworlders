@@ -12,13 +12,14 @@ var operational := false  # false while the first construction runs
 var build: Construction  # null when idle
 var ship_queue: Array[Construction] = []  # shipyards: the first `docks` entries build in parallel (B10)
 var stockpile := Stockpile.new()
+var claim_paid := 0  # outposts: influence (milli) paid when placed, refunded if cancelled (D9)
 
 
 func to_dict() -> Dictionary:
 	return {
 		"id": id, "owner": owner, "def_id": def_id, "system_id": system_id, "planet_id": planet_id,
 		"operational": operational, "build": build.to_dict() if build else null, "stockpile": stockpile.to_dict(),
-		"ship_queue": ship_queue.map(func(q: Construction) -> Dictionary: return q.to_dict()),
+		"ship_queue": ship_queue.map(func(q: Construction) -> Dictionary: return q.to_dict()), "claim_paid": claim_paid,
 	}
 
 
@@ -34,4 +35,5 @@ static func from_dict(d: Dictionary) -> Station:
 	s.stockpile = Stockpile.from_dict(d["stockpile"])
 	for q: Dictionary in d.get("ship_queue", []):
 		s.ship_queue.append(Construction.from_dict(q))
+	s.claim_paid = int(d.get("claim_paid", 0))
 	return s

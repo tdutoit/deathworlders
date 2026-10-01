@@ -61,6 +61,13 @@ into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.m
   gathers the sector's mining output (only from the producing stations, up to 50% of its cap, Low). Exports:
   a non-core hub sends its quota (default 50%) of surplus above reserve to the Core hub. Import requests are
   computed (not stored); approving one places a Critical player demand any source can fill.
+- 2026-10-01 (WP8): a colony ship ordered to a planet flies there and lands (1 pop, stage Colony); it may
+  target own or unclaimed systems, not orbital-only or uninhabitable bodies. Every new system claim costs D9's
+  influence (outposts pay when placed and are refunded if cancelled; colonising an unclaimed system pays and
+  claims when ordered). Empires start with no influence (B16 3/month), so the first claim comes around month 8;
+  Mars-style colonies inside owned systems need none. New colonies: 5 credits upkeep until their first Farm,
+  +100% growth for 5 years; homeworlds are backdated so they aren't "new". The payback estimate is a
+  placeholder (colony ship value / (pops x (tax + ~4 credits) - upkeep)) for the colonise screen.
 
 ---
 

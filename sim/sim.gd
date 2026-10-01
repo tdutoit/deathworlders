@@ -30,6 +30,7 @@ static func advance(state: MatchState) -> int:
 	Movement.tick(state)
 	if state.defs != null:
 		Freight.tick(state)
+		Colonisation.tick(state)
 	state.tick += 1
 	var flags := 0
 	if Calendar.is_day_start(state.tick):

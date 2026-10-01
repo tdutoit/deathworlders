@@ -75,6 +75,9 @@ static func check_station(state: MatchState, empire: int, planet_id: int, statio
 	if def.function == &"outpost":
 		if system.owner != StateIO.NONE:
 			return "system already claimed"
+		var pay := Colonisation.can_pay_claim(state, empire)
+		if pay != "":
+			return pay
 	elif system.owner != empire:
 		return "the system is not yours"
 	if stations_at(state, planet_id).size() >= planet.orbital_slots:

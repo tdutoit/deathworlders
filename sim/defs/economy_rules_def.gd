@@ -50,6 +50,12 @@ const ID := &"core:economy_rules/default"
 @export var input_buffer_months: int  # job inputs kept at each colony
 @export var food_buffer_months: int  # food kept at each colony
 @export var hub_collect_permille: int  # share of the hub's cap it gathers of the sector's mining output
+# Colonisation and claims (B16, B17, D9)
+@export var claim_influence_base: int  # D9: 25
+@export var claim_influence_per_system_permille: int  # D9: +60 permille per owned system
+@export var new_colony_upkeep_credits: int  # D9: 5 a month until its Farm completes
+@export var new_colony_growth_permille: int  # B17: +100% growth
+@export var new_colony_growth_years: int  # B17: for 5 years
 
 
 func category() -> String:
@@ -67,6 +73,7 @@ func schema() -> Dictionary:
 			"export_quota_default_permille", "developed_pops", "developed_years", "core_pops", "core_stability",
 			"core_hub_lanes", "reach_1", "reach_2", "reach_3", "reach_upkeep_1", "reach_upkeep_2", "reach_upkeep_3",
 			"reach_stability_1", "reach_stability_2", "reach_stability_3", "input_buffer_months",
-			"food_buffer_months", "hub_collect_permille"]:
+			"food_buffer_months", "hub_collect_permille", "claim_influence_base", "claim_influence_per_system_permille",
+			"new_colony_upkeep_credits", "new_colony_growth_permille", "new_colony_growth_years"]:
 		s[field] = {"type": "int"}
 	return s

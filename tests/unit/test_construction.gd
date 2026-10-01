@@ -156,6 +156,8 @@ func test_outpost_claims_a_system() -> void:
 			target = s.galaxy.system(sid)
 			break
 	var body := target.planet_ids[0]
+	assert_string_contains(_do(s, CmdQueueStation.TYPE, {"planet": body, "station": "core:station/outpost"}).error, "influence")
+	_human(s).treasury["core:resource/influence"] = 100000  # claims cost influence (WP8, D9)
 	assert_eq(_do(s, CmdQueueStation.TYPE, {"planet": body, "station": "core:station/outpost"}).error, "")
 	BuildRules.stations_at(s, body)[0].stockpile.add(ALLOYS, 80000)
 	_days(s, 60)

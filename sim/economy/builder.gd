@@ -67,6 +67,8 @@ static func place_station(state: MatchState, empire_id: int, planet_id: int, sta
 	s.planet_id = planet_id
 	s.system_id = state.galaxy.planet(planet_id).system_id
 	s.build = BuildRules.new_construction(state, "station", station_id, def.cost, def.build_days)
+	if def.function == &"outpost":
+		s.claim_paid = Colonisation.pay_claim(state, empire_id)
 	state.stations.put(s.id, s)
 	return s
 
@@ -91,4 +93,6 @@ static func cancel(state: MatchState, c: Colony, s: Station, index: int) -> void
 			s.stockpile.add(res, s.build.paid()[res])
 		s.build = null
 		if not s.operational:
+			var e := state.empire(s.owner)
+			e.treasury[Colonisation.INFLUENCE] = int(e.treasury.get(Colonisation.INFLUENCE, 0)) + s.claim_paid
 			state.stations.erase(s.id)

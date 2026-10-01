@@ -45,6 +45,7 @@ static func month_tick(state: MatchState) -> void:
 					upkeep_due[c.owner] = upkeep_due.get(c.owner, 0) + FixedMath.mul_permille(b.upkeep[res] * MILLI, 1000 + effects[0])
 				else:
 					c.stockpile.take(String(res), b.upkeep[res] * MILLI)
+		upkeep_due[c.owner] = upkeep_due.get(c.owner, 0) + Colonisation.young_colony_upkeep_milli(state, c)
 		_roll_flows(c)
 	for extra: Dictionary in [StationOps.upkeep(state, reach), Shipyards.upkeep(state)]:
 		for eid: int in extra:
@@ -257,7 +258,7 @@ static func _month_colony(state: MatchState, c: Colony, db: DefDatabase, r: Econ
 		if surplus:
 			var free := maxi(0, housing(state, c, planet, db) - c.total_pops())
 			var points := r.growth_base + r.growth_per_free_housing * free
-			c.growth += FixedMath.mul_permille(points, 1000 + mods.permille("planet.growth"))
+			c.growth += FixedMath.mul_permille(points, 1000 + mods.permille("planet.growth") + Colonisation.young_growth_permille(state, c))
 			if c.growth >= r.growth_points_per_pop:
 				if c.total_pops() < housing(state, c, planet, db):
 					var species := state.empire(c.owner).species

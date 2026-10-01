@@ -28,7 +28,9 @@ static func apply(state: MatchState, db: DefDatabase) -> void:
 		for res: StringName in IdMap.sort_keys(start.treasury.keys()):
 			e.treasury[String(res)] = e.treasury.get(String(res), 0) + int(start.treasury[res]) * Stockpile.MILLI
 		c.stage = String(start.stage)
-		c.founded_tick = state.tick
+		# Homeworlds are established worlds: past the young-colony bonus (B17) and Developed's age rule (D2).
+		var r := Economy.rules(db)
+		c.founded_tick = state.tick - maxi(r.new_colony_growth_years, r.developed_years) * Calendar.HOURS_PER_YEAR
 		Economy.assign_jobs(c, db)
 		state.colonies.put(c.id, c)
 		for st in start.capital_stations:
