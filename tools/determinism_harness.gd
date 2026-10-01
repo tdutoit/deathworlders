@@ -77,7 +77,7 @@ func _run(run: String, settings: MatchSettings, seed_value: int, months: int, fr
 		if Sim.step(state, sched.take_due(state.tick)) & Sim.MONTH:
 			checksums.append(state.checksum())
 		if run == "save_load" and state.tick == half:
-			var path := save_dir.path_join("harness.sav")
+			var path := save_dir.path_join("harness_%s_%d.sav" % [settings.galaxy_size.get_slice("_", 2), seed_value])  # unique per case, so sizes can run in parallel
 			var err := SaveGame.write(path, state, sched, db, manifests)
 			assert(err == "", err)
 			var loaded := SaveGame.read(path, db, manifests)
