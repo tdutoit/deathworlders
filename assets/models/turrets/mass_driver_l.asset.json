@@ -1,0 +1,25 @@
+{
+  "id": "mass_driver_l",
+  "kind": "turret",
+  "class": "turret",
+  "style": "human",
+  "lods": {
+    "LOD0": 120,
+    "LOD1": 88
+  },
+  "hardpoints": [],
+  "markers": [
+    "LIGHT_01"
+  ],
+  "dimensions_units": {
+    "width_x": 1.4,
+    "length_y": 4.35,
+    "height_z": 0.9
+  },
+  "dimensions_m": {
+    "width": 14.0,
+    "length": 43.5,
+    "height": 9.0
+  },
+  "glb": "mass_driver_l.glb"
+}

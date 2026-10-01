@@ -1,0 +1,39 @@
+{
+  "id": "human_carrier_mk1",
+  "kind": "ship",
+  "class": "carrier",
+  "style": "human",
+  "lods": {
+    "LOD0": 720,
+    "LOD1": 228,
+    "LOD2": 156
+  },
+  "hardpoints": [
+    "HP_H_L_01",
+    "HP_H_L_02",
+    "HP_D_L_01",
+    "HP_D_L_02",
+    "HP_U_M_01",
+    "HP_C_L_01"
+  ],
+  "markers": [
+    "ENGINE_01",
+    "ENGINE_02",
+    "ENGINE_03",
+    "BRIDGE",
+    "DOCK",
+    "LIGHT_01",
+    "LIGHT_02"
+  ],
+  "dimensions_units": {
+    "width_x": 9.993,
+    "length_y": 40.44,
+    "height_z": 9.5
+  },
+  "dimensions_m": {
+    "width": 99.9,
+    "length": 404.4,
+    "height": 95.0
+  },
+  "glb": "human_carrier_mk1.glb"
+}

@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("2_vx4nn")
+model = "assets/models/turrets/missile_pod_m.glb"
 slot_type = &"weapon"
 slot_size = &"M"
 family = &"core:weapon_family/missile"

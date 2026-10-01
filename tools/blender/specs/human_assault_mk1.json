@@ -1,0 +1,236 @@
+{
+ "id": "human_assault_mk1",
+ "kind": "ship",
+ "class": "assault",
+ "style": "human",
+ "lods": 3,
+ "sections": [
+  {
+   "type": "box",
+   "size": [
+    3.0,
+    6.0,
+    2.0
+   ],
+   "pos": [
+    0,
+    0,
+    0
+   ],
+   "bevel": 0.1
+  },
+  {
+   "type": "wedge",
+   "size": [
+    2.6,
+    2.0,
+    1.6
+   ],
+   "pos": [
+    0,
+    4.0,
+    -0.1
+   ],
+   "taper_front": [
+    0.45,
+    0.5
+   ],
+   "bevel": 0.06
+  },
+  {
+   "type": "box",
+   "size": [
+    0.7,
+    4.4,
+    1.4
+   ],
+   "pos": [
+    1.85,
+    0.0,
+    -0.1
+   ],
+   "mat": "FACTION",
+   "bevel": 0.05,
+   "mirror_x": true
+  },
+  {
+   "type": "cylinder",
+   "radius": 0.22,
+   "length": 0.5,
+   "pos": [
+    2.3,
+    1.2,
+    -0.6
+   ],
+   "axis": "x",
+   "mat": "DARK",
+   "segments": 6,
+   "mirror_x": true,
+   "detail": 1
+  },
+  {
+   "type": "cylinder",
+   "radius": 0.22,
+   "length": 0.5,
+   "pos": [
+    2.3,
+    0.0,
+    -0.6
+   ],
+   "axis": "x",
+   "mat": "DARK",
+   "segments": 6,
+   "mirror_x": true,
+   "detail": 1
+  },
+  {
+   "type": "cylinder",
+   "radius": 0.22,
+   "length": 0.5,
+   "pos": [
+    2.3,
+    -1.2,
+    -0.6
+   ],
+   "axis": "x",
+   "mat": "DARK",
+   "segments": 6,
+   "mirror_x": true,
+   "detail": 1
+  },
+  {
+   "type": "box",
+   "size": [
+    1.2,
+    1.4,
+    0.7
+   ],
+   "pos": [
+    0,
+    -1.4,
+    1.35
+   ],
+   "bevel": 0.05
+  },
+  {
+   "type": "box",
+   "size": [
+    0.8,
+    0.05,
+    0.16
+   ],
+   "pos": [
+    0,
+    -0.68,
+    1.5
+   ],
+   "mat": "EMISSIVE",
+   "detail": 1
+  },
+  {
+   "type": "box",
+   "size": [
+    3.2,
+    1.2,
+    2.2
+   ],
+   "pos": [
+    0,
+    -3.6,
+    0
+   ],
+   "mat": "DARK",
+   "bevel": 0.08
+  }
+ ],
+ "engines": [
+  {
+   "pos": [
+    0.8,
+    -4.25,
+    0
+   ],
+   "radius": 0.5,
+   "mirror_x": true
+  }
+ ],
+ "hardpoints": [
+  {
+   "slot": "W",
+   "size": "S",
+   "pos": [
+    0,
+    3.4,
+    0.9
+   ],
+   "dir": "up"
+  },
+  {
+   "slot": "D",
+   "size": "M",
+   "pos": [
+    0,
+    1.4,
+    1.0
+   ],
+   "dir": "up"
+  },
+  {
+   "slot": "U",
+   "size": "S",
+   "pos": [
+    0,
+    -2.7,
+    1.0
+   ],
+   "dir": "up"
+  },
+  {
+   "slot": "U",
+   "size": "S",
+   "pos": [
+    0,
+    0.0,
+    -1.0
+   ],
+   "dir": "down"
+  }
+ ],
+ "markers": {
+  "BRIDGE": [
+   0,
+   -1.4,
+   1.7
+  ],
+  "DOCK": [
+   0,
+   -1.0,
+   -1.0
+  ],
+  "LIGHT": [
+   [
+    2.2,
+    2.0,
+    0.5
+   ],
+   [
+    -2.2,
+    2.0,
+    0.5
+   ]
+  ]
+ },
+ "greebles": {
+  "seed": 16,
+  "count": 8,
+  "area": [
+   0.3,
+   1.2,
+   -2.5,
+   2.5,
+   1.0
+  ],
+  "min": 0.12,
+  "max": 0.3
+ }
+}

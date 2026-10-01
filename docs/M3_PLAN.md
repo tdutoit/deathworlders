@@ -80,6 +80,11 @@ into an ordered build plan. Builds on M2 (docs/M2_PLAN.md); same rules (CLAUDE.m
   warships of an empire at war make the same B9 passage rolls against its enemy's freighters; detected
   freighters are destroyed with their cargo (open question 6: lost, not captured). Defensive platforms
   already fight and add security (WP1/WP5).
+- 2026-10-02 (WP11): human Mk I frigate, destroyer, battlecruiser, battleship, carrier and assault ship plus
+  turrets for autocannon, pulse laser, heavy laser, missile pod, torpedo and mass driver, built from
+  `tools/blender/specs/` and validated (hardpoints match the hull slot layouts; all well under the C11
+  budgets). The asset contract gains an `assault` budget (1,200 tris, as a frigate). Fighter wings have no
+  turret model (they launch from hangar hardpoints).
 
 ---
 

@@ -1,0 +1,25 @@
+{
+  "id": "autocannon_s",
+  "kind": "turret",
+  "class": "turret",
+  "style": "human",
+  "lods": {
+    "LOD0": 124,
+    "LOD1": 92
+  },
+  "hardpoints": [],
+  "markers": [
+    "LIGHT_01"
+  ],
+  "dimensions_units": {
+    "width_x": 0.61,
+    "length_y": 1.3,
+    "height_z": 0.44
+  },
+  "dimensions_m": {
+    "width": 6.1,
+    "length": 13.0,
+    "height": 4.4
+  },
+  "glb": "autocannon_s.glb"
+}

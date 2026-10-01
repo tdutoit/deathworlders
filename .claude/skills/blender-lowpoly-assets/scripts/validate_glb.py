@@ -11,7 +11,7 @@ Exit code 0 = pass (warnings allowed), 1 = contract errors.
 import json, re, struct, sys
 
 BUDGETS = {  # LOD0 triangle budgets
-    "corvette": 800, "frigate": 1200, "destroyer": 1600, "cruiser": 2500, "battlecruiser": 3500,
+    "corvette": 800, "frigate": 1200, "assault": 1200, "destroyer": 1600, "cruiser": 2500, "battlecruiser": 3500,
     "battleship": 6000, "carrier": 5000, "freighter": 1200, "transport": 1000, "scout": 600,
     "station": 5000, "turret": 400, "prop": 1500,
 }

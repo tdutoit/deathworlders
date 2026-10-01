@@ -1,0 +1,101 @@
+{
+ "id": "mass_driver_l",
+ "kind": "turret",
+ "class": "turret",
+ "style": "human",
+ "lods": 2,
+ "sections": [
+  {
+   "type": "cylinder",
+   "radius": 0.7,
+   "length": 0.3,
+   "pos": [
+    0,
+    0,
+    0.15
+   ],
+   "axis": "z",
+   "segments": 8,
+   "mat": "DARK"
+  },
+  {
+   "type": "box",
+   "size": [
+    1.0,
+    1.2,
+    0.6
+   ],
+   "pos": [
+    0,
+    0.0,
+    0.6
+   ],
+   "mat": "FACTION",
+   "bevel": 0.05
+  },
+  {
+   "type": "box",
+   "size": [
+    0.24,
+    3.2,
+    0.24
+   ],
+   "pos": [
+    0,
+    2.0,
+    0.62
+   ]
+  },
+  {
+   "type": "box",
+   "size": [
+    0.42,
+    0.3,
+    0.42
+   ],
+   "pos": [
+    0,
+    1.2,
+    0.62
+   ],
+   "mat": "DARK",
+   "detail": 1
+  },
+  {
+   "type": "box",
+   "size": [
+    0.42,
+    0.3,
+    0.42
+   ],
+   "pos": [
+    0,
+    2.4,
+    0.62
+   ],
+   "mat": "DARK",
+   "detail": 1
+  },
+  {
+   "type": "box",
+   "size": [
+    0.36,
+    0.2,
+    0.36
+   ],
+   "pos": [
+    0,
+    3.55,
+    0.62
+   ],
+   "mat": "DARK"
+  }
+ ],
+ "markers": {
+  "LIGHT": [
+   0,
+   3.7,
+   0.62
+  ]
+ }
+}

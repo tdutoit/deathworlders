@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("2_r40oy")
+model = "assets/models/turrets/pulse_laser_s.glb"
 slot_type = &"weapon"
 family = &"core:weapon_family/energy"
 damage = 30

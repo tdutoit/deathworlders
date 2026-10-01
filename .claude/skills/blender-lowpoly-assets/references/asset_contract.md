@@ -28,7 +28,7 @@ Every generated asset must follow these rules. `scripts/validate_glb.py` checks 
 | destroyer | 1,600 | | station | 5,000 |
 | cruiser | 2,500 | | turret | 400 |
 | freighter | 1,200 | | transport | 1,000 |
-| prop | 1,500 | | | |
+| prop | 1,500 | | assault | 1,200 |
 
 LOD1 should land around 40–60% of LOD0, LOD2 around 15–30%.
 

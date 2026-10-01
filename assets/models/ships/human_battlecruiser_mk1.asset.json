@@ -1,0 +1,41 @@
+{
+  "id": "human_battlecruiser_mk1",
+  "kind": "ship",
+  "class": "battlecruiser",
+  "style": "human",
+  "lods": {
+    "LOD0": 924,
+    "LOD1": 268,
+    "LOD2": 144
+  },
+  "hardpoints": [
+    "HP_W_S_01",
+    "HP_W_M_01",
+    "HP_W_M_02",
+    "HP_W_L_01",
+    "HP_D_L_01",
+    "HP_D_L_02",
+    "HP_U_M_01",
+    "HP_C_L_01"
+  ],
+  "markers": [
+    "ENGINE_01",
+    "ENGINE_02",
+    "ENGINE_03",
+    "BRIDGE",
+    "DOCK",
+    "LIGHT_01",
+    "LIGHT_02"
+  ],
+  "dimensions_units": {
+    "width_x": 6.354,
+    "length_y": 27.215,
+    "height_z": 5.85
+  },
+  "dimensions_m": {
+    "width": 63.5,
+    "length": 272.1,
+    "height": 58.5
+  },
+  "glb": "human_battlecruiser_mk1.glb"
+}

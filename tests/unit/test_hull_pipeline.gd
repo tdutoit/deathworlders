@@ -74,3 +74,22 @@ func test_solar_view_shows_tinted_model() -> void:
 			tinted = true
 	assert_true(tinted, "FACTION surface overridden")
 	GameState.end_match()
+
+
+## M3 WP11: every human Mk I hull and every weapon component has a model, and hull slots name its hardpoints.
+func test_human_hulls_and_turrets_have_models() -> void:
+	var loader := ContentLoader.new()
+	loader.load_mods([])
+	for def in loader.db.defs("hull"):
+		var h: HullDef = def
+		if h.species != &"core:species/human" or h.role != &"warship":
+			continue
+		assert_ne(h.model, "", "%s has a model" % h.id)
+		var errors: Array[String] = []
+		var names := GlbReader.node_names("res://" + h.model, errors)
+		for slot in h.slots:
+			assert_has(names, String(slot.hardpoint), "%s: %s" % [h.id, slot.hardpoint])
+	for def in loader.db.defs("component"):
+		var c: ComponentDef = def
+		if c.family != &"" and c.family != &"core:weapon_family/fighter":  # fighters launch from hangars
+			assert_true(c.model != "" and ResourceLoader.exists("res://" + c.model), "%s has a turret model" % c.id)

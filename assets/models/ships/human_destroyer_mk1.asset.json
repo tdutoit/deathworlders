@@ -1,0 +1,37 @@
+{
+  "id": "human_destroyer_mk1",
+  "kind": "ship",
+  "class": "destroyer",
+  "style": "human",
+  "lods": {
+    "LOD0": 676,
+    "LOD1": 244,
+    "LOD2": 132
+  },
+  "hardpoints": [
+    "HP_W_S_01",
+    "HP_W_S_02",
+    "HP_W_M_01",
+    "HP_D_M_01",
+    "HP_U_S_01"
+  ],
+  "markers": [
+    "ENGINE_01",
+    "ENGINE_02",
+    "ENGINE_03",
+    "BRIDGE",
+    "LIGHT_01",
+    "LIGHT_02"
+  ],
+  "dimensions_units": {
+    "width_x": 3.512,
+    "length_y": 12.465,
+    "height_z": 2.35
+  },
+  "dimensions_m": {
+    "width": 35.1,
+    "length": 124.7,
+    "height": 23.5
+  },
+  "glb": "human_destroyer_mk1.glb"
+}

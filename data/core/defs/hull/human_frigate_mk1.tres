@@ -25,6 +25,7 @@ hardpoint = &"HP_U_S_01"
 
 [resource]
 script = ExtResource("2_yonep")
+model = "assets/models/ships/human_frigate_mk1.glb"
 species = &"core:species/human"
 hull_class = &"frigate"
 hull = 500

@@ -1,0 +1,35 @@
+{
+  "id": "human_frigate_mk1",
+  "kind": "ship",
+  "class": "frigate",
+  "style": "human",
+  "lods": {
+    "LOD0": 496,
+    "LOD1": 176,
+    "LOD2": 112
+  },
+  "hardpoints": [
+    "HP_W_S_01",
+    "HP_D_S_01",
+    "HP_D_S_02",
+    "HP_U_S_01"
+  ],
+  "markers": [
+    "ENGINE_01",
+    "ENGINE_02",
+    "BRIDGE",
+    "LIGHT_01",
+    "LIGHT_02"
+  ],
+  "dimensions_units": {
+    "width_x": 2.6,
+    "length_y": 9.216,
+    "height_z": 1.875
+  },
+  "dimensions_m": {
+    "width": 26.0,
+    "length": 92.2,
+    "height": 18.8
+  },
+  "glb": "human_frigate_mk1.glb"
+}

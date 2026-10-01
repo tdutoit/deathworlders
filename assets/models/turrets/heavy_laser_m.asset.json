@@ -1,0 +1,25 @@
+{
+  "id": "heavy_laser_m",
+  "kind": "turret",
+  "class": "turret",
+  "style": "human",
+  "lods": {
+    "LOD0": 124,
+    "LOD1": 92
+  },
+  "hardpoints": [],
+  "markers": [
+    "LIGHT_01"
+  ],
+  "dimensions_units": {
+    "width_x": 0.9,
+    "length_y": 2.03,
+    "height_z": 0.655
+  },
+  "dimensions_m": {
+    "width": 9.0,
+    "length": 20.3,
+    "height": 6.6
+  },
+  "glb": "heavy_laser_m.glb"
+}

@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("2_cinyt")
+model = "assets/models/turrets/heavy_laser_m.glb"
 slot_type = &"weapon"
 slot_size = &"M"
 family = &"core:weapon_family/energy"

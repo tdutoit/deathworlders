@@ -1,0 +1,85 @@
+{
+ "id": "pulse_laser_s",
+ "kind": "turret",
+ "class": "turret",
+ "style": "human",
+ "lods": 2,
+ "sections": [
+  {
+   "type": "cylinder",
+   "radius": 0.3,
+   "length": 0.18,
+   "pos": [
+    0,
+    0,
+    0.09
+   ],
+   "axis": "z",
+   "segments": 8,
+   "mat": "DARK"
+  },
+  {
+   "type": "box",
+   "size": [
+    0.38,
+    0.5,
+    0.24
+   ],
+   "pos": [
+    0,
+    0.0,
+    0.3
+   ],
+   "mat": "FACTION",
+   "bevel": 0.03
+  },
+  {
+   "type": "cylinder",
+   "radius": 0.08,
+   "length": 0.6,
+   "pos": [
+    0,
+    0.5,
+    0.32
+   ],
+   "radius_end": 0.05,
+   "segments": 6
+  },
+  {
+   "type": "box",
+   "size": [
+    0.06,
+    0.1,
+    0.06
+   ],
+   "pos": [
+    0,
+    0.82,
+    0.32
+   ],
+   "mat": "EMISSIVE"
+  },
+  {
+   "type": "box",
+   "size": [
+    0.3,
+    0.06,
+    0.06
+   ],
+   "pos": [
+    0,
+    0.26,
+    0.44
+   ],
+   "mat": "EMISSIVE",
+   "detail": 1
+  }
+ ],
+ "markers": {
+  "LIGHT": [
+   0,
+   0.85,
+   0.32
+  ]
+ }
+}

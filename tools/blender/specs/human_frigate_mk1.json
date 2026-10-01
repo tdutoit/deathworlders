@@ -1,0 +1,203 @@
+{
+ "id": "human_frigate_mk1",
+ "kind": "ship",
+ "class": "frigate",
+ "style": "human",
+ "lods": 3,
+ "sections": [
+  {
+   "type": "box",
+   "size": [
+    2.0,
+    5.6,
+    1.3
+   ],
+   "pos": [
+    0,
+    0,
+    0
+   ],
+   "bevel": 0.08
+  },
+  {
+   "type": "wedge",
+   "size": [
+    1.8,
+    2.2,
+    1.1
+   ],
+   "pos": [
+    0,
+    3.9,
+    -0.05
+   ],
+   "taper_front": [
+    0.3,
+    0.4
+   ],
+   "bevel": 0.05
+  },
+  {
+   "type": "box",
+   "size": [
+    0.3,
+    4.0,
+    0.9
+   ],
+   "pos": [
+    1.15,
+    0.4,
+    0
+   ],
+   "mat": "FACTION",
+   "taper_front": [
+    1,
+    0.6
+   ],
+   "mirror_x": true
+  },
+  {
+   "type": "box",
+   "size": [
+    0.8,
+    1.2,
+    0.55
+   ],
+   "pos": [
+    0,
+    -1.0,
+    0.9
+   ],
+   "bevel": 0.04
+  },
+  {
+   "type": "box",
+   "size": [
+    0.6,
+    0.05,
+    0.14
+   ],
+   "pos": [
+    0,
+    -0.38,
+    1.0
+   ],
+   "mat": "EMISSIVE",
+   "detail": 1
+  },
+  {
+   "type": "box",
+   "size": [
+    2.3,
+    1.2,
+    1.4
+   ],
+   "pos": [
+    0,
+    -3.3,
+    0
+   ],
+   "mat": "DARK",
+   "bevel": 0.06
+  },
+  {
+   "type": "box",
+   "size": [
+    0.5,
+    3.0,
+    0.3
+   ],
+   "pos": [
+    0,
+    1.0,
+    0.75
+   ],
+   "detail": 1
+  }
+ ],
+ "engines": [
+  {
+   "pos": [
+    0.55,
+    -3.95,
+    0
+   ],
+   "radius": 0.38,
+   "mirror_x": true
+  }
+ ],
+ "hardpoints": [
+  {
+   "slot": "W",
+   "size": "S",
+   "pos": [
+    0,
+    2.6,
+    0.65
+   ],
+   "dir": "up"
+  },
+  {
+   "slot": "D",
+   "size": "S",
+   "pos": [
+    1.3,
+    -0.6,
+    0.3
+   ],
+   "dir": "right"
+  },
+  {
+   "slot": "D",
+   "size": "S",
+   "pos": [
+    -1.3,
+    -0.6,
+    0.3
+   ],
+   "dir": "left"
+  },
+  {
+   "slot": "U",
+   "size": "S",
+   "pos": [
+    0,
+    -2.2,
+    0.7
+   ],
+   "dir": "up"
+  }
+ ],
+ "markers": {
+  "BRIDGE": [
+   0,
+   -1.0,
+   1.2
+  ],
+  "LIGHT": [
+   [
+    1.25,
+    2.0,
+    0.4
+   ],
+   [
+    -1.25,
+    2.0,
+    0.4
+   ]
+  ]
+ },
+ "greebles": {
+  "seed": 11,
+  "count": 8,
+  "area": [
+   0.2,
+   0.8,
+   -2.5,
+   2.2,
+   0.65
+  ],
+  "min": 0.1,
+  "max": 0.25
+ }
+}

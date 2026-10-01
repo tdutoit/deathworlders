@@ -1,0 +1,25 @@
+{
+  "id": "torpedo_l",
+  "kind": "turret",
+  "class": "turret",
+  "style": "human",
+  "lods": {
+    "LOD0": 136,
+    "LOD1": 104
+  },
+  "hardpoints": [],
+  "markers": [
+    "LIGHT_01"
+  ],
+  "dimensions_units": {
+    "width_x": 1.4,
+    "length_y": 2.33,
+    "height_z": 1.0
+  },
+  "dimensions_m": {
+    "width": 14.0,
+    "length": 23.3,
+    "height": 10.0
+  },
+  "glb": "torpedo_l.glb"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "pulse_laser_s",
+  "kind": "turret",
+  "class": "turret",
+  "style": "human",
+  "lods": {
+    "LOD0": 116,
+    "LOD1": 84
+  },
+  "hardpoints": [],
+  "markers": [
+    "LIGHT_01"
+  ],
+  "dimensions_units": {
+    "width_x": 0.6,
+    "length_y": 1.17,
+    "height_z": 0.47
+  },
+  "dimensions_m": {
+    "width": 6.0,
+    "length": 11.7,
+    "height": 4.7
+  },
+  "glb": "pulse_laser_s.glb"
+}

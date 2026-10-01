@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("2_px5rw")
+model = "assets/models/turrets/mass_driver_l.glb"
 slot_type = &"weapon"
 slot_size = &"L"
 family = &"core:weapon_family/kinetic"

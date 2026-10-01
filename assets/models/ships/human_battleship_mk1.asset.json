@@ -1,0 +1,44 @@
+{
+  "id": "human_battleship_mk1",
+  "kind": "ship",
+  "class": "battleship",
+  "style": "human",
+  "lods": {
+    "LOD0": 1336,
+    "LOD1": 344,
+    "LOD2": 200
+  },
+  "hardpoints": [
+    "HP_W_S_01",
+    "HP_W_S_02",
+    "HP_W_M_01",
+    "HP_W_M_02",
+    "HP_W_L_01",
+    "HP_D_L_01",
+    "HP_D_L_02",
+    "HP_D_L_03",
+    "HP_U_M_01",
+    "HP_C_L_01"
+  ],
+  "markers": [
+    "ENGINE_01",
+    "ENGINE_02",
+    "ENGINE_03",
+    "ENGINE_04",
+    "BRIDGE",
+    "DOCK",
+    "LIGHT_01",
+    "LIGHT_02"
+  ],
+  "dimensions_units": {
+    "width_x": 12.0,
+    "length_y": 46.65,
+    "height_z": 11.3
+  },
+  "dimensions_m": {
+    "width": 120.0,
+    "length": 466.5,
+    "height": 113.0
+  },
+  "glb": "human_battleship_mk1.glb"
+}

@@ -1,0 +1,36 @@
+{
+  "id": "human_assault_mk1",
+  "kind": "ship",
+  "class": "assault",
+  "style": "human",
+  "lods": {
+    "LOD0": 668,
+    "LOD1": 284,
+    "LOD2": 112
+  },
+  "hardpoints": [
+    "HP_W_S_01",
+    "HP_D_M_01",
+    "HP_U_S_01",
+    "HP_U_S_02"
+  ],
+  "markers": [
+    "ENGINE_01",
+    "ENGINE_02",
+    "BRIDGE",
+    "DOCK",
+    "LIGHT_01",
+    "LIGHT_02"
+  ],
+  "dimensions_units": {
+    "width_x": 5.1,
+    "length_y": 9.6,
+    "height_z": 2.8
+  },
+  "dimensions_m": {
+    "width": 51.0,
+    "length": 96.0,
+    "height": 28.0
+  },
+  "glb": "human_assault_mk1.glb"
+}

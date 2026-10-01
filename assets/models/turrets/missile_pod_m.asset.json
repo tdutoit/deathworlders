@@ -1,0 +1,25 @@
+{
+  "id": "missile_pod_m",
+  "kind": "turret",
+  "class": "turret",
+  "style": "human",
+  "lods": {
+    "LOD0": 132,
+    "LOD1": 100
+  },
+  "hardpoints": [],
+  "markers": [
+    "LIGHT_01"
+  ],
+  "dimensions_units": {
+    "width_x": 0.9,
+    "length_y": 0.955,
+    "height_z": 0.855
+  },
+  "dimensions_m": {
+    "width": 9.0,
+    "length": 9.5,
+    "height": 8.6
+  },
+  "glb": "missile_pod_m.glb"
+}

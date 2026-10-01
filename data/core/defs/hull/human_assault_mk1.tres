@@ -26,6 +26,7 @@ hardpoint = &"HP_U_S_02"
 
 [resource]
 script = ExtResource("2_ot8k0")
+model = "assets/models/ships/human_assault_mk1.glb"
 species = &"core:species/human"
 hull_class = &"assault"
 hull = 700

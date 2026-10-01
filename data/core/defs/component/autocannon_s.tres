@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("2_htwwi")
+model = "assets/models/turrets/autocannon_s.glb"
 slot_type = &"weapon"
 family = &"core:weapon_family/kinetic"
 damage = 30
