@@ -40,6 +40,22 @@ static func station_security_map(state: MatchState) -> Dictionary:
 	return out
 
 
+## {system: true} where a raider hunting this empire sits (freighters route around them, B8 route safety).
+static func raided_systems(state: MatchState, eid: int) -> Dictionary:
+	var scratch := state.scratch()
+	var key := "raided:%d" % eid
+	if not scratch.has(key):
+		var out := {}
+		for uid: int in state.units:
+			var u: Unit = state.units.get_or(uid)
+			if u.kind == "raider" and u.target_owner == eid:
+				out[u.system_id] = true
+				for s in u.path:
+					out[s] = true
+		scratch[key] = out
+	return scratch[key]
+
+
 static func raiders_hunting(state: MatchState, eid: int) -> int:
 	var n := 0
 	for uid: int in state.units:

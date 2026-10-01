@@ -59,7 +59,7 @@ static func _build_needs(out: Array, holder: int, builds: Array) -> void:
 			need[res] = need.get(res, 0) + int(b.cost[res]) - int(paid.get(res, 0))
 	for res: String in IdMap.sort_keys(need.keys()):
 		if need[res] > 0:
-			out.append({"holder": holder, "resource": res, "target": need[res], "priority": 2})
+			out.append({"holder": holder, "resource": res, "target": need[res], "priority": 2, "build": true})
 
 
 static func _assign(state: MatchState, eid: int) -> void:
@@ -85,8 +85,13 @@ static func _assign(state: MatchState, eid: int) -> void:
 	if idle.is_empty():
 		return
 	var open := []
+	var raided := Pirates.raided_systems(state, eid)
 	for d: Dictionary in demands_of(state, eid):
 		var key := "%d:%s" % [d["holder"], d["resource"]]
+		if d.get("build", false):
+			promised[key] = promised.get(key, 0) + int(d["target"])  # a site's materials are earmarked, never surplus
+		if raided.has(Holders.system(state, d["holder"])):
+			continue
 		var stock := Holders.stockpile(state, d["holder"]).milli(d["resource"])
 		var deficit: int = d["target"] - stock - in_transit.get(key, 0)
 		if deficit > 0:
@@ -108,6 +113,13 @@ static func _assign(state: MatchState, eid: int) -> void:
 				if f == null:
 					continue
 				var load := mini(mini(Freight.capacity_milli(state, f), d["deficit"]), _surplus(state, src, d["resource"], promised))
+				# Not worth a trip yet (the deficit keeps growing): under min_trip of capacity and under half the target.
+				# Critical demands too, or daily consumption sends a freighter per day. Builds are exempt: their target
+				# shrinks with the stock, so a small last load would never grow.
+				var min_load := mini(FixedMath.mul_permille(Freight.capacity_milli(state, f), Economy.rules(state.defs).min_trip_permille),
+						int(d["target"]) / 2)
+				if load < min_load and not d.get("build", false):
+					continue
 				f.job = {"source": src, "dest": d["holder"], "resource": d["resource"], "amount": load}
 				f.phase = "to_source"
 				idle.erase(f)
@@ -150,6 +162,8 @@ static func _sources(state: MatchState, holders: Array[int], d: Dictionary, prom
 		if d.has("sources") and not h in d["sources"]:
 			continue
 		if sector != null and not Holders.system(state, h) in sector.systems:
+			continue
+		if Pirates.raided_systems(state, state.empire(Holders.owner(state, h)).id).has(Holders.system(state, h)):
 			continue
 		var sys := Holders.system(state, h)
 		var dist := Holders.impulse_days(state, Holders.body(state, h), dest_body) if sys == dest_sys \

@@ -16,6 +16,9 @@ static func month_tick(state: MatchState) -> void:
 		if c.autonomy == "manual":
 			c.suggestion = ""
 			continue
+		if c.autonomy == "automated" and not c.job_caps.is_empty() and c.unemployed() > 0:
+			c.job_caps.clear()  # the opening's caps (B19 mix) give way once pops outgrow them
+			Economy.assign_jobs(c, state.defs)
 		if c.primary_focus == "" and c.stage in ["developed", "core"]:
 			var pair := choose_focus(state, c)
 			c.primary_focus = pair[0]

@@ -84,10 +84,10 @@ func test_reserve_is_left_alone() -> void:
 	var belts := _belts(s)
 	for b in belts:
 		b.stockpile.take(ORE, b.stockpile.milli(ORE))
-	belts[0].stockpile.add(ORE, 50000)  # reserve is 20% of 200 = 40
+	belts[0].stockpile.add(ORE, 70000)  # reserve is 20% of 200 = 40
 	_do(s, CmdSetDemandTarget.TYPE, {"holder": _hub(s).id, "resource": ORE, "target": 100, "priority": 2})
 	_days(s, 1)
-	assert_eq((_jobs(s)[0] as Unit).job["amount"], 10500, "only what is above the 40 reserve: 50 + the day's 0.5 mined - 40")
+	assert_eq((_jobs(s)[0] as Unit).job["amount"], 30500, "only what is above the 40 reserve: 70 + the day's 0.5 mined - 40")
 	assert_eq(_do(s, CmdSetReserve.TYPE, {"holder": belts[0].id, "resource": ORE, "units": 0}).error, "")
 	assert_eq(AutoLogistics.reserve_milli(s, belts[0].id, ORE), 0)
 

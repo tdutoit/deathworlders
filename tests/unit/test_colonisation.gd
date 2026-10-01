@@ -117,7 +117,7 @@ func test_young_colony_upkeep_and_growth() -> void:
 	_do(s, CmdColonise.TYPE, {"unit": _ship(s).id, "planet": _body(s, "Mars").id})
 	_hours(s, 2)
 	var c := s.colony(_body(s, "Mars").id)
-	assert_eq(Colonisation.young_colony_upkeep_milli(s, c), 5000, "5 credits until its Farm")
+	assert_eq(Colonisation.young_colony_upkeep_milli(s, c), 3000, "3 credits until its Farm (WP14)")
 	assert_eq(Colonisation.young_growth_permille(s, c), 1000, "+100% growth for 5 years")
 	c.buildings.append("core:building/farm")
 	assert_eq(Colonisation.young_colony_upkeep_milli(s, c), 0)

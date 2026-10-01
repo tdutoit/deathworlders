@@ -68,6 +68,7 @@ const ID := &"core:economy_rules/default"
 @export var raider_months: int  # a raider without a base leaves after this long
 @export var pirate_base_chance_permille: int  # monthly chance a raider founds a base
 @export var pirate_base_spawn_months: int  # a base sends out a raider this often (cap permitting)
+@export var min_trip_permille: int  # auto-logistics skips loads under this share of capacity (not builds/Critical)
 
 
 func category() -> String:
@@ -89,6 +90,6 @@ func schema() -> Dictionary:
 			"new_colony_upkeep_credits", "new_colony_growth_permille", "new_colony_growth_years", "planet_supply_range",
 			"security_base", "security_per_garrison", "pirate_threshold", "pirate_chance_per_point_permille",
 			"pirate_min_reach", "max_raiders_per_empire", "raider_sensor", "raider_months", "pirate_base_chance_permille",
-			"pirate_base_spawn_months"]:
+			"pirate_base_spawn_months", "min_trip_permille"]:
 		s[field] = {"type": "int"}
 	return s

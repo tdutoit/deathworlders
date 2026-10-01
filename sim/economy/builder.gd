@@ -18,19 +18,29 @@ static func day_tick(state: MatchState) -> void:
 		var s: Station = state.stations.get_or(sid)
 		if s.build == null or _halted(state, s.owner):
 			continue
-		if _advance(s.build, s.stockpile):
+		if _advance(s.build, s.stockpile, orbit_supply(state, s)):
 			_finish_station(state, s)
 
 
-## One day of work. Returns true when the build completes.
-static func _advance(b: Construction, site: Stockpile) -> bool:
+## The stockpile of the owner's colony a station orbits, or null: stations take construction materials
+## from it directly (an orbital transfer; no freighter needed), after their own stockpile.
+static func orbit_supply(state: MatchState, s: Station) -> Stockpile:
+	var c := state.colony(s.planet_id)
+	return c.stockpile if c != null and c.owner == s.owner else null
+
+
+## One day of work: today's materials from the site, then from `backup` if given. True when the build is done.
+static func _advance(b: Construction, site: Stockpile, backup: Stockpile = null) -> bool:
 	var need := b.today_need()
 	for res: String in need:
-		if site.milli(res) < need[res]:
+		var have := site.milli(res) + (backup.milli(res) if backup != null else 0)
+		if have < need[res]:
 			b.stalled_days += 1
 			return false
 	for res: String in need:
-		site.take(res, need[res])
+		var got := site.take(res, need[res])
+		if got < need[res]:
+			backup.take(res, need[res] - got)
 	b.stalled_days = 0
 	b.days_done += 1
 	return b.is_done()

@@ -24,6 +24,22 @@
   starving, then the per-planet priority list, then Primary then Secondary focus jobs, then the rest by job
   priority), and each job can have a per-planet **cap**. The opening sets caps (Miner 2, Munitions Worker 1,
   Researcher 4) so every homeworld starts with B19's exact mix.
+- 2026-10-01 (M2 WP14, balance pass part 1; numbers are tuning, not owner decisions):
+  - B13: **taxes 1 credit per pop** (was 0.5; B19's opening income becomes 20 + 12 + 24 = 56). New-colony
+    upkeep (D9) **3 credits** until the first Farm (was 5). With 0.5/pop every AI empire's upkeep (stations,
+    freighters, buildings, young colonies) outran its income by year 6-8 and expansion stopped.
+  - B8: auto-logistics skips a load smaller than `min_trip_permille` (250) of the freighter's capacity **and**
+    smaller than half the demand's target, for every priority (Critical too: a 1-pop colony eating 1 food a
+    month otherwise sent a freighter a day with 0.03 food). Construction demands are exempt (their target
+    shrinks with the stock, so the last small load would never grow). A construction site's remaining
+    materials are earmarked: never surplus for another demand. Auto jobs and routes avoid systems where a
+    raider hunting the empire sits (B8 "avoid hostile systems"); freighters wait rather than enter one.
+  - B10: a station takes construction materials from the stockpile of its owner's colony it orbits (orbital
+    transfer), after its own; this breaks the "no freighter to build the first freighter" deadlock.
+  - D4: on Automated planets the opening's job caps are dropped once any pop is unemployed.
+  - Autopilot (AI only): expands (colonies, stations, ships) only with a positive monthly credit net, no
+    deficit and 100 credits in hand; keeps 2 shipyards; upgrades or adds a logistics hub when no berth is
+    free; runs the Core Sector on Industrial Core (Research while the credit net is under 5).
 
 ---
 
@@ -87,8 +103,8 @@ Base values are used by trade, AI valuation, salvage and battle scoring.
 | Soldier | Barracks (3) | Garrison +1 company-equivalent; recruitable | 1 Munitions |
 
 - **Inputs are taken from the local stockpile.** If an input is short, output scales down proportionally (no global rescue).
-- **Unemployed pops** give 0.5 credits (tax only) and −10 stability each.
-- **Taxes:** every pop pays 0.5 credits/month.
+- **Unemployed pops** give 1 credit (tax only) and −10 stability each.
+- **Taxes:** every pop pays 1 credit/month (WP14; was 0.5).
 
 ## B4. Planet Focus
 
@@ -247,7 +263,7 @@ Mining focus on the system's planet gives +250‰ to stations in the same system
 
 ## B13. Credits: Income & Upkeep
 
-- **Income:** capital base 20, taxes (0.5/pop), Clerks (4), trade (B15), Trade Hub synergy (+2 credits per 100 cargo units passing through its hub).
+- **Income:** capital base 20, taxes (1/pop), Clerks (4), trade (B15), Trade Hub synergy (+2 credits per 100 cargo units passing through its hub).
 - **Upkeep:** ships (B10), stations (1–6 per tier), buildings 1 each, armies 0.5 per company, freighters (B6).
 - **Deficit:** stockpiled credits drain; at 0, stability −10 per month on all planets and new construction halts.
 
@@ -326,7 +342,7 @@ Jobs: 6 Farmers, 2 Miners, 6 Workers, 2 Engineers, 1 Munitions, 4 Researchers, 3
 | Components | 6 | — | **+6** |
 | Munitions | 12 | — | **+12** |
 | Research | 40 base + 15 | — | **55 RP** |
-| Credits | 20 capital + 12 tax + 12 clerks | ~25 upkeep (10 buildings, 5 ships, 3 freighters, 7 stations) | **+19** |
+| Credits | 20 capital + 24 tax + 12 clerks | ~25 upkeep (10 buildings, 5 ships, 3 freighters, 7 stations) | **+31** |
 
 **Belt → Earth ore haul:** 4-day trip, ~300/month per Light Freighter vs. 45 needed. One freighter covers it early; freighters only become the bottleneck with interstellar expansion (by design).
 

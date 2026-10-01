@@ -67,9 +67,9 @@ func test_first_month_flows_match_b19() -> void:
 	assert_eq(_units(p, "core:resource/munitions"), 12.0)
 	assert_eq(_units(u, "core:resource/rare_earths"), 2.0)
 	assert_eq(_units(p, "core:resource/research"), 55.0, "40 capital + 15 researchers")
-	assert_eq(_units(p, CREDITS), 44.0, "20 capital + 12 clerks + 12 taxes")
+	assert_eq(_units(p, CREDITS), 56.0, "20 capital + 12 clerks + 24 taxes (WP14: 1 per pop)")
 	var e: Empire = s.empires.values()[0]
-	assert_eq(e.treasury[CREDITS], (500 + 44 - 10 - 7 - 3) * 1000, "minus 10 building, 7 station and 3 freighter upkeep")
+	assert_eq(e.treasury[CREDITS], (500 + 56 - 10 - 7 - 3) * 1000, "minus 10 building, 7 station and 3 freighter upkeep")
 	assert_eq(c.stability, 55, "base 50 + food surplus 5")
 
 
@@ -109,6 +109,7 @@ func test_overflow_is_lost() -> void:
 func test_starvation() -> void:
 	var s := _match()
 	var c := _earth(s)
+	c.autonomy = "manual"  # the governor drops job caps once pops are unemployed
 	c.job_caps["core:job/farmer"] = 0
 	c.stockpile.take(FOOD, c.stockpile.milli(FOOD))
 	Economy.assign_jobs(c, _db)

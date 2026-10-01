@@ -53,7 +53,7 @@ static func day_tick(state: MatchState) -> void:
 		while i < s.ship_queue.size() and active < def.docks:
 			var b := s.ship_queue[i]
 			active += 1
-			if Builder._advance(b, s.stockpile) and _launch(state, s, b):
+			if Builder._advance(b, s.stockpile, Builder.orbit_supply(state, s)) and _launch(state, s, b):
 				s.ship_queue.remove_at(i)
 			else:
 				i += 1

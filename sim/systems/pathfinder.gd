@@ -6,7 +6,8 @@ extends RefCounted
 
 
 ## System IDs to visit after `from`, ending with `to`; [] if from == to or unreachable.
-static func route(galaxy: Galaxy, from: int, to: int) -> Array[int]:
+## avoid: optional {system: true} never passed through (B8 "avoid hostile systems").
+static func route(galaxy: Galaxy, from: int, to: int, avoid: Dictionary = {}) -> Array[int]:
 	var none: Array[int] = []
 	if from == to or galaxy.system(from) == null or galaxy.system(to) == null:
 		return none
@@ -25,7 +26,7 @@ static func route(galaxy: Galaxy, from: int, to: int) -> Array[int]:
 		for lane_id in galaxy.system(at).lane_ids:
 			var lane := galaxy.lane(lane_id)
 			var next := lane.other_end(at)
-			if done.has(next):
+			if done.has(next) or (avoid.has(next) and next != to):
 				continue
 			var d: int = top[0] + lane.length
 			if not dist.has(next) or d < dist[next] or (d == dist[next] and at < prev[next]):

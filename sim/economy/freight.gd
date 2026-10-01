@@ -64,7 +64,10 @@ static func _travel(state: MatchState, u: Unit, holder: int) -> bool:
 	if target_system == StateIO.NONE:
 		return false
 	if u.system_id != target_system:
-		var path := Pathfinder.route(state.galaxy, u.system_id, target_system)
+		var raided := Pirates.raided_systems(state, u.owner)
+		if raided.has(target_system):
+			return false  # wait until the raider moves on
+		var path := Pathfinder.route(state.galaxy, u.system_id, target_system, raided)
 		if path.is_empty():
 			return false
 		u.path = path

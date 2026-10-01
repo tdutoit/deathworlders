@@ -6,11 +6,19 @@ extends RefCounted
 ##   1. settle idle colony ships on the best target; queue a colony ship when a target exists and none is busy;
 ##   2. claim the best nearby unclaimed system with an outpost when influence allows (one site at a time);
 ##   3. build mining stations on own belts, moons and gas giants (one site at a time);
-##   4. add a freighter when berthed freighters are over 95% busy and a berth is free.
+##   4. add a freighter when berthed freighters are over 60% busy and a berth is free;
+##   5. grow logistics: upgrade a hub, or add one at a colony, when no berth is free anywhere;
+##   6. keep MIN_SHIPYARDS shipyards (B20: 2-3 by year 15);
+##   7. steer the Core Sector directive: Research (Labs + Exchanges) while credits are short, else Industrial Core.
 ## Actions go through each Command's validate/apply but are not logged: replay re-derives them from state.
 
-const BUSY_PERMILLE := 950
+const BUSY_PERMILLE := 600  # add a freighter when more than 60% are working (B20 expects 20-40 by year 15)
 const OUTPOST_RANGE := 2  # lanes from own territory
+const MIN_SHIPYARDS := 2
+const CORE_DIRECTIVE := "core:directive/industrial_core"
+const CREDIT_DIRECTIVE := "core:directive/research"  # Research + Economy: Labs and Exchanges
+const CREDIT_NET_LOW := 5000  # milli-credits a month
+const CREDIT_CUSHION := 100000  # milli-credits kept before taking on new upkeep
 
 
 static func is_ai(state: MatchState, eid: int) -> bool:
@@ -24,10 +32,21 @@ static func is_ai(state: MatchState, eid: int) -> bool:
 static func month_tick(state: MatchState) -> void:
 	for eid: int in state.empires:
 		if is_ai(state, eid):
+			_directive(state, eid)
+			if not can_expand(state, eid):
+				continue  # new colonies, stations and ships all add upkeep (B13)
 			_colonise(state, eid)
 			_outpost(state, eid)
 			_mining(state, eid)
 			_freighters(state, eid)
+			_logistics(state, eid)
+			_shipyards(state, eid)
+
+
+## Expansion adds upkeep: only with a positive credit net, a cushion and no deficit.
+static func can_expand(state: MatchState, eid: int) -> bool:
+	var e := state.empire(eid)
+	return e.deficit_months == 0 and e.credit_net > 0 and int(e.treasury.get("core:resource/credits", 0)) >= CREDIT_CUSHION
 
 
 static func _do(state: MatchState, eid: int, type_id: StringName, payload: Dictionary) -> bool:
@@ -40,10 +59,11 @@ static func _do(state: MatchState, eid: int, type_id: StringName, payload: Dicti
 
 # --- colonies ---
 
-## Best colony target: settled-free, habitable planet in own systems or unclaimed systems near them.
+## Best colony target: settled-free, habitable planet in own systems or unclaimed systems near them
+## (within OUTPOST_RANGE lanes of any own system, or of the ship's own system).
 static func best_colony_target(state: MatchState, eid: int, from_system: int) -> int:
 	var species: SpeciesDef = state.defs.get_def(StringName(state.empire(eid).species))
-	var hops := AutoLogistics.hops_within(state, from_system, OUTPOST_RANGE, {})
+	var hops := _near_territory(state, eid, from_system)
 	var best := StateIO.NONE
 	var best_score := 0
 	var candidates: Array[int] = []
@@ -66,6 +86,26 @@ static func best_colony_target(state: MatchState, eid: int, from_system: int) ->
 			best = pid
 			best_score = score
 	return best
+
+
+## Lanes from the nearest own system (or `extra`) to every system within OUTPOST_RANGE.
+static func _near_territory(state: MatchState, eid: int, extra: int) -> Dictionary:
+	var scratch := state.scratch()
+	var key := "near:%d:%d" % [eid, extra]
+	if scratch.has(key):
+		return scratch[key]
+	var cache := {}
+	var out := {}
+	var sources: Array[int] = [extra]
+	for sys_id: int in state.galaxy.systems:
+		if state.galaxy.system(sys_id).owner == eid:
+			sources.append(sys_id)
+	for src in sources:
+		var hops := AutoLogistics.hops_within(state, src, OUTPOST_RANGE, cache)
+		for sys_id: int in hops:
+			out[sys_id] = mini(int(out.get(sys_id, Sectors.FAR)), int(hops[sys_id]))
+	scratch[key] = out
+	return out
 
 
 static func _deposit_score(p: Planet) -> int:
@@ -184,3 +224,72 @@ static func _freighters(state: MatchState, eid: int) -> void:
 			berth_checked[y.system_id] = Shipyards.free_berth(state, eid, y.system_id) != StateIO.NONE
 		if berth_checked[y.system_id] and _do(state, eid, CmdQueueShip.TYPE, {"station": y.id, "hull": "core:hull/freighter_light"}):
 			return
+
+
+# --- logistics hubs ---
+
+## When no own hub has a free berth: upgrade a logistics station (lowest tier first, then ID), or put a
+## Logistics Station T1 at the largest colony that has none. One site or upgrade at a time.
+static func _logistics(state: MatchState, eid: int) -> void:
+	var hubs: Array[Station] = []
+	for sid: int in state.stations:
+		var s: Station = state.stations.get_or(sid)
+		if s.owner != eid:
+			continue
+		var def: StationDef = state.defs.get_def(StringName(s.def_id))
+		if def.function != &"logistics":
+			continue
+		if s.build != null:
+			return  # one at a time
+		hubs.append(s)
+	for h in hubs:
+		if Shipyards.berths_used(state, h.id) < Shipyards.berths(state, h.id):
+			return  # a berth is free
+	hubs.sort_custom(func(a: Station, b: Station) -> bool:
+		var ta := (state.defs.get_def(StringName(a.def_id)) as StationDef).tier
+		var tb := (state.defs.get_def(StringName(b.def_id)) as StationDef).tier
+		return ta < tb if ta != tb else a.id < b.id)
+	for h in hubs:
+		if _do(state, eid, CmdUpgradeStation.TYPE, {"station": h.id}):
+			return
+	var best: Colony = null
+	for pid: int in state.colonies:
+		var c: Colony = state.colonies.get_or(pid)
+		if c.owner == eid and (best == null or c.total_pops() > best.total_pops()):
+			var has_hub := BuildRules.stations_at(state, pid).any(func(s: Station) -> bool:
+				return (state.defs.get_def(StringName(s.def_id)) as StationDef).function == &"logistics")
+			if not has_hub:
+				best = c
+	if best != null:
+		_do(state, eid, CmdQueueStation.TYPE, {"planet": best.id, "station": "core:station/logistics_t1"})
+
+
+# --- shipyards ---
+
+## Keeps MIN_SHIPYARDS shipyards: a Shipyard S at the most populous colony without one.
+static func _shipyards(state: MatchState, eid: int) -> void:
+	var count := 0
+	var have := {}
+	for sid: int in state.stations:
+		var s: Station = state.stations.get_or(sid)
+		if s.owner == eid and (state.defs.get_def(StringName(s.def_id)) as StationDef).function == &"shipyard":
+			count += 1
+			have[s.planet_id] = true
+	if count >= MIN_SHIPYARDS:
+		return
+	var best: Colony = null
+	for pid: int in state.colonies:
+		var c: Colony = state.colonies.get_or(pid)
+		if c.owner == eid and not have.has(pid) and (best == null or c.total_pops() > best.total_pops()):
+			best = c
+	if best != null:
+		_do(state, eid, CmdQueueStation.TYPE, {"planet": best.id, "station": "core:station/shipyard_t1"})
+
+
+# --- sector directive ---
+
+static func _directive(state: MatchState, eid: int) -> void:
+	var core := SectorLogistics.core_sector(state, eid)
+	var want := CREDIT_DIRECTIVE if state.empire(eid).credit_net < CREDIT_NET_LOW else CORE_DIRECTIVE
+	if core != null and core.directive != want:
+		_do(state, eid, CmdSetDirective.TYPE, {"sector": core.id, "directive": want})

@@ -30,6 +30,7 @@ static func month_tick(state: MatchState) -> void:
 	var r := rules(db)
 	var upkeep_due := {}  # empire id -> milli-credits
 	var reach := {}  # empire id -> {system: lanes to the nearest hub} (D9)
+	var income := {}  # empire id -> credits produced this month (milli)
 	for pid: int in state.colonies:
 		var c: Colony = state.colonies.get_or(pid)
 		var effects := Sectors.reach_effects(r, reach_of(state, reach, c.owner, state.galaxy.planet(c.id).system_id))
@@ -46,6 +47,7 @@ static func month_tick(state: MatchState) -> void:
 				else:
 					c.stockpile.take(String(res), b.upkeep[res] * MILLI)
 		upkeep_due[c.owner] = upkeep_due.get(c.owner, 0) + Colonisation.young_colony_upkeep_milli(state, c)
+		income[c.owner] = income.get(c.owner, 0) + int(c.produced.get("core:resource/credits", 0))
 		_roll_flows(c)
 	for extra: Dictionary in [StationOps.upkeep(state, reach), Shipyards.upkeep(state)]:
 		for eid: int in extra:
@@ -54,6 +56,7 @@ static func month_tick(state: MatchState) -> void:
 		var e: Empire = state.empires.get_or(eid)
 		var due: int = upkeep_due.get(eid, 0)
 		var have: int = e.treasury.get("core:resource/credits", 0)
+		e.credit_net = int(income.get(eid, 0)) - due
 		if due > have:
 			e.treasury["core:resource/credits"] = 0
 			e.deficit_months += 1
