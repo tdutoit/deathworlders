@@ -7,7 +7,7 @@ const MILLI := 1000
 
 
 static func tick(state: MatchState) -> void:
-	for id: int in state.units:
+	for id: int in state.units.ordered():
 		var u: Unit = state.units.get_or(id)
 		if not u.is_moving():
 			continue

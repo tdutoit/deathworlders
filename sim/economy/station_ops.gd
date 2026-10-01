@@ -19,7 +19,7 @@ static func cap_milli(state: MatchState, s: Station, res: String) -> int:
 
 
 static func day_tick(state: MatchState, day: int) -> void:
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var s: Station = state.stations.get_or(sid)
 		if not s.operational:
 			continue
@@ -50,7 +50,7 @@ static func mining_bonus(state: MatchState, s: Station) -> int:
 static func upkeep(state: MatchState, reach: Dictionary = {}) -> Dictionary:
 	var due := {}
 	var r := Economy.rules(state.defs)
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var s: Station = state.stations.get_or(sid)
 		if not s.operational:
 			continue

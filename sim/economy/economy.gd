@@ -18,14 +18,14 @@ static func day_tick(state: MatchState, day: int) -> void:
 	var db := state.defs
 	var order := job_order(db)
 	var orbits := {}  # planet id -> [Stockpile] of its owner's operational stations there, by station ID
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var s: Station = state.stations.get_or(sid)
 		var c := state.colony(s.planet_id)
 		if s.operational and c != null and c.owner == s.owner:
 			if not orbits.has(s.planet_id):
 				orbits[s.planet_id] = []
 			orbits[s.planet_id].append(s.stockpile)
-	for pid: int in state.colonies:
+	for pid: int in state.colonies.ordered():
 		var c: Colony = state.colonies.get_or(pid)
 		_produce(state, c, db, day, order, orbits.get(pid, []))
 		if c.retool_days > 0:
@@ -39,7 +39,7 @@ static func month_tick(state: MatchState) -> void:
 	var upkeep_due := {}  # empire id -> milli-credits
 	var reach := {}  # empire id -> {system: lanes to the nearest hub} (D9)
 	var income := {}  # empire id -> credits produced this month (milli)
-	for pid: int in state.colonies:
+	for pid: int in state.colonies.ordered():
 		var c: Colony = state.colonies.get_or(pid)
 		var effects := Sectors.reach_effects(r, reach_of(state, reach, c.owner, state.galaxy.planet(c.id).system_id))
 		_month_colony(state, c, db, r, effects[1])
@@ -60,7 +60,7 @@ static func month_tick(state: MatchState) -> void:
 	for extra: Dictionary in [StationOps.upkeep(state, reach), Shipyards.upkeep(state)]:
 		for eid: int in extra:
 			upkeep_due[eid] = upkeep_due.get(eid, 0) + extra[eid]
-	for eid: int in state.empires:
+	for eid: int in state.empires.ordered():
 		var e: Empire = state.empires.get_or(eid)
 		var due: int = upkeep_due.get(eid, 0)
 		var have: int = e.treasury.get("core:resource/credits", 0)

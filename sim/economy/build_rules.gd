@@ -104,7 +104,7 @@ static func check_upgrade(state: MatchState, empire: int, station_id: int) -> St
 ## Stations (built or building) around a body, in ID order.
 static func stations_at(state: MatchState, planet_id: int) -> Array[Station]:
 	var out: Array[Station] = []
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var s: Station = state.stations.get_or(sid)
 		if s.planet_id == planet_id:
 			out.append(s)

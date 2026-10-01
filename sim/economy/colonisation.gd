@@ -13,7 +13,7 @@ const FARM := "core:building/farm"
 static func claim_cost_milli(state: MatchState, eid: int) -> int:
 	var r := Economy.rules(state.defs)
 	var owned := 0
-	for sid: int in state.galaxy.systems:
+	for sid: int in state.galaxy.systems.ordered():
 		if state.galaxy.system(sid).owner == eid:
 			owned += 1
 	return FixedMath.floor_div(r.claim_influence_base * Stockpile.MILLI * (1000 + owned * r.claim_influence_per_system_permille), 1000)

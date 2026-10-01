@@ -35,7 +35,7 @@ static func is_ai(state: MatchState, eid: int) -> bool:
 
 
 static func month_tick(state: MatchState) -> void:
-	for eid: int in state.empires:
+	for eid: int in state.empires.ordered():
 		if is_ai(state, eid):
 			_directive(state, eid)
 			if not can_expand(state, eid):
@@ -99,10 +99,22 @@ static func best_colony_target(state: MatchState, eid: int, from_system: int) ->
 
 ## True when some own hub with berths has the system within its freight range (B8).
 static func _served(state: MatchState, eid: int, system_id: int) -> bool:
-	for h in AutoLogistics._own_holders(state, eid):
-		if Shipyards.berths(state, h) > 0 and 				int(AutoLogistics._hops_from(state, Holders.system(state, h), {}).get(system_id, Sectors.FAR)) <= AutoLogistics.hub_range(state, h):
-			return true
-	return false
+	return served_systems(state, eid).has(system_id)
+
+
+## {system: true} within freight range of one of the empire's hubs with berths (once per tick).
+static func served_systems(state: MatchState, eid: int) -> Dictionary:
+	var scratch := state.scratch()
+	var key := "served:%d" % eid
+	if not scratch.has(key):
+		var out := {}
+		var cache := {}
+		for h in AutoLogistics._own_holders(state, eid):
+			if Shipyards.berths(state, h) > 0:
+				for sys_id: int in AutoLogistics.hops_within(state, Holders.system(state, h), AutoLogistics.hub_range(state, h), cache):
+					out[sys_id] = true
+		scratch[key] = out
+	return scratch[key]
 
 
 ## Lanes from the nearest own system (or `extra`) to every system within OUTPOST_RANGE.
@@ -114,7 +126,7 @@ static func _near_territory(state: MatchState, eid: int, extra: int) -> Dictiona
 	var cache := {}
 	var out := {}
 	var sources: Array[int] = [extra]
-	for sys_id: int in state.galaxy.systems:
+	for sys_id: int in state.galaxy.systems.ordered():
 		if state.galaxy.system(sys_id).owner == eid:
 			sources.append(sys_id)
 	for src in sources:
@@ -158,7 +170,7 @@ static func _colonise(state: MatchState, eid: int) -> void:
 		return
 	var small := 0
 	var owned := 0
-	for pid: int in state.colonies:
+	for pid: int in state.colonies.ordered():
 		var c: Colony = state.colonies.get_or(pid)
 		if c.owner == eid:
 			owned += 1
@@ -168,11 +180,11 @@ static func _colonise(state: MatchState, eid: int) -> void:
 		return
 	if small >= MAX_SMALL_COLONIES:
 		return  # let the young colonies grow first (each costs upkeep and freight until its Farm)
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var y: Station = state.stations.get_or(sid)
 		if y.owner == eid and not y.ship_queue.is_empty() and y.ship_queue.any(func(q: Construction) -> bool: return q.def_id == "core:hull/colony_ship"):
 			return  # one is being built
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var y: Station = state.stations.get_or(sid)
 		if y.owner == eid and _do(state, eid, CmdQueueShip.TYPE, {"station": y.id, "hull": "core:hull/colony_ship"}):
 			return
@@ -181,7 +193,7 @@ static func _colonise(state: MatchState, eid: int) -> void:
 # --- outposts and mining ---
 
 static func _has_site(state: MatchState, eid: int, function: StringName) -> bool:
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var s: Station = state.stations.get_or(sid)
 		if s.owner == eid and not s.operational and (state.defs.get_def(StringName(s.def_id)) as StationDef).function == function:
 			return true
@@ -194,7 +206,7 @@ static func _outpost(state: MatchState, eid: int) -> void:
 	var cache := {}
 	var best := StateIO.NONE
 	var best_score := -1
-	for sys_id: int in state.galaxy.systems:
+	for sys_id: int in state.galaxy.systems.ordered():
 		var sys := state.galaxy.system(sys_id)
 		if sys.owner != StateIO.NONE:
 			continue
@@ -222,10 +234,10 @@ static func _mining(state: MatchState, eid: int) -> void:
 		return
 	var mining: Array = state.defs.defs("station").filter(func(d: StationDef) -> bool: return d.function == &"mining" and d.tier == 1)
 	var used := {}  # planet -> stations orbiting it (one pass instead of one per check)
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var pid := (state.stations.get_or(sid) as Station).planet_id
 		used[pid] = int(used.get(pid, 0)) + 1
-	for sys_id: int in state.galaxy.systems:
+	for sys_id: int in state.galaxy.systems.ordered():
 		if state.galaxy.system(sys_id).owner != eid:
 			continue
 		for pid in state.galaxy.system(sys_id).planet_ids:
@@ -246,7 +258,7 @@ static func _mining(state: MatchState, eid: int) -> void:
 static func _freighters(state: MatchState, eid: int) -> void:
 	var total := 0
 	var busy := 0
-	for uid: int in state.units:
+	for uid: int in state.units.ordered():
 		var u: Unit = state.units.get_or(uid)
 		if u.owner == eid and u.kind == "freighter" and u.home != StateIO.NONE:
 			total += 1
@@ -255,7 +267,7 @@ static func _freighters(state: MatchState, eid: int) -> void:
 	if total > 0 and busy * 1000 <= total * BUSY_PERMILLE:
 		return
 	var berth_checked := {}  # system -> a free berth exists (one berth search per system)
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var y: Station = state.stations.get_or(sid)
 		if y.owner != eid or not y.operational or (state.defs.get_def(StringName(y.def_id)) as StationDef).function != &"shipyard":
 			continue
@@ -273,7 +285,7 @@ static func _freighters(state: MatchState, eid: int) -> void:
 ## Logistics Station T1 at the largest colony that has none. One site or upgrade at a time.
 static func _logistics(state: MatchState, eid: int) -> void:
 	var hubs: Array[Station] = []
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var s: Station = state.stations.get_or(sid)
 		if s.owner != eid:
 			continue
@@ -294,7 +306,7 @@ static func _logistics(state: MatchState, eid: int) -> void:
 		if _do(state, eid, CmdUpgradeStation.TYPE, {"station": h.id}):
 			return
 	var best: Colony = null
-	for pid: int in state.colonies:
+	for pid: int in state.colonies.ordered():
 		var c: Colony = state.colonies.get_or(pid)
 		if c.owner == eid and (best == null or c.total_pops() > best.total_pops()):
 			var has_hub := BuildRules.stations_at(state, pid).any(func(s: Station) -> bool:
@@ -311,7 +323,7 @@ static func _logistics(state: MatchState, eid: int) -> void:
 static func _shipyards(state: MatchState, eid: int) -> void:
 	var count := 0
 	var have := {}
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var s: Station = state.stations.get_or(sid)
 		if s.owner == eid and (state.defs.get_def(StringName(s.def_id)) as StationDef).function == &"shipyard":
 			count += 1
@@ -319,7 +331,7 @@ static func _shipyards(state: MatchState, eid: int) -> void:
 	if count >= MIN_SHIPYARDS:
 		return
 	var best: Colony = null
-	for pid: int in state.colonies:
+	for pid: int in state.colonies.ordered():
 		var c: Colony = state.colonies.get_or(pid)
 		if c.owner == eid and not have.has(pid) and (best == null or c.total_pops() > best.total_pops()):
 			best = c

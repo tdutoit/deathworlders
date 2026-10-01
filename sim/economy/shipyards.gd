@@ -43,7 +43,7 @@ static func build_speed_permille(state: MatchState, s: Station) -> int:
 
 
 static func day_tick(state: MatchState) -> void:
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var s: Station = state.stations.get_or(sid)
 		if s.ship_queue.is_empty() or not s.operational or Builder._halted(state, s.owner):
 			continue
@@ -123,7 +123,7 @@ static func berths(state: MatchState, hub_id: int) -> int:
 
 static func berths_used(state: MatchState, hub_id: int) -> int:
 	var n := 0
-	for uid: int in state.units:
+	for uid: int in state.units.ordered():
 		if (state.units.get_or(uid) as Unit).home == hub_id:
 			n += 1
 	return n
@@ -132,7 +132,7 @@ static func berths_used(state: MatchState, hub_id: int) -> int:
 ## A hub in the system with a free berth (stations first, then colonies, by ID), or NONE.
 static func free_berth(state: MatchState, owner: int, system_id: int) -> int:
 	var candidates: Array[int] = []
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var s: Station = state.stations.get_or(sid)
 		if s.owner == owner and s.system_id == system_id:
 			candidates.append(sid)
@@ -167,7 +167,7 @@ static func check_rebase(state: MatchState, empire_id: int, unit_id: int, hub_id
 ## Monthly credits upkeep of ships per owner (milli-credits), from hull upkeep.
 static func upkeep(state: MatchState) -> Dictionary:
 	var due := {}
-	for uid: int in state.units:
+	for uid: int in state.units.ordered():
 		var u: Unit = state.units.get_or(uid)
 		var hull := state.defs.get_def(StringName(u.hull_id)) as HullDef if u.hull_id != "" else null
 		if hull == null:

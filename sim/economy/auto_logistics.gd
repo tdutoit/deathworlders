@@ -13,7 +13,7 @@ const FAR := 1 << 20
 
 
 static func day_tick(state: MatchState) -> void:
-	for eid: int in state.empires:
+	for eid: int in state.empires.ordered():
 		_assign(state, eid)
 
 
@@ -30,15 +30,15 @@ static func reserve_milli(state: MatchState, holder: int, res: String, mods_cach
 ## the sector governors. Optional keys limit the sources: "sector" (sector ID) and/or "sources" (holder IDs).
 static func demands_of(state: MatchState, eid: int) -> Array:
 	var out := []
-	for did: int in state.demands:
+	for did: int in state.demands.ordered():
 		var d: Demand = state.demands.get_or(did)
 		if d.owner == eid:
 			out.append({"holder": d.holder, "resource": d.resource, "target": d.target * Stockpile.MILLI, "priority": d.priority})
-	for pid: int in state.colonies:
+	for pid: int in state.colonies.ordered():
 		var c: Colony = state.colonies.get_or(pid)
 		if c.owner == eid and not c.queue.is_empty():
 			_build_needs(out, c.id, [c.queue[0]])
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var s: Station = state.stations.get_or(sid)
 		if s.owner != eid:
 			continue
@@ -66,7 +66,7 @@ static func _assign(state: MatchState, eid: int) -> void:
 	var in_transit := {}  # "holder:res" -> milli heading there
 	var promised := {}  # "holder:res" -> milli that auto jobs will still pick up there
 	var idle: Array[Unit] = []
-	for uid: int in state.units:
+	for uid: int in state.units.ordered():
 		var u: Unit = state.units.get_or(uid)
 		if u.owner != eid or u.kind != "freighter":
 			continue
@@ -153,10 +153,10 @@ static func _assign(state: MatchState, eid: int) -> void:
 
 static func _own_holders(state: MatchState, eid: int) -> Array[int]:
 	var out: Array[int] = []
-	for pid: int in state.colonies:
+	for pid: int in state.colonies.ordered():
 		if (state.colonies.get_or(pid) as Colony).owner == eid:
 			out.append(pid)
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var s: Station = state.stations.get_or(sid)
 		if s.owner == eid and s.operational:
 			out.append(sid)
@@ -187,14 +187,26 @@ static func _surplus(state: MatchState, holder: int, res: String, promised: Dict
 static func _sources(state: MatchState, holders: Array[int], d: Dictionary, promised: Dictionary, hops: Dictionary,
 		base: Dictionary, raided: Dictionary) -> Array[int]:
 	var dest_sys := _sys_of(state, base, d["holder"])
-	var dest_body := Holders.body(state, d["holder"])
+	var dest_body := _body_of(state, base, d["holder"])
 	var scored := []
-	var sector: Sector = state.sectors.get_or(d["sector"]) if d.has("sector") else null
+	var in_sector: Dictionary = {}  # {system: true} of the demand's sector, once per pass
+	var limited := d.has("sector")
+	if limited:
+		var sec_key := "sec:%d" % int(d["sector"])
+		if not base.has(sec_key):
+			var set := {}
+			var sector: Sector = state.sectors.get_or(d["sector"])
+			if sector != null:
+				for sys_id in sector.systems:
+					set[sys_id] = true
+			base[sec_key] = set
+		in_sector = base[sec_key]
 	var cand_key := "cand:" + String(d["resource"])  # holders with any surplus before promises, once per pass
 	if not base.has(cand_key):
 		var cand: Array[int] = []
 		for h in holders:
-			if _surplus(state, h, d["resource"], {}, base) > 0:
+			# No stock means no surplus whatever the reserve (>= 0): skip the cap lookup.
+			if Holders.stockpile(state, h).milli(d["resource"]) > 0 and _surplus(state, h, d["resource"], {}, base) > 0:
 				cand.append(h)
 		base[cand_key] = cand
 	for h: int in base[cand_key]:
@@ -203,11 +215,11 @@ static func _sources(state: MatchState, holders: Array[int], d: Dictionary, prom
 		if d.has("sources") and not h in d["sources"]:
 			continue
 		var sys := _sys_of(state, base, h)
-		if sector != null and not sys in sector.systems:
+		if limited and not in_sector.has(sys):
 			continue
 		if raided.has(sys):  # own holders only: the empire's raided set
 			continue
-		var dist := Holders.impulse_days(state, Holders.body(state, h), dest_body) if sys == dest_sys \
+		var dist := Holders.impulse_days(state, _body_of(state, base, h), dest_body) if sys == dest_sys \
 				else 1000 + int(_hops_from(state, dest_sys, hops).get(sys, FAR))
 		scored.append([dist, h])
 	scored.sort_custom(func(a: Array, b: Array) -> bool: return a[0] < b[0] or (a[0] == b[0] and a[1] < b[1]))
@@ -246,6 +258,14 @@ static func _sys_of(state: MatchState, base: Dictionary, h: int) -> int:
 	var key := "sys:%d" % h
 	if not base.has(key):
 		base[key] = Holders.system(state, h)
+	return base[key]
+
+
+## A holder's body, cached for one assignment pass in `base`.
+static func _body_of(state: MatchState, base: Dictionary, h: int) -> int:
+	var key := "body:%d" % h
+	if not base.has(key):
+		base[key] = Holders.body(state, h)
 	return base[key]
 
 

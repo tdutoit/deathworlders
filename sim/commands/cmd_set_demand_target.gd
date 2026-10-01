@@ -37,7 +37,7 @@ func apply(state: MatchState) -> void:
 
 
 static func find(state: MatchState, owner: int, holder: int, res: String) -> Demand:
-	for did: int in state.demands:
+	for did: int in state.demands.ordered():
 		var d: Demand = state.demands.get_or(did)
 		if d.owner == owner and d.holder == holder and d.resource == res:
 			return d

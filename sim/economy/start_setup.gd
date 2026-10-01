@@ -9,7 +9,7 @@ static func apply(state: MatchState, db: DefDatabase) -> void:
 	var start: StartDef = db.get_def(DEFAULT_START)
 	if start == null:
 		return
-	for eid: int in state.empires:
+	for eid: int in state.empires.ordered():
 		var e: Empire = state.empires.get_or(eid)
 		var planet := state.galaxy.planet(e.capital_planet)
 		var c := Colony.new()

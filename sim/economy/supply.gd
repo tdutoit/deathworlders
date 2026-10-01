@@ -10,27 +10,46 @@ const FUEL := "core:resource/fuel"
 
 
 static func month_tick(state: MatchState) -> void:
-	var cache := {}
-	var holders := {}  # owner -> [[holder, system, supply range], ...] (computed once)
-	for uid: int in state.units:
+	var cover := {}  # owner -> {system: [[lanes, holder, stockpile], ...] nearest first, then holder ID}
+	for uid: int in state.units.ordered():
 		var u: Unit = state.units.get_or(uid)
 		var hull := state.defs.get_def(StringName(u.hull_id)) as HullDef if u.hull_id != "" else null
 		var need: int = int(hull.upkeep.get(StringName(FUEL), 0)) * Stockpile.MILLI if hull else 0
 		if need <= 0:
 			continue
-		if not holders.has(u.owner):
-			holders[u.owner] = own_supply_points(state, u.owner)
-		var src := source_for(state, u.owner, u.system_id, need, cache, holders[u.owner])
+		if not cover.has(u.owner):
+			cover[u.owner] = _coverage(state, u.owner)
+		var src := StateIO.NONE
+		for entry: Array in cover[u.owner].get(u.system_id, []):
+			if (entry[2] as Stockpile).milli(FUEL) >= need:
+				src = entry[1]
+				break
 		u.out_of_fuel = src == StateIO.NONE
 		if not u.out_of_fuel:
 			Holders.stockpile(state, src).take(FUEL, need)
 
 
-## [[holder, system, supply range], ...] for every own holder.
+## For every system some own holder supplies: those holders, nearest by lanes then by ID (same order as
+## source_for; lanes are undirected, so a holder's range search covers exactly the systems that reach it).
+static func _coverage(state: MatchState, owner: int) -> Dictionary:
+	var out := {}
+	var cache := {}
+	for entry: Array in own_supply_points(state, owner):
+		var hops := AutoLogistics.hops_within(state, entry[1], entry[2], cache)
+		for sys_id: int in hops:
+			if not out.has(sys_id):
+				out[sys_id] = []
+			out[sys_id].append([int(hops[sys_id]), entry[0], entry[3]])
+	for sys_id: int in out:
+		out[sys_id].sort_custom(func(a: Array, b: Array) -> bool: return a[0] < b[0] or (a[0] == b[0] and a[1] < b[1]))
+	return out
+
+
+## [[holder, system, supply range, stockpile], ...] for every own holder.
 static func own_supply_points(state: MatchState, owner: int) -> Array:
 	var out := []
 	for h in AutoLogistics._own_holders(state, owner):
-		out.append([h, Holders.system(state, h), supply_range(state, h)])
+		out.append([h, Holders.system(state, h), supply_range(state, h), Holders.stockpile(state, h)])
 	return out
 
 
@@ -39,16 +58,13 @@ static func own_supply_points(state: MatchState, owner: int) -> Array:
 static func source_for(state: MatchState, owner: int, system_id: int, need: int, cache: Dictionary, points: Array = []) -> int:
 	if points.is_empty():
 		points = own_supply_points(state, owner)
-	var longest := 0
-	for entry: Array in points:
-		longest = maxi(longest, entry[2])
-	var hops := AutoLogistics.hops_within(state, system_id, longest, cache)
+	var hops := AutoLogistics._hops_from(state, system_id, cache)  # exact lane counts, cached for the match
 	var best := StateIO.NONE
 	var best_hops := Sectors.FAR
 	for entry: Array in points:
 		var h: int = entry[0]
 		var dist := int(hops.get(entry[1], Sectors.FAR))
-		if dist > entry[2] or Holders.stockpile(state, h).milli(FUEL) < need:
+		if dist > entry[2] or (entry[3] as Stockpile).milli(FUEL) < need:
 			continue
 		if dist < best_hops or (dist == best_hops and h < best):
 			best = h

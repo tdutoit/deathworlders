@@ -14,7 +14,7 @@ static func demands(state: MatchState, eid: int) -> Array:
 	var out := []
 	var r := Economy.rules(state.defs)
 	var core := core_sector(state, eid)
-	for sid: int in state.sectors:
+	for sid: int in state.sectors.ordered():
 		var sec: Sector = state.sectors.get_or(sid)
 		if sec.owner != eid:
 			continue
@@ -26,7 +26,7 @@ static func demands(state: MatchState, eid: int) -> Array:
 
 
 static func core_sector(state: MatchState, eid: int) -> Sector:
-	for sid: int in state.sectors:
+	for sid: int in state.sectors.ordered():
 		var sec: Sector = state.sectors.get_or(sid)
 		if sec.owner == eid and sec.core:
 			return sec
@@ -34,7 +34,7 @@ static func core_sector(state: MatchState, eid: int) -> Sector:
 
 
 static func _colony_needs(state: MatchState, sec: Sector, r: EconomyRulesDef, out: Array) -> void:
-	for pid: int in state.colonies:
+	for pid: int in state.colonies.ordered():
 		var c: Colony = state.colonies.get_or(pid)
 		if c.owner != sec.owner or c.autonomy == "manual" or not state.galaxy.planet(pid).system_id in sec.systems:
 			continue
@@ -53,7 +53,7 @@ static func _colony_needs(state: MatchState, sec: Sector, r: EconomyRulesDef, ou
 
 static func _hub_collection(state: MatchState, sec: Sector, r: EconomyRulesDef, out: Array) -> void:
 	var made := {}  # resource -> station IDs producing it in the sector
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var s: Station = state.stations.get_or(sid)
 		if s.owner != sec.owner or not s.operational or not s.system_id in sec.systems or s.id == sec.hub:
 			continue

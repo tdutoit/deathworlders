@@ -73,6 +73,12 @@ func keys() -> Array:
 	return _keys().duplicate()
 
 
+## The sorted keys themselves, no copy: `for key in map.ordered()` walks a plain Array (the `for key in map`
+## custom iterator costs three script calls per element). Read-only for the caller; same no-add/erase rule.
+func ordered() -> Array:
+	return _keys()
+
+
 ## Values in sorted key order.
 func values() -> Array:
 	var out := []

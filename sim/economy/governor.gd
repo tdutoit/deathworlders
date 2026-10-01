@@ -10,7 +10,7 @@ const LOGISTICS := "core:focus/logistics"
 
 static func month_tick(state: MatchState) -> void:
 	var caches := {"hops": {}, "reach": {}}
-	for pid: int in state.colonies:
+	for pid: int in state.colonies.ordered():
 		var c: Colony = state.colonies.get_or(pid)
 		update_stage(state, c, caches)
 		if c.autonomy == "manual":
@@ -24,11 +24,12 @@ static func month_tick(state: MatchState) -> void:
 			c.primary_focus = pair[0]
 			c.secondary_focus = pair[1]
 			Economy.assign_jobs(c, state.defs)
-		var next := next_building(state, c)
 		if c.autonomy == "assisted":
-			c.suggestion = next
-		elif next != "" and c.queue.is_empty():
-			Builder.queue_building(state, c, next)
+			c.suggestion = next_building(state, c)
+		elif c.queue.is_empty():  # only then is the next item needed (each check resolves slots and modifiers)
+			var next := next_building(state, c)
+			if next != "":
+				Builder.queue_building(state, c, next)
 
 
 ## D2 stages. Promotion needs pops, age and (for Core) stability and a nearby hub; a planet falls back a stage
@@ -51,7 +52,7 @@ static func update_stage(state: MatchState, c: Colony, caches: Dictionary = {"ho
 static func _hub_lanes(state: MatchState, c: Colony, cache: Dictionary) -> int:
 	var sys := state.galaxy.planet(c.id).system_id
 	var best := Sectors.FAR
-	for sid: int in state.sectors:
+	for sid: int in state.sectors.ordered():
 		var sec: Sector = state.sectors.get_or(sid)
 		if sec.owner == c.owner:
 			best = mini(best, int(AutoLogistics._hops_from(state, Holders.system(state, sec.hub), cache).get(sys, Sectors.FAR)))
@@ -100,11 +101,16 @@ static func _fits(state: MatchState, c: Colony, focus: String) -> bool:
 static func template_for(state: MatchState, c: Colony) -> TemplateDef:
 	if c.pinned_template != "":
 		return state.defs.get_def(StringName(c.pinned_template))
-	for def in state.defs.defs("template"):
-		var t: TemplateDef = def
-		if String(t.primary) == c.primary_focus and String(t.secondary) == c.secondary_focus:
-			return t
-	return null
+	var scratch := state.scratch()
+	if not scratch.has("templates"):  # "primary|secondary" -> TemplateDef, built once per tick
+		var by_pair := {}
+		for def in state.defs.defs("template"):
+			var t: TemplateDef = def
+			var key := String(t.primary) + "|" + String(t.secondary)
+			if not by_pair.has(key):  # first in Def order wins, as the old scan did
+				by_pair[key] = t
+		scratch["templates"] = by_pair
+	return scratch["templates"].get(c.primary_focus + "|" + c.secondary_focus)
 
 
 ## The first template entry not yet built or queued (counting repeats) that the planet can hold, or "".
@@ -117,11 +123,22 @@ static func next_building(state: MatchState, c: Colony) -> String:
 		have[b] = have.get(b, 0) + 1
 	for q in c.queue:
 		have[q.def_id] = have.get(q.def_id, 0) + 1
+	# Slot use once per colony: an entry needing a slot when none is free fails BuildRules.check_building's
+	# slot rule anyway, so it is skipped without the full check (each one resolves the planet's modifiers).
+	var db := state.defs
+	var used := 0
+	for b: String in have:
+		if (db.get_def(StringName(b)) as BuildingDef).uses_slot:
+			used += int(have[b])
+	var slots_full := used >= Economy.slots(c, state.galaxy.planet(c.id), db)
 	var wanted := {}
 	for entry in t.build_order:
 		var b := String(entry)
 		wanted[b] = wanted.get(b, 0) + 1
 		if have.get(b, 0) >= wanted[b]:
+			continue
+		var def := db.get_def(StringName(b)) as BuildingDef
+		if slots_full and def != null and def.uses_slot:
 			continue
 		if BuildRules.check_building(state, c.owner, c.id, b) == "":
 			return b

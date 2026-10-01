@@ -28,7 +28,7 @@ static func own_route(state: MatchState, empire_id: int, route_id: int) -> Route
 ## Freighters assigned to a route, in ID order.
 static func freighters_on(state: MatchState, route_id: int) -> Array[Unit]:
 	var out: Array[Unit] = []
-	for uid: int in state.units:
+	for uid: int in state.units.ordered():
 		var u: Unit = state.units.get_or(uid)
 		if u.route == route_id:
 			out.append(u)

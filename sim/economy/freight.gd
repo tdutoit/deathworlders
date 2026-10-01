@@ -10,7 +10,7 @@ const DAY := Calendar.HOURS_PER_DAY
 
 
 static func tick(state: MatchState) -> void:
-	for uid: int in state.units:
+	for uid: int in state.units.ordered():
 		var u: Unit = state.units.get_or(uid)
 		if u.kind != "freighter":
 			continue
@@ -77,29 +77,48 @@ static func blocked(state: MatchState, eid: int, from_system: int, to_system: in
 		return false  # the common case: no pathfinding
 	if raided.has(to_system):
 		return true
-	return not _safe_reach(state, eid, from_system, raided).has(to_system)
+	var comp := _safe_regions(state, eid, raided)
+	var target: int = comp[to_system]
+	if not raided.has(from_system):
+		return comp[from_system] != target
+	for lid in state.galaxy.system(from_system).lane_ids:  # leaving a raided system: any clean neighbour will do
+		var nxt := state.galaxy.lane(lid).other_end(from_system)
+		if not raided.has(nxt) and comp[nxt] == target:
+			return false
+	return true
 
 
-## Systems reachable from `from_system` without passing through a raided one (searched once per empire and
-## start system per tick; same answer as Pathfinder.route(..., raided) being non-empty for a target that is
-## not raided itself).
-static func _safe_reach(state: MatchState, eid: int, from_system: int, raided: Dictionary) -> Dictionary:
-	var scratch := state.scratch()
-	var key := "safe:%d:%d" % [eid, from_system]
-	if not scratch.has(key):
-		var seen := {from_system: true}
-		var queue: Array[int] = [from_system]
-		while not queue.is_empty():
-			var at: int = queue.pop_back()
-			for lid in state.galaxy.system(at).lane_ids:
-				var nxt := state.galaxy.lane(lid).other_end(at)
-				if seen.has(nxt):
-					continue
-				seen[nxt] = true
-				if not raided.has(nxt):
-					queue.append(nxt)  # a raided system can be the goal, never a waypoint
-		scratch[key] = seen
-	return scratch[key]
+## system -> region number: systems joined by lanes without passing through a raided system (raided systems
+## get -1). Labelled once per empire per tick; a target that is not raided is reachable exactly when it is in
+## the start's region (same answer as Pathfinder.route(..., raided) being non-empty). Kept until the
+## empire's raided set changes (lanes never do).
+static func _safe_regions(state: MatchState, eid: int, raided: Dictionary) -> Dictionary:
+	var cached: Array = state.region_cache.get(eid, [])
+	if cached.is_empty() or cached[0] != raided:
+		var comp := {}
+		var next_label := 0
+		for sys_id: int in state.galaxy.systems.ordered():
+			if comp.has(sys_id):
+				continue
+			if raided.has(sys_id):
+				comp[sys_id] = -1
+				continue
+			comp[sys_id] = next_label
+			var stack: Array[int] = [sys_id]
+			while not stack.is_empty():
+				var at: int = stack.pop_back()
+				for lid in state.galaxy.system(at).lane_ids:
+					var nxt := state.galaxy.lane(lid).other_end(at)
+					if comp.has(nxt) or raided.has(nxt):
+						continue
+					comp[nxt] = next_label
+					stack.append(nxt)
+			next_label += 1
+		for sys_id: int in raided:
+			comp[sys_id] = -1
+		cached = [raided.duplicate(), comp]
+		state.region_cache[eid] = cached
+	return cached[1]
 
 
 ## Moves the freighter toward a holder. Returns true once it is at the holder's body.

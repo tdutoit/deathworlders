@@ -33,6 +33,9 @@ var _scratch_tick := -1
 ## Runtime only: system -> {system: lanes} (AutoLogistics._hops_from). Lanes never change after generation,
 ## so it lives as long as this state object; never saved or hashed.
 var hop_cache := {}
+## Runtime only: empire id -> [raided set, {system: region}] (Freight._safe_regions). Recomputed only when
+## that empire's raided set changes; never saved or hashed.
+var region_cache := {}
 
 
 ## Forget the cache. Sim.execute and Sim.advance call this first, so data cached by views or tools between

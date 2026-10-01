@@ -31,7 +31,7 @@ static func security(state: MatchState, system_id: int, reach: Dictionary = {}, 
 ## {system: security from operational stations owned by the owner of that system}.
 static func station_security_map(state: MatchState) -> Dictionary:
 	var out := {}
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var st: Station = state.stations.get_or(sid)
 		if st.operational and st.owner == state.galaxy.system(st.system_id).owner:
 			var v := (state.defs.get_def(StringName(st.def_id)) as StationDef).security
@@ -46,7 +46,7 @@ static func raided_systems(state: MatchState, eid: int) -> Dictionary:
 	var key := "raided:%d" % eid
 	if not scratch.has(key):
 		var out := {}
-		for uid: int in state.units:
+		for uid: int in state.units.ordered():
 			var u: Unit = state.units.get_or(uid)
 			if u.kind == "raider" and u.target_owner == eid:
 				out[u.system_id] = true
@@ -58,7 +58,7 @@ static func raided_systems(state: MatchState, eid: int) -> Dictionary:
 
 static func raiders_hunting(state: MatchState, eid: int) -> int:
 	var n := 0
-	for uid: int in state.units:
+	for uid: int in state.units.ordered():
 		var u: Unit = state.units.get_or(uid)
 		if u.kind == "raider" and u.target_owner == eid:
 			n += 1
@@ -69,6 +69,7 @@ static func month_tick(state: MatchState) -> void:
 	var r := Economy.rules(state.defs)
 	var rng := state.rng(DetRng.EVENTS)
 	var reach := {}
+	var traffic := {}  # empire id -> {system: freighters there or passing through}, built on first use
 	# Raiders: leave, found a base, or move toward freight traffic.
 	for uid: int in state.units.keys():
 		var u: Unit = state.units.get_or(uid)
@@ -83,7 +84,7 @@ static func month_tick(state: MatchState) -> void:
 			state.pirate_bases[u.system_id] = r.pirate_base_spawn_months
 			u.months_left = 0  # guards its base from now on
 		elif not u.is_moving():
-			_hunt(state, u, reach)
+			_hunt(state, u, reach, traffic)
 	# Bases send out raiders.
 	for sys_id: int in IdMap.sort_keys(state.pirate_bases.keys()):
 		state.pirate_bases[sys_id] -= 1
@@ -94,9 +95,9 @@ static func month_tick(state: MatchState) -> void:
 				spawn_raider(state, sys_id, owner)
 	# Frontier systems roll (D9).
 	var stations := station_security_map(state)
-	for eid: int in state.empires:
+	for eid: int in state.empires.ordered():
 		var hunting := raiders_hunting(state, eid)
-		for sys_id: int in state.galaxy.systems:
+		for sys_id: int in state.galaxy.systems.ordered():
 			if hunting >= r.max_raiders_per_empire:
 				break
 			if state.galaxy.system(sys_id).owner != eid or Economy.reach_of(state, reach, eid, sys_id) < r.pirate_min_reach:
@@ -121,15 +122,18 @@ static func spawn_raider(state: MatchState, system_id: int, target: int) -> Unit
 
 
 ## Move one lane toward the frontier neighbour with the most of the target's freighters (in it or passing).
-static func _hunt(state: MatchState, u: Unit, reach: Dictionary) -> void:
+static func _hunt(state: MatchState, u: Unit, reach: Dictionary, traffic: Dictionary = {}) -> void:
 	var r := Economy.rules(state.defs)
+	if not traffic.has(u.target_owner):
+		traffic[u.target_owner] = _traffic_map(state, u.target_owner)
+	var by_system: Dictionary = traffic[u.target_owner]
 	var best := u.system_id
-	var best_traffic := _traffic(state, u.target_owner, u.system_id)
+	var best_traffic := int(by_system.get(u.system_id, 0))
 	for lid in state.galaxy.system(u.system_id).lane_ids:
 		var nxt := state.galaxy.lane(lid).other_end(u.system_id)
 		if Economy.reach_of(state, reach, u.target_owner, nxt) < r.pirate_min_reach:
 			continue  # raiders stay on the frontier
-		var t := _traffic(state, u.target_owner, nxt)
+		var t := int(by_system.get(nxt, 0))
 		if t > best_traffic or (t == best_traffic and best != u.system_id and nxt < best):
 			best = nxt
 			best_traffic = t
@@ -138,19 +142,26 @@ static func _hunt(state: MatchState, u: Unit, reach: Dictionary) -> void:
 		u.progress = 0
 
 
-static func _traffic(state: MatchState, eid: int, system_id: int) -> int:
-	var n := 0
-	for uid: int in state.units:
+## {system: number of the empire's freighters in it or with it on their path} (each freighter counts once
+## per system).
+static func _traffic_map(state: MatchState, eid: int) -> Dictionary:
+	var out := {}
+	for uid: int in state.units.ordered():
 		var f: Unit = state.units.get_or(uid)
-		if f.owner == eid and f.kind == "freighter" and (f.system_id == system_id or system_id in f.path):
-			n += 1
-	return n
+		if f.owner != eid or f.kind != "freighter":
+			continue
+		var seen := {f.system_id: true}
+		for sys_id in f.path:
+			seen[sys_id] = true
+		for sys_id: int in seen:
+			out[sys_id] = int(out.get(sys_id, 0)) + 1
+	return out
 
 
 ## Hourly: passage rolls for freighters sharing a system with a raider hunting their owner (B9).
 static func tick(state: MatchState) -> void:
 	var hunted := {}  # "system:owner" -> true
-	for uid: int in state.units:
+	for uid: int in state.units.ordered():
 		var u: Unit = state.units.get_or(uid)
 		if u.kind == "raider" and not u.is_moving():
 			hunted["%d:%d" % [u.system_id, u.target_owner]] = true

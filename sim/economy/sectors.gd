@@ -11,7 +11,7 @@ static func check_hub(state: MatchState, eid: int, hub: int) -> String:
 	var r := Economy.rules(state.defs)
 	if Holders.owner(state, hub) != eid:
 		return "hub %d is not yours" % hub
-	for sid: int in state.sectors:
+	for sid: int in state.sectors.ordered():
 		if (state.sectors.get_or(sid) as Sector).hub == hub:
 			return "already a sector hub"
 	if count(state, eid) >= r.sector_cap:
@@ -29,7 +29,7 @@ static func check_hub(state: MatchState, eid: int, hub: int) -> String:
 
 static func count(state: MatchState, eid: int) -> int:
 	var n := 0
-	for sid: int in state.sectors:
+	for sid: int in state.sectors.ordered():
 		if (state.sectors.get_or(sid) as Sector).owner == eid:
 			n += 1
 	return n
@@ -57,17 +57,17 @@ static func range_of(state: MatchState, sec: Sector) -> int:
 static func update_membership(state: MatchState) -> void:
 	var cache := {}
 	var ranges := {}
-	for sid: int in state.sectors:
+	for sid: int in state.sectors.ordered():
 		var sec: Sector = state.sectors.get_or(sid)
 		sec.systems.clear()
 		ranges[sid] = range_of(state, sec)
-	for sys_id: int in state.galaxy.systems:
+	for sys_id: int in state.galaxy.systems.ordered():
 		var owner := state.galaxy.system(sys_id).owner
 		if owner == StateIO.NONE:
 			continue
 		var best: Sector = null
 		var best_hops := FAR
-		for sid: int in state.sectors:
+		for sid: int in state.sectors.ordered():
 			var sec: Sector = state.sectors.get_or(sid)
 			if sec.owner != owner:
 				continue
@@ -80,7 +80,7 @@ static func update_membership(state: MatchState) -> void:
 
 
 static func sector_of(state: MatchState, eid: int, system_id: int) -> Sector:
-	for sid: int in state.sectors:
+	for sid: int in state.sectors.ordered():
 		var sec: Sector = state.sectors.get_or(sid)
 		if sec.owner == eid and system_id in sec.systems:
 			return sec
@@ -97,7 +97,7 @@ static func reach_map(state: MatchState, eid: int) -> Dictionary:
 	var cache := {}
 	var out := {}
 	var hubs: Array[int] = []
-	for sid: int in state.sectors:
+	for sid: int in state.sectors.ordered():
 		var sec: Sector = state.sectors.get_or(sid)
 		if sec.owner == eid:
 			hubs.append(Holders.system(state, sec.hub))

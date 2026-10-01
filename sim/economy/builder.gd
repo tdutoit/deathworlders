@@ -6,7 +6,7 @@ extends RefCounted
 
 
 static func day_tick(state: MatchState) -> void:
-	for pid: int in state.colonies:
+	for pid: int in state.colonies.ordered():
 		var c: Colony = state.colonies.get_or(pid)
 		if c.queue.is_empty() or _halted(state, c.owner):
 			continue
@@ -14,7 +14,7 @@ static func day_tick(state: MatchState) -> void:
 			c.buildings.append(c.queue[0].def_id)
 			c.queue.remove_at(0)
 			Economy.assign_jobs(c, state.defs)
-	for sid: int in state.stations:
+	for sid: int in state.stations.ordered():
 		var s: Station = state.stations.get_or(sid)
 		if s.build == null or _halted(state, s.owner):
 			continue
