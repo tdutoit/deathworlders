@@ -29,9 +29,11 @@ static func month_tick(state: MatchState) -> void:
 	var db := state.defs
 	var r := rules(db)
 	var upkeep_due := {}  # empire id -> milli-credits
+	var reach := {}  # empire id -> {system: lanes to the nearest hub} (D9)
 	for pid: int in state.colonies:
 		var c: Colony = state.colonies.get_or(pid)
-		_month_colony(state, c, db, r)
+		var effects := Sectors.reach_effects(r, reach_of(state, reach, c.owner, state.galaxy.planet(c.id).system_id))
+		_month_colony(state, c, db, r, effects[1])
 		var e := state.empire(c.owner)
 		var taxes := c.total_pops() * r.tax_per_pop_milli
 		_credit(e, "core:resource/credits", taxes)
@@ -40,11 +42,11 @@ static func month_tick(state: MatchState) -> void:
 			var b: BuildingDef = db.get_def(StringName(c.buildings[i]))
 			for res: StringName in IdMap.sort_keys(b.upkeep.keys()):
 				if _is_global(db, String(res)):
-					upkeep_due[c.owner] = upkeep_due.get(c.owner, 0) + b.upkeep[res] * MILLI
+					upkeep_due[c.owner] = upkeep_due.get(c.owner, 0) + FixedMath.mul_permille(b.upkeep[res] * MILLI, 1000 + effects[0])
 				else:
 					c.stockpile.take(String(res), b.upkeep[res] * MILLI)
 		_roll_flows(c)
-	for extra: Dictionary in [StationOps.upkeep(state), Shipyards.upkeep(state)]:
+	for extra: Dictionary in [StationOps.upkeep(state, reach), Shipyards.upkeep(state)]:
 		for eid: int in extra:
 			upkeep_due[eid] = upkeep_due.get(eid, 0) + extra[eid]
 	for eid: int in state.empires:
@@ -57,6 +59,13 @@ static func month_tick(state: MatchState) -> void:
 		else:
 			e.treasury["core:resource/credits"] = have - due
 			e.deficit_months = 0
+
+
+## Lanes from a system to the empire's nearest sector hub, computed once per empire per call (D9).
+static func reach_of(state: MatchState, cache: Dictionary, eid: int, system_id: int) -> int:
+	if not cache.has(eid):
+		cache[eid] = Sectors.reach_map(state, eid)
+	return int(cache[eid].get(system_id, Sectors.FAR))
 
 
 # --- production ---
@@ -234,7 +243,7 @@ static func assign_jobs(c: Colony, db: DefDatabase) -> void:
 
 # --- month ---
 
-static func _month_colony(state: MatchState, c: Colony, db: DefDatabase, r: EconomyRulesDef) -> void:
+static func _month_colony(state: MatchState, c: Colony, db: DefDatabase, r: EconomyRulesDef, reach_stability: int = 0) -> void:
 	var planet := state.galaxy.planet(c.id)
 	var food := "core:resource/food"
 	var surplus: bool = not c.starving and c.produced.get(food, 0) > c.consumed.get(food, 0)
@@ -264,6 +273,7 @@ static func _month_colony(state: MatchState, c: Colony, db: DefDatabase, r: Econ
 		stab += r.stability_retooling
 	stab += r.stability_unemployed_each * c.unemployed()
 	stab += r.stability_deficit_each_month * state.empire(c.owner).deficit_months
+	stab += reach_stability
 	for job: String in IdMap.sort_keys(c.jobs.keys()):
 		stab += (db.get_def(StringName(job)) as JobDef).stability * int(c.jobs[job])
 	c.stability = clampi(stab, 0, 100)

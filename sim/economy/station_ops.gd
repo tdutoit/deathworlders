@@ -47,8 +47,9 @@ static func mining_bonus(state: MatchState, s: Station) -> int:
 
 
 ## Monthly credits upkeep of every operational station, per owner (milli-credits).
-static func upkeep(state: MatchState) -> Dictionary:
+static func upkeep(state: MatchState, reach: Dictionary = {}) -> Dictionary:
 	var due := {}
+	var r := Economy.rules(state.defs)
 	for sid: int in state.stations:
 		var s: Station = state.stations.get_or(sid)
 		if not s.operational:
@@ -56,5 +57,6 @@ static func upkeep(state: MatchState) -> Dictionary:
 		var def: StationDef = state.defs.get_def(StringName(s.def_id))
 		for res: StringName in def.upkeep:
 			if res == &"core:resource/credits":
-				due[s.owner] = due.get(s.owner, 0) + int(def.upkeep[res]) * Stockpile.MILLI
+				var band := Sectors.reach_effects(r, Economy.reach_of(state, reach, s.owner, s.system_id))
+				due[s.owner] = due.get(s.owner, 0) + FixedMath.mul_permille(int(def.upkeep[res]) * Stockpile.MILLI, 1000 + band[0])
 	return due

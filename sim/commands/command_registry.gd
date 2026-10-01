@@ -20,6 +20,11 @@ static var _types := {  # class refs are not constant expressions
 	CmdAssignFreighter.TYPE: CmdAssignFreighter,
 	CmdSetDemandTarget.TYPE: CmdSetDemandTarget,
 	CmdSetReserve.TYPE: CmdSetReserve,
+	CmdCreateSector.TYPE: CmdCreateSector,
+	CmdSetDirective.TYPE: CmdSetDirective,
+	CmdSetAutonomy.TYPE: CmdSetAutonomy,
+	CmdPinTemplate.TYPE: CmdPinTemplate,
+	CmdApproveSuggestion.TYPE: CmdApproveSuggestion,
 }
 
 

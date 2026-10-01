@@ -45,6 +45,15 @@ into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.m
   in-system impulse days, otherwise 1000 + lanes; freighter distance: lanes x 100 + impulse days. The default
   reserve (200 permille of cap) and the colony-hub range (3 lanes; B8 only gives station tiers) are
   `economy_rules` data. B20's "half the freighters -> ~70% efficiency" is checked by the WP13 harness.
+- 2026-10-01 (WP7a): the capital anchors the Core Sector at match start (range 3 lanes). Other hubs: a
+  Logistics Station with `sector_range` (T2 3, T3 5) or a colony with Logistics as Primary (3). Sector cap 2
+  (D3's starting value; no techs in M2). Membership and reach are recomputed monthly; reach bands (D9) add
+  upkeep to buildings and stations and lower stability. Stage promotion needs age (5 years) only once:
+  Developed/Core planets drop back only on pops or stability. Earth starts Core but drops to Developed
+  until its stability reaches 60 (B19's opening sits at 55). Governor actions run inside the sim through the
+  same functions the commands use. Balanced directive's best fit is a placeholder: ore/RE deposits ->
+  Mining/Industrial, habitability >= 800 -> Farming/Research, else Research/Economy. All D2/D3/D9 numbers
+  are `economy_rules` data.
 
 ---
 
