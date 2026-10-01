@@ -68,6 +68,11 @@
   files go to `user://determinism/` for cross-machine diffs. Full run (20 seeds x 4 sizes x 60 months)
   takes ~45 min, so the GUT suite runs one short case. Pathfinder switched to a binary heap (tie-break by
   system ID) after the harness exposed O(V^2 log V) routing.
+- 2026-10-01 (WP12): core `hull` category (`HullDef` + `SlotDef`, C5 subset) with
+  `core:hull/human_corvette_mk1` (A2 stats, B10 cost) using the starter's skill-built .glb. The content
+  validator reads hardpoint names from the .glb's JSON chunk (`io/glb_reader.gd`). Model paths resolve
+  mod-relative first, then res://. M1 stub: every scout shows this hull's model in the Solar view (LOD0,
+  FACTION surface tinted with the empire colour at half saturation).
 - 2026-10-01 (WP3): game version lives in `application/config/version` (0.1.0); core has a `mod.json` like any mod.
 
 ---

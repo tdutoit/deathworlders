@@ -9,6 +9,9 @@ const STAR_SIZE := 6.0
 const BODY_SIZE := {"tiny": 1.4, "small": 2.0, "medium": 2.8, "large": 3.6, "huge": 5.4}
 const PICK_PX := 26.0
 const BEARING_LABELS := {0: "000", 90: "090", 180: "180", 270: "270"}
+const SCOUT_HULL := &"core:hull/human_corvette_mk1"  # M1 stub: every scout shows this hull's model
+const MODEL_SCALE := 3.5
+const FACTION_SATURATION := 0.5  # F21: empire colour at low saturation on the FACTION surface
 
 var state: MatchState
 var system_id := 0
@@ -145,18 +148,43 @@ func _build_units() -> void:
 	for uid: int in state.units:
 		if (state.units.get_or(uid) as Unit).system_id == system_id:
 			here.append(uid)
-	var mesh := DrawUtil.chevron_mesh()
-	var mat := DrawUtil.ink_material(UiTokens.color("ink_1"))
 	for i in here.size():
-		var a := deg_to_rad(200.0 + i * 12.0)
+		var a := deg_to_rad(115.0 + i * 10.0)  # near rim, toward the viewer
 		var pos := Vector3(cos(a), 0, sin(a)) * _scope_radius * 0.92
-		var mi := MeshInstance3D.new()
-		mi.mesh = mesh
-		mi.material_override = mat
-		mi.scale = Vector3.ONE * 3.0
-		mi.position = pos
-		add_child(mi)
+		var node := _unit_node(state.units.get_or(here[i]))
+		node.name = "Unit%d" % here[i]
+		node.transform = Transform3D(Basis.looking_at(-pos.normalized()), pos)  # nose toward the star
+		add_child(node)
 		_units[here[i]] = pos
+
+
+## The hull model (WP12) with the FACTION surface tinted in the owner's colour, or a chevron.
+func _unit_node(u: Unit) -> Node3D:
+	var hull: HullDef = Database.defs.get_def(SCOUT_HULL) if Database.defs else null
+	var scene: PackedScene = null
+	if hull != null and hull.model != "":
+		var path := ContentLoader.resolve_model_path(hull.model, Database.manifests.get(String(hull.source_mod)))
+		scene = load(path) as PackedScene if ResourceLoader.exists(path) else null
+	if scene == null:
+		var mi := MeshInstance3D.new()
+		mi.mesh = DrawUtil.chevron_mesh()
+		mi.material_override = DrawUtil.ink_material(UiTokens.color("ink_1"))
+		mi.scale = Vector3.ONE * 3.0
+		return mi
+	var model := scene.instantiate() as Node3D
+	model.scale = Vector3.ONE * MODEL_SCALE
+	var owner: Empire = state.empires.get_or(u.owner)
+	var tint := Color.html(owner.color) if owner else UiTokens.color("ink_2")
+	tint = Color.from_hsv(tint.h, tint.s * FACTION_SATURATION, tint.v)
+	for mi: MeshInstance3D in model.find_children("*", "MeshInstance3D", true, false):
+		mi.visible = mi.name.ends_with("_LOD0")
+		for s in mi.mesh.get_surface_count():
+			var mat := mi.mesh.surface_get_material(s)
+			if mat != null and mat.resource_name == "FACTION" and mat is BaseMaterial3D:
+				var faction := (mat as BaseMaterial3D).duplicate() as BaseMaterial3D
+				faction.albedo_color = tint
+				mi.set_surface_override_material(s, faction)
+	return model
 
 
 func _build_overlay() -> void:

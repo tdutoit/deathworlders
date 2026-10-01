@@ -268,8 +268,35 @@ func _validate() -> void:
 			declared[key] = id
 	for id: String in db.all_ids():
 		var def := db.get_def(StringName(id))
-		for e in DefFactory.check(def, db, declared):
+		var errors := DefFactory.check(def, db, declared)
+		if def is HullDef:
+			errors.append_array(_check_hull_model(def))
+		for e in errors:
 			report.error(String(def.source_mod), def.source_file, "%s: %s" % [id, e])
+
+
+## C6 hull/model check: every slot hardpoint must be a node in the hull's .glb.
+func _check_hull_model(hull: HullDef) -> Array[String]:
+	var errors: Array[String] = []
+	if hull.model == "":
+		return errors
+	var path := resolve_model_path(hull.model, manifests.get(String(hull.source_mod)))
+	var names := GlbReader.node_names(path, errors)
+	if not errors.is_empty():
+		return errors
+	for s in hull.slots:
+		if not String(s.hardpoint) in names:
+			errors.append("hardpoint '%s' is not in %s" % [s.hardpoint, path])
+	return errors
+
+
+## Model paths are res:// paths, or relative to the mod folder, else to res:// (core's assets/).
+static func resolve_model_path(model: String, manifest: ModManifest) -> String:
+	if model.begins_with("res://") or model.begins_with("user://"):
+		return model
+	if manifest != null and FileAccess.file_exists(manifest.dir.path_join(model)):
+		return manifest.dir.path_join(model)
+	return "res://" + model
 
 
 static func _def_files(dir: String) -> Array[String]:

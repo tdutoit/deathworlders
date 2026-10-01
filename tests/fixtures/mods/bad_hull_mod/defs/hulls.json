@@ -1,0 +1,50 @@
+[
+  {
+    "category": "hull",
+    "species": "core:species/human",
+    "hull_class": "corvette",
+    "hull": 300,
+    "model": "assets/models/ships/human_corvette_mk1.glb",
+    "id": "no_such_hardpoint",
+    "name_key": "HULL_X1",
+    "slots": [
+      {
+        "slot_type": "weapon",
+        "slot_size": "M",
+        "hardpoint": "HP_W_M_01"
+      }
+    ]
+  },
+  {
+    "category": "hull",
+    "species": "core:species/human",
+    "hull_class": "corvette",
+    "hull": 300,
+    "model": "assets/models/ships/human_corvette_mk1.glb",
+    "id": "wrong_letters",
+    "name_key": "HULL_X2",
+    "slots": [
+      {
+        "slot_type": "weapon",
+        "slot_size": "S",
+        "hardpoint": "HP_D_S_01"
+      }
+    ]
+  },
+  {
+    "category": "hull",
+    "species": "core:species/human",
+    "hull_class": "corvette",
+    "hull": 300,
+    "model": "models/nothing_here.glb",
+    "id": "missing_model",
+    "name_key": "HULL_X3",
+    "slots": [
+      {
+        "slot_type": "weapon",
+        "slot_size": "S",
+        "hardpoint": "HP_W_S_01"
+      }
+    ]
+  }
+]

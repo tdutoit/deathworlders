@@ -5,7 +5,8 @@ extends Resource
 ## Each subclass declares its category and a field schema. The schema drives JSON conversion,
 ## patch ops, reference checks and content hashing, so a new Def type only needs fields + schema.
 ## Field types: int, bool, string, name (free StringName), enum, color ("#rrggbb"), id (reference),
-## id_list, name_list, string_list (plain Strings), int_map (Dictionary of StringName -> int), modifiers.
+## id_list, name_list, string_list (plain Strings), int_map (Dictionary of StringName -> int), modifiers,
+## slots (hull SlotDefs).
 ## Options: required, min, max, ref (category for id/id_list), key_ref (category for int_map keys),
 ## keys (allowed int_map keys), values (allowed enum values).
 
@@ -54,10 +55,10 @@ func to_dict() -> Dictionary:
 	var s := full_schema()
 	for field: String in s:
 		var value: Variant = get(field)
-		if s[field]["type"] == "modifiers":
-			var mods := []
-			for m: ModifierDef in value:
-				mods.append(m.to_dict())
-			value = mods
+		if s[field]["type"] in ["modifiers", "slots"]:
+			var items := []
+			for item: Resource in value:
+				items.append(item.to_dict())
+			value = items
 		out[field] = value
 	return out

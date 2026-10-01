@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_5qyyw"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_4vio1"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_7f4r2"]
+
+[sub_resource type="Resource" id="Resource_hrftt"]
+script = ExtResource("3_7f4r2")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_uqlnb"]
+script = ExtResource("3_7f4r2")
+hardpoint = &"HP_W_S_02"
+
+[sub_resource type="Resource" id="Resource_k0876"]
+script = ExtResource("3_7f4r2")
+slot_type = 1
+hardpoint = &"HP_D_S_01"
+
+[resource]
+script = ExtResource("2_4vio1")
+species = &"core:species/human"
+hull_class = &"corvette"
+hull = 300
+armor = 20
+shield = 60
+evasion = 300
+speed = 8
+slots = Array[ExtResource("3_7f4r2")]([SubResource("Resource_hrftt"), SubResource("Resource_uqlnb"), SubResource("Resource_k0876")])
+cost = {
+&"core:resource/alloys": 60,
+&"core:resource/components": 10
+}
+build_days = 45
+model = "assets/models/ships/human_corvette_mk1.glb"
+id = &"core:hull/human_corvette_mk1"
+name_key = "HULL_HUMAN_CORVETTE_MK1"

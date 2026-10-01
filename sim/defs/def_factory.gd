@@ -12,6 +12,7 @@ static var SCRIPTS := {  # class refs are not constant expressions
 	"match_preset": MatchPresetDef,
 	"modifier_key": ModifierKeyDef,
 	"name_list": NameListDef,
+	"hull": HullDef,
 }
 
 const META_FIELDS: Array[String] = ["op", "category", "id"]
@@ -107,6 +108,15 @@ static func convert_value(v: Variant, spec: Dictionary, own_mod: String, where: 
 				var out: Array[String] = []
 				out.assign(v)
 				return out
+		"slots":
+			if v is Array:
+				var out: Array[SlotDef] = []
+				for item: Variant in v:
+					var slot := _slot(item, where, errors)
+					if slot == null:
+						return null
+					out.append(slot)
+				return out
 		"modifiers":
 			if v is Array:
 				var out: Array[ModifierDef] = []
@@ -126,6 +136,22 @@ static func _ref(ref: String, own_mod: String, where: String, errors: Array[Stri
 		errors.append("%s: malformed reference '%s'" % [where, ref])
 		return null
 	return StringName(full)
+
+
+static func _slot(item: Variant, where: String, errors: Array[String]) -> SlotDef:
+	if not item is Dictionary:
+		errors.append("%s: each slot is an object {slot_type, slot_size, hardpoint}" % where)
+		return null
+	var s := SlotDef.new()
+	var t := SlotDef.type_names().find(str(item.get("slot_type", "")))
+	var z := SlotDef.size_names().find(str(item.get("slot_size", "")))
+	if t < 0 or z < 0 or not item.get("hardpoint") is String:
+		errors.append("%s: slot needs slot_type %s, slot_size %s and a hardpoint name" % [where, SlotDef.type_names(), SlotDef.size_names()])
+		return null
+	s.slot_type = t as SlotDef.SlotType
+	s.slot_size = z as SlotDef.SlotSize
+	s.hardpoint = StringName(item["hardpoint"])
+	return s
 
 
 static func _modifier(item: Variant, where: String, errors: Array[String]) -> ModifierDef:
