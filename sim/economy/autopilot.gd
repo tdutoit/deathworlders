@@ -43,13 +43,18 @@ static func _do(state: MatchState, eid: int, type_id: StringName, payload: Dicti
 ## Best colony target: settled-free, habitable planet in own systems or unclaimed systems near them.
 static func best_colony_target(state: MatchState, eid: int, from_system: int) -> int:
 	var species: SpeciesDef = state.defs.get_def(StringName(state.empire(eid).species))
-	var hops := AutoLogistics._hops_from(state, from_system, {})
+	var hops := AutoLogistics.hops_within(state, from_system, OUTPOST_RANGE, {})
 	var best := StateIO.NONE
 	var best_score := 0
-	for pid: int in state.galaxy.planets:
+	var candidates: Array[int] = []
+	for sys_id: int in IdMap.sort_keys(hops.keys()):
+		if int(hops[sys_id]) <= OUTPOST_RANGE:
+			candidates.append_array(state.galaxy.system(sys_id).planet_ids)
+	candidates.sort()
+	for pid in candidates:
 		var p := state.galaxy.planet(pid)
 		var owner := state.galaxy.system(p.system_id).owner
-		if state.colony(pid) != null or (owner != StateIO.NONE and owner != eid) or not hops.has(p.system_id):
+		if state.colony(pid) != null or (owner != StateIO.NONE and owner != eid):
 			continue
 		var ptype: PlanetTypeDef = state.defs.get_def(StringName(p.planet_type))
 		var hab := int(species.habitability.get(StringName(p.planet_type), 0))
@@ -135,11 +140,22 @@ static func _mining(state: MatchState, eid: int) -> void:
 	if _has_site(state, eid, &"mining"):
 		return
 	var mining: Array = state.defs.defs("station").filter(func(d: StationDef) -> bool: return d.function == &"mining" and d.tier == 1)
+	var used := {}  # planet -> stations orbiting it (one pass instead of one per check)
+	for sid: int in state.stations:
+		var pid := (state.stations.get_or(sid) as Station).planet_id
+		used[pid] = int(used.get(pid, 0)) + 1
 	for sys_id: int in state.galaxy.systems:
 		if state.galaxy.system(sys_id).owner != eid:
 			continue
 		for pid in state.galaxy.system(sys_id).planet_ids:
+			var p := state.galaxy.planet(pid)
+			if int(used.get(pid, 0)) >= p.orbital_slots:
+				continue
 			for def: StationDef in mining:
+				if not def.placement.is_empty() and not StringName(p.planet_type) in def.placement:
+					continue
+				if def.requires_deposit != &"" and int(p.deposits.get(String(def.requires_deposit), 0)) <= 0:
+					continue
 				if _do(state, eid, CmdQueueStation.TYPE, {"planet": pid, "station": String(def.id)}):
 					return
 
@@ -157,10 +173,14 @@ static func _freighters(state: MatchState, eid: int) -> void:
 				busy += 1
 	if total > 0 and busy * 1000 <= total * BUSY_PERMILLE:
 		return
+	var berth_checked := {}  # system -> a free berth exists (one berth search per system)
 	for sid: int in state.stations:
 		var y: Station = state.stations.get_or(sid)
-		if y.owner != eid or y.ship_queue.any(func(q: Construction) -> bool: return q.def_id == "core:hull/freighter_light"):
+		if y.owner != eid or not y.operational or (state.defs.get_def(StringName(y.def_id)) as StationDef).function != &"shipyard":
 			continue
-		if Shipyards.free_berth(state, eid, y.system_id) != StateIO.NONE \
-				and _do(state, eid, CmdQueueShip.TYPE, {"station": y.id, "hull": "core:hull/freighter_light"}):
+		if y.ship_queue.any(func(q: Construction) -> bool: return q.def_id == "core:hull/freighter_light"):
+			continue
+		if not berth_checked.has(y.system_id):
+			berth_checked[y.system_id] = Shipyards.free_berth(state, eid, y.system_id) != StateIO.NONE
+		if berth_checked[y.system_id] and _do(state, eid, CmdQueueShip.TYPE, {"station": y.id, "hull": "core:hull/freighter_light"}):
 			return

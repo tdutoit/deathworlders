@@ -87,6 +87,15 @@ into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.m
   AI actions go through each command's validate/apply but are never logged (replay re-derives them).
   Sector creation by the AI, and spending its surplus credits, wait for WP14/M4. A 5-year, 4-empire small
   match runs in ~17 s headless (profile in WP13).
+- 2026-10-01 (WP13): `tools/economy_harness.gd` runs all-AI matches and reports each empire against B20 (first
+  colony, colonies, shipyards, freighters and utilisation, alloys/month, credits, losses) plus month-tick
+  timing. The determinism checksum already carries `economy` and `logistics` parts; the determinism tool
+  passes with the M2 economy running. Performance pass (same results, same iteration orders): per-tick
+  scratch cache on MatchState (runtime only) for reach maps, depth-limited BFS (reach maps stop at reach_3,
+  supply at its longest range, autopilot at its 2-lane range), one berth search per system, precomputed
+  station security. Huge, 8 AI empires, 15 years: month tick avg 49.9 ms, worst 71 ms (was ~80/105).
+  First harness run: no empire meets B20 yet (2-6 colonies, 1 shipyard, 3-6 freighters, 9-26 alloys/month,
+  credits piling up): WP14's job.
 
 ---
 

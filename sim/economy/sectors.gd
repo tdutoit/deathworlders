@@ -56,8 +56,11 @@ static func range_of(state: MatchState, sec: Sector) -> int:
 
 static func update_membership(state: MatchState) -> void:
 	var cache := {}
+	var ranges := {}
 	for sid: int in state.sectors:
-		(state.sectors.get_or(sid) as Sector).systems.clear()
+		var sec: Sector = state.sectors.get_or(sid)
+		sec.systems.clear()
+		ranges[sid] = range_of(state, sec)
 	for sys_id: int in state.galaxy.systems:
 		var owner := state.galaxy.system(sys_id).owner
 		if owner == StateIO.NONE:
@@ -68,8 +71,8 @@ static func update_membership(state: MatchState) -> void:
 			var sec: Sector = state.sectors.get_or(sid)
 			if sec.owner != owner:
 				continue
-			var h := int(AutoLogistics._hops_from(state, Holders.system(state, sec.hub), cache).get(sys_id, FAR))
-			if h <= range_of(state, sec) and h < best_hops:
+			var h := int(AutoLogistics.hops_within(state, Holders.system(state, sec.hub), ranges[sid], cache).get(sys_id, FAR))
+			if h <= ranges[sid] and h < best_hops:
 				best = sec
 				best_hops = h
 		if best != null:
@@ -84,8 +87,13 @@ static func sector_of(state: MatchState, eid: int, system_id: int) -> Sector:
 	return null
 
 
-## system ID -> lanes to the nearest own sector hub (the capital system if the empire has no sectors).
+## system ID -> lanes to the nearest own sector hub (the capital system if the empire has no sectors). Systems
+## more than reach_3 lanes away are left out (callers treat a missing system as FAR, which is the same band).
 static func reach_map(state: MatchState, eid: int) -> Dictionary:
+	var scratch := state.scratch()
+	var key := "reach:%d" % eid
+	if scratch.has(key):
+		return scratch[key]
 	var cache := {}
 	var out := {}
 	var hubs: Array[int] = []
@@ -95,10 +103,12 @@ static func reach_map(state: MatchState, eid: int) -> Dictionary:
 			hubs.append(Holders.system(state, sec.hub))
 	if hubs.is_empty():
 		hubs.append(state.galaxy.planet(state.empire(eid).capital_planet).system_id)
+	var depth := Economy.rules(state.defs).reach_3  # D9 bands stop at reach_3 ("7+"); farther is the same band
 	for hub_sys in hubs:
-		var hops := AutoLogistics._hops_from(state, hub_sys, cache)
+		var hops := AutoLogistics.hops_within(state, hub_sys, depth, cache)
 		for sys_id: int in hops:
 			out[sys_id] = mini(int(out.get(sys_id, FAR)), int(hops[sys_id]))
+	scratch[key] = out
 	return out
 
 

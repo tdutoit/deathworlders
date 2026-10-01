@@ -9,9 +9,10 @@ const LOGISTICS := "core:focus/logistics"
 
 
 static func month_tick(state: MatchState) -> void:
+	var caches := {"hops": {}, "reach": {}}
 	for pid: int in state.colonies:
 		var c: Colony = state.colonies.get_or(pid)
-		update_stage(state, c)
+		update_stage(state, c, caches)
 		if c.autonomy == "manual":
 			c.suggestion = ""
 			continue
@@ -29,13 +30,14 @@ static func month_tick(state: MatchState) -> void:
 
 ## D2 stages. Promotion needs pops, age and (for Core) stability and a nearby hub; a planet falls back a stage
 ## when it no longer meets its stage (pops or stability lost).
-static func update_stage(state: MatchState, c: Colony) -> void:
+static func update_stage(state: MatchState, c: Colony, caches: Dictionary = {"hops": {}, "reach": {}}) -> void:
 	var r := Economy.rules(state.defs)
 	var age := state.tick - c.founded_tick
 	var pops := c.total_pops()
 	var developed_ok := pops >= r.developed_pops and (age >= r.developed_years * Calendar.HOURS_PER_YEAR or c.stage in ["developed", "core"])
-	if developed_ok and pops >= r.core_pops and c.stability >= r.core_stability and _hub_lanes(state, c) <= r.core_hub_lanes \
-			and _reach(state, c) < r.reach_2:
+	if developed_ok and pops >= r.core_pops and c.stability >= r.core_stability \
+			and _hub_lanes(state, c, caches["hops"]) <= r.core_hub_lanes \
+			and Economy.reach_of(state, caches["reach"], c.owner, state.galaxy.planet(c.id).system_id) < r.reach_2:
 		c.stage = "core"
 	elif developed_ok:
 		c.stage = "developed"
@@ -43,19 +45,14 @@ static func update_stage(state: MatchState, c: Colony) -> void:
 		c.stage = "colony"
 
 
-static func _hub_lanes(state: MatchState, c: Colony) -> int:
+static func _hub_lanes(state: MatchState, c: Colony, cache: Dictionary) -> int:
 	var sys := state.galaxy.planet(c.id).system_id
 	var best := Sectors.FAR
-	var cache := {}
 	for sid: int in state.sectors:
 		var sec: Sector = state.sectors.get_or(sid)
 		if sec.owner == c.owner:
 			best = mini(best, int(AutoLogistics._hops_from(state, Holders.system(state, sec.hub), cache).get(sys, Sectors.FAR)))
 	return best
-
-
-static func _reach(state: MatchState, c: Colony) -> int:
-	return int(Sectors.reach_map(state, c.owner).get(state.galaxy.planet(c.id).system_id, Sectors.FAR))
 
 
 ## [primary, secondary] focus IDs from the sector directive (Balanced: best fit by deposits and habitability).

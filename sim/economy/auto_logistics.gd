@@ -190,6 +190,25 @@ static func hub_range(state: MatchState, hub: int) -> int:
 	return Economy.rules(state.defs).colony_hub_range
 
 
+## Lanes from a system to every system within max_depth lanes (cheap on big maps when the range is small).
+static func hops_within(state: MatchState, system_id: int, max_depth: int, cache: Dictionary) -> Dictionary:
+	var key := "%d/%d" % [system_id, max_depth]
+	if not cache.has(key):
+		var dist := {system_id: 0}
+		var queue: Array[int] = [system_id]
+		while not queue.is_empty():
+			var at: int = queue.pop_front()
+			if dist[at] >= max_depth:
+				continue
+			for lid in state.galaxy.system(at).lane_ids:
+				var nxt := state.galaxy.lane(lid).other_end(at)
+				if not dist.has(nxt):
+					dist[nxt] = dist[at] + 1
+					queue.append(nxt)
+		cache[key] = dist
+	return cache[key]
+
+
 static func _hops_from(state: MatchState, system_id: int, cache: Dictionary) -> Dictionary:
 	if not cache.has(system_id):
 		var dist := {system_id: 0}

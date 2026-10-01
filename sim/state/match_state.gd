@@ -28,6 +28,17 @@ var command_log: Array[Dictionary] = []  # executed commands {tick, type_id, pla
 ## Runtime only (never saved or hashed): the frozen content the economy reads. Set by whoever creates or
 ## loads the state (GalaxyGenerator.new_match, SaveGame.read, Sim.replay_from).
 var defs: DefDatabase
+var _scratch := {}
+var _scratch_tick := -1
+
+
+## Runtime only: a cache that is emptied whenever the tick changes. For derived data (reach maps) that
+## several subsystems need in the same tick. Never saved or hashed.
+func scratch() -> Dictionary:
+	if _scratch_tick != tick:
+		_scratch = {}
+		_scratch_tick = tick
+	return _scratch
 
 
 ## A fresh state with every RNG stream seeded from match_seed.

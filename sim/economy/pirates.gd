@@ -12,7 +12,8 @@ const LOSS_LOG := 50
 
 
 ## D9 security of a system for its owner (M2 terms: base, garrisons, station security, reach 7+ halves it).
-static func security(state: MatchState, system_id: int, reach: Dictionary = {}) -> int:
+## station_security: optional precomputed {system: sum of own station security} (see station_security_map).
+static func security(state: MatchState, system_id: int, reach: Dictionary = {}, station_security: Variant = null) -> int:
 	var r := Economy.rules(state.defs)
 	var sys := state.galaxy.system(system_id)
 	var sec := r.security_base
@@ -20,13 +21,23 @@ static func security(state: MatchState, system_id: int, reach: Dictionary = {}) 
 		var c := state.colony(pid)
 		if c != null and c.owner == sys.owner:
 			sec += r.security_per_garrison * PlanetMods.of(c, state.defs).add("planet.garrison")
-	for sid: int in state.stations:
-		var st: Station = state.stations.get_or(sid)
-		if st.system_id == system_id and st.operational and st.owner == sys.owner:
-			sec += (state.defs.get_def(StringName(st.def_id)) as StationDef).security
+	var by_system: Dictionary = station_security if station_security != null else station_security_map(state)
+	sec += int(by_system.get(system_id, 0))
 	if sys.owner != StateIO.NONE and Economy.reach_of(state, reach, sys.owner, system_id) >= r.reach_3:
 		sec = FixedMath.floor_div(sec, 2)
 	return clampi(sec, 0, 100)
+
+
+## {system: security from operational stations owned by the owner of that system}.
+static func station_security_map(state: MatchState) -> Dictionary:
+	var out := {}
+	for sid: int in state.stations:
+		var st: Station = state.stations.get_or(sid)
+		if st.operational and st.owner == state.galaxy.system(st.system_id).owner:
+			var v := (state.defs.get_def(StringName(st.def_id)) as StationDef).security
+			if v != 0:
+				out[st.system_id] = int(out.get(st.system_id, 0)) + v
+	return out
 
 
 static func raiders_hunting(state: MatchState, eid: int) -> int:
@@ -66,15 +77,18 @@ static func month_tick(state: MatchState) -> void:
 			if owner != StateIO.NONE and raiders_hunting(state, owner) < r.max_raiders_per_empire:
 				spawn_raider(state, sys_id, owner)
 	# Frontier systems roll (D9).
+	var stations := station_security_map(state)
 	for eid: int in state.empires:
+		var hunting := raiders_hunting(state, eid)
 		for sys_id: int in state.galaxy.systems:
-			if raiders_hunting(state, eid) >= r.max_raiders_per_empire:
+			if hunting >= r.max_raiders_per_empire:
 				break
 			if state.galaxy.system(sys_id).owner != eid or Economy.reach_of(state, reach, eid, sys_id) < r.pirate_min_reach:
 				continue
-			var sec := security(state, sys_id, reach)
+			var sec := security(state, sys_id, reach, stations)
 			if sec < r.pirate_threshold and rng.range(0, 1000) < (r.pirate_threshold - sec) * r.pirate_chance_per_point_permille:
 				spawn_raider(state, sys_id, eid)
+				hunting += 1
 
 
 static func spawn_raider(state: MatchState, system_id: int, target: int) -> Unit:
