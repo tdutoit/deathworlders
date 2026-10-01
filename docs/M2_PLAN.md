@@ -11,6 +11,13 @@ into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.m
   of supply range (D2 "extends supply range"). Breadbasket and Bastion have no named effect in M2 (no number
   in B4 / needs M6). Templates are generated per focus pair from a fixed pattern (farm, primary, primary,
   secondary, …). An empty string in a Def reference field means "none".
+- 2026-10-01 (WP2): rule numbers are data too: `economy_rules` (B3/B4/B17/B18 constants, one core Def that
+  mods can patch), `planet_size` (B2 table; the galaxy generator now reads orbital slots from it) and
+  `start` (B19 opening, applied to every homeworld). Colonies live in `MatchState.colonies` and get their
+  own `economy` checksum part; empires carry a treasury. `MatchState.defs` is a runtime-only reference to
+  the content (set on creation and load, never saved). Monthly totals are spread over the 30 days without
+  drift; jobs produce in JobDef.priority order. Growth needs a strictly positive monthly food net.
+  Strikes pick the offline building on the `events` stream; revolts (B18 < 5) wait for M6 ground forces.
 
 ---
 

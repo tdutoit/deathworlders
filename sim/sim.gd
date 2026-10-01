@@ -44,14 +44,20 @@ static func step(state: MatchState, commands: Array[Command]) -> int:
 	return advance(state)
 
 
-## Economy, research and construction progress land here from M2 on.
-static func _day_tick(_state: MatchState) -> void:
-	pass
+## Production, food and construction progress (M2).
+static func _day_tick(state: MatchState) -> void:
+	if state.defs == null:
+		return
+	@warning_ignore("integer_division")
+	var day := (state.tick / Calendar.HOURS_PER_DAY - 1) % Calendar.DAYS_PER_MONTH  # day just completed
+	Economy.day_tick(state, day)
 
 
-## Settlement, growth and events land here from M2 on.
-static func _month_tick(_state: MatchState) -> void:
-	pass
+## Settlement: growth, stability, taxes and upkeep (M2).
+static func _month_tick(state: MatchState) -> void:
+	if state.defs == null:
+		return
+	Economy.month_tick(state)
 
 
 ## Rebuilds a match from its seed and settings plus a command log (main spec 18.4 debug replay).
@@ -60,13 +66,14 @@ static func replay(seed_value: int, settings: MatchSettings, db: DefDatabase, co
 	var errors: Array[String] = []
 	var start := GalaxyGenerator.new_match(settings, seed_value, db, errors)
 	assert(start != null, "Sim.replay: " + ", ".join(errors))
-	return replay_from(start.to_dict(), command_log, until_tick)
+	return replay_from(start.to_dict(), command_log, until_tick, db)
 
 
 ## Rebuilds a match from a starting snapshot plus a command log, running until_tick hour ticks.
 ## Log entries are applied at their tick, in log order, exactly as the live run applied them.
-static func replay_from(initial: Dictionary, command_log: Array, until_tick: int) -> MatchState:
+static func replay_from(initial: Dictionary, command_log: Array, until_tick: int, db: DefDatabase = null) -> MatchState:
 	var state := MatchState.from_dict(initial)
+	state.defs = db
 	state.command_log.clear()
 	var i := 0
 	while true:

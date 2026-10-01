@@ -20,6 +20,9 @@ static var SCRIPTS := {  # class refs are not constant expressions
 	"station": StationDef,
 	"directive": DirectiveDef,
 	"template": TemplateDef,
+	"start": StartDef,
+	"economy_rules": EconomyRulesDef,
+	"planet_size": PlanetSizeDef,
 }
 
 const META_FIELDS: Array[String] = ["op", "category", "id"]

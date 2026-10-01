@@ -72,6 +72,8 @@ func first_human_empire() -> int:
 
 func _begin(new_state: MatchState) -> void:
 	state = new_state
+	if state.defs == null:
+		state.defs = Database.defs
 	CommandQueue.reset()
 	CommandQueue.local_player = first_human_empire()
 	EventBus.match_started.emit()

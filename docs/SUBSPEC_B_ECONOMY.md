@@ -20,6 +20,10 @@
   - B19: Earth's starting stockpile adds **100 Rare Earths** (the Fabricator's input had no source).
   - B4: focus effects other than job output (growth, stockpile cap, berths, build speed) also apply at 50% for
     the Secondary focus.
+- 2026-10-01 (M2 WP2, agreed with the owner): job assignment follows D4's default order (farmers first if
+  starving, then the per-planet priority list, then Primary then Secondary focus jobs, then the rest by job
+  priority), and each job can have a per-planet **cap**. The opening sets caps (Miner 2, Munitions Worker 1,
+  Researcher 4) so every homeworld starts with B19's exact mix.
 
 ---
 

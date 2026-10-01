@@ -67,6 +67,7 @@ static func read(path: String, db: DefDatabase, manifests: Dictionary) -> SaveGa
 	if not out.errors.is_empty():
 		return out
 	out.state = MatchState.from_dict(data["state"])
+	out.state.defs = db
 	out.pending = data.get("pending_commands", [])
 	return out
 

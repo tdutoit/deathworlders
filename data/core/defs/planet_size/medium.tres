@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="PlanetSizeDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_iymyt"]
+[ext_resource type="Script" path="res://sim/defs/planet_size_def.gd" id="2_s3122"]
+
+[resource]
+script = ExtResource("2_s3122")
+building_slots = 6
+housing = 20
+orbital_slots = 3
+id = &"core:planet_size/medium"
+name_key = "SIZE_MEDIUM"

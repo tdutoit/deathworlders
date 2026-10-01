@@ -16,7 +16,6 @@ const ZONE_INNER_MAX := 60  # orbit radius limits of the inner and habitable zon
 const ZONE_HABITABLE_MAX := 120
 const HOME_ORBIT := 90  # standard homeworlds take the planet orbiting closest to this
 const HOME_SIZE := "large"
-const ORBITAL_SLOTS := {"tiny": 1, "small": 2, "medium": 3, "large": 3, "huge": 4}  # B2
 const ATTEMPTS_PER_SPACING := 20  # rerolls before the capital spacing rule is relaxed by one jump
 
 var _s: MatchState
@@ -41,6 +40,8 @@ static func new_match(settings: MatchSettings, seed_value: int, db: DefDatabase,
 			state.rng_streams.put(DetRng.GALAXY, DetRng.from_seed((seed_value + attempt) & Bits32.M32, DetRng.GALAXY))
 		var gen := GalaxyGenerator.new()
 		if gen._run(state, db, spacing):
+			state.defs = db
+			StartSetup.apply(state, db)
 			return state
 		attempt += 1
 		if attempt % ATTEMPTS_PER_SPACING == 0:
@@ -331,7 +332,7 @@ func _add_planet(sys: StarSystem, name: String, ptype: String, size: String, orb
 	p.orbit_index = orbit_index
 	p.orbit_radius = radius
 	p.deposits = deposits
-	p.orbital_slots = ORBITAL_SLOTS[size]
+	p.orbital_slots = (_db.get_def(PlanetSizeDef.id_for(size)) as PlanetSizeDef).orbital_slots
 	_s.galaxy.planets.put(p.id, p)
 	sys.planet_ids.append(p.id)
 	return p
@@ -435,7 +436,7 @@ func _build_standard_home(sys: StarSystem, species: SpeciesDef) -> int:
 			best = p
 	best.planet_type = String(species.home_planet_type)
 	best.size = HOME_SIZE
-	best.orbital_slots = ORBITAL_SLOTS[HOME_SIZE]
+	best.orbital_slots = (_db.get_def(PlanetSizeDef.id_for(HOME_SIZE)) as PlanetSizeDef).orbital_slots
 	return best.id
 
 

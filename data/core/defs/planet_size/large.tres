@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="PlanetSizeDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_wjmdv"]
+[ext_resource type="Script" path="res://sim/defs/planet_size_def.gd" id="2_mdx0s"]
+
+[resource]
+script = ExtResource("2_mdx0s")
+building_slots = 8
+housing = 28
+orbital_slots = 3
+id = &"core:planet_size/large"
+name_key = "SIZE_LARGE"

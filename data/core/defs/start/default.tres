@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="StartDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_86cnf"]
+[ext_resource type="Script" path="res://sim/defs/start_def.gd" id="2_okhxg"]
+
+[resource]
+script = ExtResource("2_okhxg")
+pops = 24
+buildings = Array[StringName]([&"core:building/capital", &"core:building/farm", &"core:building/farm", &"core:building/mine", &"core:building/foundry", &"core:building/foundry", &"core:building/fabricator", &"core:building/munitions_plant", &"core:building/lab", &"core:building/lab", &"core:building/exchange"])
+primary_focus = &"core:focus/industrial"
+secondary_focus = &"core:focus/research"
+job_caps = {
+&"core:job/miner": 2,
+&"core:job/munitions_worker": 1,
+&"core:job/researcher": 4
+}
+stockpile = {
+&"core:resource/alloys": 400,
+&"core:resource/components": 100,
+&"core:resource/food": 300,
+&"core:resource/fuel": 200,
+&"core:resource/munitions": 200,
+&"core:resource/ore": 200,
+&"core:resource/rare_earths": 100
+}
+treasury = {
+&"core:resource/credits": 500
+}
+id = &"core:start/default"
+name_key = "START_DEFAULT"
