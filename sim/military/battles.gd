@@ -263,6 +263,9 @@ static func _round(state: MatchState, b: Battle) -> bool:
 		f["members"] = (f["members"] as Array).filter(func(cid: int) -> bool: return entity(state, cid) != null)
 	if b.active(0).is_empty() or b.active(1).is_empty():
 		return true
+	if not hostile(state, b.owners[0], b.owners[1]):
+		b.log["truce"] = 1  # peace was made: the battle ends where it stands
+		return true
 	b.round += 1
 	# 1. Range step every 3rd round (A5).
 	if b.round % r.range_step_rounds == 0:
@@ -697,6 +700,8 @@ static func _finish(state: MatchState, b: Battle) -> void:
 		loss[side] = FixedMath.floor_div(int(b.log["lost_cost"][side]) * 1000, maxi(1, int(b.log["start_cost"][side])))
 	var holds := [not b.active(0).is_empty(), not b.active(1).is_empty()]
 	var results := [result(r, loss[0], loss[1], holds[0]), result(r, loss[1], loss[0], holds[1])]
+	if b.log.has("truce"):
+		results = ["truce", "truce"]
 	var salvage := [0, 0]
 	for side in 2:
 		var other := 1 - side

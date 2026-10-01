@@ -260,3 +260,33 @@ func test_defence_platform_fights() -> void:
 	_run(s, 1)
 	var b: Battle = s.battles.values()[0]
 	assert_true(st.id in b.active(0), "the platform is in the battle")
+
+
+func test_declare_war_and_make_peace() -> void:
+	var s := _match()
+	var e := _empires(s)
+	var arena := _arena(s)
+	for i in 4:
+		_ship(s, e[0], "cruiser", arena)
+		_ship(s, e[1], "cruiser", arena)
+	var war := CommandRegistry.create(CmdDeclareWar.TYPE, e[0], {"empire": e[1]})
+	Sim.execute(s, [war] as Array[Command])
+	assert_eq(war.error, "")
+	assert_true(Battles.hostile(s, e[1], e[0]), "war is mutual")
+	var again := CommandRegistry.create(CmdDeclareWar.TYPE, e[1], {"empire": e[0]})
+	Sim.execute(s, [again] as Array[Command])
+	assert_ne(again.error, "", "already at war")
+	_run(s, 2)
+	assert_eq(s.battles.size(), 1)
+	var peace := CommandRegistry.create(CmdMakePeace.TYPE, e[1], {"empire": e[0]})
+	Sim.execute(s, [peace] as Array[Command])
+	assert_eq(peace.error, "")
+	_run(s, 1)
+	assert_eq(s.battles.size(), 0, "the battle ends at peace")
+	var rep: Dictionary = (s.reports.values()[0] as BattleReport).data
+	assert_eq(rep["results"], ["truce", "truce"])
+	_run(s, 3)
+	assert_eq(s.battles.size(), 0, "no new battle at peace")
+	var self_war := CommandRegistry.create(CmdDeclareWar.TYPE, e[0], {"empire": e[0]})
+	Sim.execute(s, [self_war] as Array[Command])
+	assert_ne(self_war.error, "")

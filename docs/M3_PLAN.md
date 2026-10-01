@@ -61,6 +61,10 @@ into an ordered build plan. Builds on M2 (docs/M2_PLAN.md); same rules (CLAUDE.m
   plus half the draws (morale retreats make even fights end in draws). "Missiles forced to close" starts at
   Close with both sides preferring it. Tuning and the owner's decision on A14's 1.25× target: Sub-spec A
   change log. The DoD's combat-harness item is met with the 1.25× check report-only.
+- 2026-10-01 (WP7): `core:cmd/declare_war` and `core:cmd/make_peace` {"empire"}: unilateral in M3 (no AI
+  diplomacy; the AI never declares war). War is a mutual pair in `MatchState.wars`. Making peace ends battles
+  between the two on their next round as a truce (both results "truce", no salvage). The UI control comes
+  with WP12.
 
 ---
 
