@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="StationDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_m1o3l"]
+[ext_resource type="Script" path="res://sim/defs/station_def.gd" id="2_fmn3v"]
+
+[resource]
+script = ExtResource("2_fmn3v")
+function = &"depot"
+upgrades_to = &"core:station/depot_t2"
+cost = {
+&"core:resource/alloys": 150,
+&"core:resource/components": 20
+}
+build_days = 90
+upkeep = {
+&"core:resource/credits": 2
+}
+stockpile_cap = 1000
+supply_range = 2
+id = &"core:station/depot_t1"
+name_key = "STATION_DEPOT_T1"

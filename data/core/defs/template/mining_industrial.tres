@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TemplateDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_osoiu"]
+[ext_resource type="Script" path="res://sim/defs/template_def.gd" id="2_6otod"]
+
+[resource]
+script = ExtResource("2_6otod")
+primary = &"core:focus/mining"
+secondary = &"core:focus/industrial"
+build_order = Array[StringName]([&"core:building/farm", &"core:building/mine", &"core:building/re_mine", &"core:building/foundry", &"core:building/refinery", &"core:building/farm", &"core:building/mine", &"core:building/fabricator", &"core:building/re_mine", &"core:building/munitions_plant", &"core:building/refinery", &"core:building/farm"])
+id = &"core:template/mining_industrial"
+name_key = "TEMPLATE_MINING_INDUSTRIAL"

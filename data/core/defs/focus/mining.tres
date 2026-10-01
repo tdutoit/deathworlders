@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="FocusDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_2ktej"]
+[ext_resource type="Script" path="res://sim/defs/focus_def.gd" id="2_d6fpm"]
+
+[resource]
+script = ExtResource("2_d6fpm")
+boosted_jobs = Array[StringName]([&"core:job/miner", &"core:job/re_miner", &"core:job/refiner"])
+id = &"core:focus/mining"
+name_key = "FOCUS_MINING"

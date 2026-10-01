@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ModifierKeyDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_g0st0"]
+[ext_resource type="Script" path="res://sim/defs/modifier_key_def.gd" id="2_eyjrg"]
+
+[resource]
+script = ExtResource("2_eyjrg")
+scope = 1
+id = &"core:modifier_key/army.recruit_cost"
+name_key = "MODKEY_ARMY_RECRUIT_COST"

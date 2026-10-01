@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="StationDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_sx22h"]
+[ext_resource type="Script" path="res://sim/defs/station_def.gd" id="2_tpv2r"]
+
+[resource]
+script = ExtResource("2_tpv2r")
+function = &"mining"
+cost = {
+&"core:resource/alloys": 100
+}
+build_days = 60
+upkeep = {
+&"core:resource/credits": 1
+}
+placement = Array[StringName]([&"core:planet_type/asteroid_belt"])
+requires_deposit = &"core:resource/rare_earths"
+outputs = {
+&"core:resource/rare_earths": 4
+}
+stockpile_cap = 200
+id = &"core:station/mining_re_belt"
+name_key = "STATION_MINING_RE_BELT"

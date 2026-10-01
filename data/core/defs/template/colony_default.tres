@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="TemplateDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_055fe"]
+[ext_resource type="Script" path="res://sim/defs/template_def.gd" id="2_fiua0"]
+
+[resource]
+script = ExtResource("2_fiua0")
+build_order = Array[StringName]([&"core:building/farm", &"core:building/mine", &"core:building/farm", &"core:building/re_mine"])
+id = &"core:template/colony_default"
+name_key = "TEMPLATE_COLONY_DEFAULT"

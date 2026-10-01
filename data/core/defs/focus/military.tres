@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="FocusDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_ghclk"]
+[ext_resource type="Script" path="res://sim/defs/focus_def.gd" id="2_yowab"]
+
+[sub_resource type="Resource" id="Resource_cuqrq"]
+script = ExtResource("1_ghclk")
+key = &"army.recruit_cost"
+mode = 1
+value = -250
+scope = 1
+
+[resource]
+script = ExtResource("2_yowab")
+boosted_jobs = Array[StringName]([&"core:job/soldier"])
+id = &"core:focus/military"
+name_key = "FOCUS_MILITARY"
+modifiers = Array[ExtResource("1_ghclk")]([SubResource("Resource_cuqrq")])

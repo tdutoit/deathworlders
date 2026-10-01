@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="DirectiveDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_u4ycg"]
+[ext_resource type="Script" path="res://sim/defs/directive_def.gd" id="2_8avc4"]
+
+[resource]
+script = ExtResource("2_8avc4")
+primary_foci = Array[StringName]([&"core:focus/industrial", &"core:focus/industrial"])
+secondary_foci = Array[StringName]([&"core:focus/mining", &"core:focus/logistics"])
+build_priority = Array[StringName]([&"core:building/foundry", &"core:building/fabricator", &"core:building/munitions_plant", &"core:building/mine"])
+station_priority = Array[StringName]([&"core:station/shipyard_t1"])
+id = &"core:directive/industrial_core"
+name_key = "DIRECTIVE_INDUSTRIAL_CORE"

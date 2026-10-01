@@ -1,0 +1,49 @@
+[
+  {
+    "category": "directive",
+    "id": "lopsided",
+    "name_key": "X1",
+    "primary_foci": [
+      "core:focus/industrial"
+    ],
+    "secondary_foci": []
+  },
+  {
+    "category": "building",
+    "id": "temple",
+    "name_key": "X2",
+    "requires_focus": "core:focus/religion"
+  },
+  {
+    "category": "station",
+    "id": "odd_upgrade",
+    "name_key": "X3",
+    "function": "mining",
+    "tier": 1,
+    "upgrades_to": "core:station/shipyard_t2"
+  },
+  {
+    "category": "hull",
+    "id": "empty_freighter",
+    "name_key": "X4",
+    "role": "freighter",
+    "hull_class": "freighter",
+    "hull": 10
+  },
+  {
+    "category": "template",
+    "id": "half_pair",
+    "name_key": "X5",
+    "primary": "core:focus/farming",
+    "build_order": [
+      "core:building/farm"
+    ]
+  },
+  {
+    "category": "synergy",
+    "id": "self_love",
+    "name_key": "X6",
+    "focus_a": "core:focus/farming",
+    "focus_b": "core:focus/farming"
+  }
+]

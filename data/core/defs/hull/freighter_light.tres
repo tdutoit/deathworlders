@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_eptrw"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_2mh5o"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_w0qr4"]
+
+[resource]
+script = ExtResource("2_2mh5o")
+role = &"freighter"
+hull_class = &"freighter"
+hull = 200
+evasion = 100
+cost = {
+&"core:resource/alloys": 40
+}
+build_days = 30
+cargo_capacity = 100
+lane_speed = 6
+upkeep = {
+&"core:resource/credits": 1,
+&"core:resource/fuel": 1
+}
+id = &"core:hull/freighter_light"
+name_key = "HULL_FREIGHTER_LIGHT"

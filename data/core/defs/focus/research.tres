@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="FocusDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_buigj"]
+[ext_resource type="Script" path="res://sim/defs/focus_def.gd" id="2_4evap"]
+
+[resource]
+script = ExtResource("2_4evap")
+boosted_jobs = Array[StringName]([&"core:job/researcher"])
+id = &"core:focus/research"
+name_key = "FOCUS_RESEARCH"

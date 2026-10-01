@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TemplateDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_3dnpw"]
+[ext_resource type="Script" path="res://sim/defs/template_def.gd" id="2_p826g"]
+
+[resource]
+script = ExtResource("2_p826g")
+primary = &"core:focus/military"
+secondary = &"core:focus/industrial"
+build_order = Array[StringName]([&"core:building/farm", &"core:building/barracks", &"core:building/barracks", &"core:building/foundry", &"core:building/barracks", &"core:building/farm", &"core:building/barracks", &"core:building/fabricator", &"core:building/barracks", &"core:building/munitions_plant", &"core:building/barracks", &"core:building/farm"])
+id = &"core:template/military_industrial"
+name_key = "TEMPLATE_MILITARY_INDUSTRIAL"

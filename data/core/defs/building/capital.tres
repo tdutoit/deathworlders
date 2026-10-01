@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="BuildingDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_0tegh"]
+[ext_resource type="Script" path="res://sim/defs/building_def.gd" id="2_73edq"]
+
+[sub_resource type="Resource" id="Resource_3bthi"]
+script = ExtResource("1_0tegh")
+key = &"planet.building_slots"
+value = 2
+scope = 2
+
+[sub_resource type="Resource" id="Resource_n47ac"]
+script = ExtResource("1_0tegh")
+key = &"planet.housing"
+value = 8
+scope = 2
+
+[resource]
+script = ExtResource("2_73edq")
+outputs = {
+&"core:resource/credits": 20,
+&"core:resource/influence": 3,
+&"core:resource/research": 40
+}
+unique = true
+buildable = false
+uses_slot = false
+id = &"core:building/capital"
+name_key = "BUILDING_CAPITAL"
+modifiers = Array[ExtResource("1_0tegh")]([SubResource("Resource_3bthi"), SubResource("Resource_n47ac")])

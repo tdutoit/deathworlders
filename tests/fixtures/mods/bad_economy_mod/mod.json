@@ -1,0 +1,12 @@
+{
+  "id": "bad_economy_mod",
+  "name": "bad_economy_mod",
+  "version": "1.0.0",
+  "game_version": ">=0.1.0",
+  "dependencies": [
+    {
+      "id": "core",
+      "version": ">=0.1.0"
+    }
+  ]
+}

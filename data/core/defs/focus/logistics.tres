@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="FocusDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_tjndl"]
+[ext_resource type="Script" path="res://sim/defs/focus_def.gd" id="2_mkail"]
+
+[sub_resource type="Resource" id="Resource_m7mq1"]
+script = ExtResource("1_tjndl")
+key = &"planet.freighter_berths"
+value = 4
+scope = 2
+
+[sub_resource type="Resource" id="Resource_kfsqh"]
+script = ExtResource("1_tjndl")
+key = &"planet.stockpile_cap"
+mode = 1
+value = 500
+scope = 2
+
+[resource]
+script = ExtResource("2_mkail")
+boosted_jobs = Array[StringName]([&"core:job/dockworker"])
+id = &"core:focus/logistics"
+name_key = "FOCUS_LOGISTICS"
+modifiers = Array[ExtResource("1_tjndl")]([SubResource("Resource_m7mq1"), SubResource("Resource_kfsqh")])

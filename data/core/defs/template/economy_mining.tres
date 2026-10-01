@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TemplateDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_gbrvu"]
+[ext_resource type="Script" path="res://sim/defs/template_def.gd" id="2_ged1a"]
+
+[resource]
+script = ExtResource("2_ged1a")
+primary = &"core:focus/economy"
+secondary = &"core:focus/mining"
+build_order = Array[StringName]([&"core:building/farm", &"core:building/exchange", &"core:building/exchange", &"core:building/mine", &"core:building/exchange", &"core:building/farm", &"core:building/exchange", &"core:building/re_mine", &"core:building/exchange", &"core:building/refinery", &"core:building/exchange", &"core:building/farm"])
+id = &"core:template/economy_mining"
+name_key = "TEMPLATE_ECONOMY_MINING"

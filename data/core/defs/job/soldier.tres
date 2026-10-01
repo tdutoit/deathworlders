@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="JobDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_1b4db"]
+[ext_resource type="Script" path="res://sim/defs/job_def.gd" id="2_eou38"]
+
+[sub_resource type="Resource" id="Resource_1f0dq"]
+script = ExtResource("1_1b4db")
+key = &"planet.garrison"
+value = 1
+scope = 2
+
+[resource]
+script = ExtResource("2_eou38")
+inputs = {
+&"core:resource/munitions": 1
+}
+priority = 60
+id = &"core:job/soldier"
+name_key = "JOB_SOLDIER"
+modifiers = Array[ExtResource("1_1b4db")]([SubResource("Resource_1f0dq")])

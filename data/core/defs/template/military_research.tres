@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TemplateDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_bkqli"]
+[ext_resource type="Script" path="res://sim/defs/template_def.gd" id="2_mgeuo"]
+
+[resource]
+script = ExtResource("2_mgeuo")
+primary = &"core:focus/military"
+secondary = &"core:focus/research"
+build_order = Array[StringName]([&"core:building/farm", &"core:building/barracks", &"core:building/barracks", &"core:building/lab", &"core:building/barracks", &"core:building/farm", &"core:building/barracks", &"core:building/lab", &"core:building/barracks", &"core:building/lab", &"core:building/barracks", &"core:building/farm"])
+id = &"core:template/military_research"
+name_key = "TEMPLATE_MILITARY_RESEARCH"

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DirectiveDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_m72un"]
+[ext_resource type="Script" path="res://sim/defs/directive_def.gd" id="2_517s6"]
+
+[resource]
+script = ExtResource("2_517s6")
+primary_foci = Array[StringName]([&"core:focus/fortress"])
+secondary_foci = Array[StringName]([&"core:focus/military"])
+build_priority = Array[StringName]([&"core:building/barracks"])
+id = &"core:directive/fortress_line"
+name_key = "DIRECTIVE_FORTRESS_LINE"

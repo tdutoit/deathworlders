@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ModifierKeyDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_t2p5e"]
+[ext_resource type="Script" path="res://sim/defs/modifier_key_def.gd" id="2_hqb5j"]
+
+[resource]
+script = ExtResource("2_hqb5j")
+scope = 2
+id = &"core:modifier_key/planet.trade_income"
+name_key = "MODKEY_PLANET_TRADE_INCOME"

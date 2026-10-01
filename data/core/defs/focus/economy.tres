@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="FocusDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_e06l1"]
+[ext_resource type="Script" path="res://sim/defs/focus_def.gd" id="2_qg7s1"]
+
+[sub_resource type="Resource" id="Resource_itdj8"]
+script = ExtResource("1_e06l1")
+key = &"planet.trade_income"
+mode = 1
+value = 250
+scope = 2
+
+[resource]
+script = ExtResource("2_qg7s1")
+boosted_jobs = Array[StringName]([&"core:job/clerk"])
+id = &"core:focus/economy"
+name_key = "FOCUS_ECONOMY"
+modifiers = Array[ExtResource("1_e06l1")]([SubResource("Resource_itdj8")])

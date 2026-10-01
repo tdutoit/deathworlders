@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="JobDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_fetbc"]
+[ext_resource type="Script" path="res://sim/defs/job_def.gd" id="2_g2jq1"]
+
+[resource]
+script = ExtResource("2_g2jq1")
+outputs = {
+&"core:resource/fuel": 6
+}
+priority = 22
+id = &"core:job/refiner"
+name_key = "JOB_REFINER"

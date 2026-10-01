@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TemplateDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_ihlor"]
+[ext_resource type="Script" path="res://sim/defs/template_def.gd" id="2_dr7ex"]
+
+[resource]
+script = ExtResource("2_dr7ex")
+primary = &"core:focus/mining"
+secondary = &"core:focus/military"
+build_order = Array[StringName]([&"core:building/farm", &"core:building/mine", &"core:building/re_mine", &"core:building/barracks", &"core:building/refinery", &"core:building/farm", &"core:building/mine", &"core:building/barracks", &"core:building/re_mine", &"core:building/barracks", &"core:building/refinery", &"core:building/farm"])
+id = &"core:template/mining_military"
+name_key = "TEMPLATE_MINING_MILITARY"

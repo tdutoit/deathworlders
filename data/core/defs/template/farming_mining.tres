@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TemplateDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_teivu"]
+[ext_resource type="Script" path="res://sim/defs/template_def.gd" id="2_wue4p"]
+
+[resource]
+script = ExtResource("2_wue4p")
+primary = &"core:focus/farming"
+secondary = &"core:focus/mining"
+build_order = Array[StringName]([&"core:building/farm", &"core:building/farm", &"core:building/farm", &"core:building/mine", &"core:building/farm", &"core:building/farm", &"core:building/farm", &"core:building/re_mine", &"core:building/farm", &"core:building/refinery", &"core:building/farm", &"core:building/farm"])
+id = &"core:template/farming_mining"
+name_key = "TEMPLATE_FARMING_MINING"

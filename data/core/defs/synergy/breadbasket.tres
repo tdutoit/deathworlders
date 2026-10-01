@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SynergyDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_k3m1r"]
+[ext_resource type="Script" path="res://sim/defs/synergy_def.gd" id="2_4r0sy"]
+
+[resource]
+script = ExtResource("2_4r0sy")
+focus_a = &"core:focus/farming"
+focus_b = &"core:focus/logistics"
+id = &"core:synergy/breadbasket"
+name_key = "SYNERGY_BREADBASKET"

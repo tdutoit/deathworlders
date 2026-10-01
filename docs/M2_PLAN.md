@@ -5,6 +5,12 @@ into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.m
 
 **Change log**
 - 2026-10-01: plan created. Scope decisions below agreed with the project owner.
+- 2026-10-01 (WP1): placeholders where Sub-spec B has no number, for the balance pass (WP14) to tune:
+  freighter build days (Light 30, Heavy 60); colony ship speed 5 lane units/day; station upgrade build days
+  scale like cost (×2 / ×4); shipyard and depot stockpile caps 1,000 / 2,000 / 4,000; outposts give 1 lane
+  of supply range (D2 "extends supply range"). Breadbasket and Bastion have no named effect in M2 (no number
+  in B4 / needs M6). Templates are generated per focus pair from a fixed pattern (farm, primary, primary,
+  secondary, …). An empty string in a Def reference field means "none".
 
 ---
 

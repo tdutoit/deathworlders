@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="JobDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_wcehm"]
+[ext_resource type="Script" path="res://sim/defs/job_def.gd" id="2_uc31f"]
+
+[resource]
+script = ExtResource("2_uc31f")
+outputs = {
+&"core:resource/research": 3
+}
+priority = 40
+id = &"core:job/researcher"
+name_key = "JOB_RESEARCHER"

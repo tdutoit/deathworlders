@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="StationDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_5eh88"]
+[ext_resource type="Script" path="res://sim/defs/station_def.gd" id="2_qjaq6"]
+
+[resource]
+script = ExtResource("2_qjaq6")
+function = &"logistics"
+upgrades_to = &"core:station/logistics_t2"
+cost = {
+&"core:resource/alloys": 150,
+&"core:resource/components": 20
+}
+build_days = 90
+upkeep = {
+&"core:resource/credits": 2
+}
+stockpile_cap = 1000
+berths = 6
+hub_range = 3
+id = &"core:station/logistics_t1"
+name_key = "STATION_LOGISTICS_T1"

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="JobDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_2ldgk"]
+[ext_resource type="Script" path="res://sim/defs/job_def.gd" id="2_oaegm"]
+
+[resource]
+script = ExtResource("2_oaegm")
+outputs = {
+&"core:resource/components": 2
+}
+inputs = {
+&"core:resource/alloys": 1,
+&"core:resource/rare_earths": 1
+}
+priority = 31
+id = &"core:job/engineer"
+name_key = "JOB_ENGINEER"

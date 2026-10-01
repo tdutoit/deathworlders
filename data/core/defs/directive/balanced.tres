@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DirectiveDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_ul3fc"]
+[ext_resource type="Script" path="res://sim/defs/directive_def.gd" id="2_gwwn1"]
+
+[resource]
+script = ExtResource("2_gwwn1")
+best_fit = true
+build_priority = Array[StringName]([&"core:building/farm", &"core:building/lab", &"core:building/exchange"])
+id = &"core:directive/balanced"
+name_key = "DIRECTIVE_BALANCED"

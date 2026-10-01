@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="FocusDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_8vhqh"]
+[ext_resource type="Script" path="res://sim/defs/focus_def.gd" id="2_6n5jm"]
+
+[sub_resource type="Resource" id="Resource_8xag2"]
+script = ExtResource("1_8vhqh")
+key = &"shipyard.build_speed"
+mode = 1
+value = 100
+scope = 2
+
+[resource]
+script = ExtResource("2_6n5jm")
+boosted_jobs = Array[StringName]([&"core:job/worker", &"core:job/engineer", &"core:job/munitions_worker"])
+id = &"core:focus/industrial"
+name_key = "FOCUS_INDUSTRIAL"
+modifiers = Array[ExtResource("1_8vhqh")]([SubResource("Resource_8xag2")])

@@ -13,6 +13,13 @@ static var SCRIPTS := {  # class refs are not constant expressions
 	"modifier_key": ModifierKeyDef,
 	"name_list": NameListDef,
 	"hull": HullDef,
+	"job": JobDef,
+	"building": BuildingDef,
+	"focus": FocusDef,
+	"synergy": SynergyDef,
+	"station": StationDef,
+	"directive": DirectiveDef,
+	"template": TemplateDef,
 }
 
 const META_FIELDS: Array[String] = ["op", "category", "id"]
@@ -78,7 +85,7 @@ static func convert_value(v: Variant, spec: Dictionary, own_mod: String, where: 
 			return null
 		"id":
 			if v is String:
-				return _ref(v, own_mod, where, errors)
+				return StringName() if v == "" else _ref(v, own_mod, where, errors)  # "" = no reference
 		"id_list", "name_list":
 			if v is Array:
 				var out: Array[StringName] = []

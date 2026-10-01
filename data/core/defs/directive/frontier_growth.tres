@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="DirectiveDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_gdapf"]
+[ext_resource type="Script" path="res://sim/defs/directive_def.gd" id="2_vraru"]
+
+[resource]
+script = ExtResource("2_vraru")
+primary_foci = Array[StringName]([&"core:focus/farming"])
+secondary_foci = Array[StringName]([&"core:focus/mining"])
+build_priority = Array[StringName]([&"core:building/farm", &"core:building/mine"])
+station_priority = Array[StringName]([&"core:station/outpost"])
+id = &"core:directive/frontier_growth"
+name_key = "DIRECTIVE_FRONTIER_GROWTH"

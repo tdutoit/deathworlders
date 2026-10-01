@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TemplateDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_4cf2i"]
+[ext_resource type="Script" path="res://sim/defs/template_def.gd" id="2_5067c"]
+
+[resource]
+script = ExtResource("2_5067c")
+primary = &"core:focus/military"
+secondary = &"core:focus/logistics"
+build_order = Array[StringName]([&"core:building/farm", &"core:building/barracks", &"core:building/barracks", &"core:building/dockyard", &"core:building/barracks", &"core:building/farm", &"core:building/barracks", &"core:building/dockyard", &"core:building/barracks", &"core:building/dockyard", &"core:building/barracks", &"core:building/farm"])
+id = &"core:template/military_logistics"
+name_key = "TEMPLATE_MILITARY_LOGISTICS"

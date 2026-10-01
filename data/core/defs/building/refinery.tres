@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="BuildingDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_0sjkg"]
+[ext_resource type="Script" path="res://sim/defs/building_def.gd" id="2_hotcj"]
+
+[resource]
+script = ExtResource("2_hotcj")
+jobs = {
+&"core:job/refiner": 2
+}
+cost = {
+&"core:resource/alloys": 80
+}
+build_days = 90
+upkeep = {
+&"core:resource/credits": 1
+}
+requires_system_planet_type = &"core:planet_type/gas_giant"
+id = &"core:building/refinery"
+name_key = "BUILDING_REFINERY"

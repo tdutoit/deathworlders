@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TemplateDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_202vc"]
+[ext_resource type="Script" path="res://sim/defs/template_def.gd" id="2_mrf73"]
+
+[resource]
+script = ExtResource("2_mrf73")
+primary = &"core:focus/research"
+secondary = &"core:focus/industrial"
+build_order = Array[StringName]([&"core:building/farm", &"core:building/lab", &"core:building/lab", &"core:building/foundry", &"core:building/lab", &"core:building/farm", &"core:building/lab", &"core:building/fabricator", &"core:building/lab", &"core:building/munitions_plant", &"core:building/lab", &"core:building/farm"])
+id = &"core:template/research_industrial"
+name_key = "TEMPLATE_RESEARCH_INDUSTRIAL"

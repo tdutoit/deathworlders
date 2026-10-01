@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="BuildingDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_b4n14"]
+[ext_resource type="Script" path="res://sim/defs/building_def.gd" id="2_u7vy4"]
+
+[resource]
+script = ExtResource("2_u7vy4")
+jobs = {
+&"core:job/miner": 3
+}
+cost = {
+&"core:resource/alloys": 80
+}
+build_days = 90
+upkeep = {
+&"core:resource/credits": 1
+}
+requires_deposit = &"core:resource/ore"
+id = &"core:building/mine"
+name_key = "BUILDING_MINE"

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TemplateDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_4srq7"]
+[ext_resource type="Script" path="res://sim/defs/template_def.gd" id="2_fibpb"]
+
+[resource]
+script = ExtResource("2_fibpb")
+primary = &"core:focus/economy"
+secondary = &"core:focus/military"
+build_order = Array[StringName]([&"core:building/farm", &"core:building/exchange", &"core:building/exchange", &"core:building/barracks", &"core:building/exchange", &"core:building/farm", &"core:building/exchange", &"core:building/barracks", &"core:building/exchange", &"core:building/barracks", &"core:building/exchange", &"core:building/farm"])
+id = &"core:template/economy_military"
+name_key = "TEMPLATE_ECONOMY_MILITARY"

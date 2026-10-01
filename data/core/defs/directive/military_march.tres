@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="DirectiveDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_oq1ot"]
+[ext_resource type="Script" path="res://sim/defs/directive_def.gd" id="2_a1lex"]
+
+[resource]
+script = ExtResource("2_a1lex")
+primary_foci = Array[StringName]([&"core:focus/military"])
+secondary_foci = Array[StringName]([&"core:focus/fortress"])
+build_priority = Array[StringName]([&"core:building/barracks"])
+station_priority = Array[StringName]([&"core:station/depot_t1"])
+id = &"core:directive/military_march"
+name_key = "DIRECTIVE_MILITARY_MARCH"

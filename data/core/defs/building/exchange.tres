@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="BuildingDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_8iluu"]
+[ext_resource type="Script" path="res://sim/defs/building_def.gd" id="2_31m2c"]
+
+[resource]
+script = ExtResource("2_31m2c")
+jobs = {
+&"core:job/clerk": 3
+}
+cost = {
+&"core:resource/alloys": 80
+}
+build_days = 90
+upkeep = {
+&"core:resource/credits": 1
+}
+id = &"core:building/exchange"
+name_key = "BUILDING_EXCHANGE"

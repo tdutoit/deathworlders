@@ -33,7 +33,7 @@ func test_core_counts() -> void:
 	assert_eq(db.ids("star_type").size(), 6)
 	assert_eq(db.ids("species").size(), 5)
 	assert_eq(db.ids("match_preset").size(), 7)
-	assert_eq(db.ids("modifier_key").size(), 3)
+	assert_eq(db.ids("modifier_key").size(), 15)
 
 
 func test_core_values() -> void:

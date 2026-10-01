@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="StationDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_exj21"]
+[ext_resource type="Script" path="res://sim/defs/station_def.gd" id="2_8j7x1"]
+
+[resource]
+script = ExtResource("2_8j7x1")
+function = &"shipyard"
+upgrades_to = &"core:station/shipyard_t2"
+cost = {
+&"core:resource/alloys": 200,
+&"core:resource/components": 40
+}
+build_days = 120
+upkeep = {
+&"core:resource/credits": 2
+}
+stockpile_cap = 1000
+docks = 1
+shipyard_size = &"S"
+id = &"core:station/shipyard_t1"
+name_key = "STATION_SHIPYARD_T1"

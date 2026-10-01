@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SynergyDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_pri3s"]
+[ext_resource type="Script" path="res://sim/defs/synergy_def.gd" id="2_l5270"]
+
+[resource]
+script = ExtResource("2_l5270")
+focus_a = &"core:focus/military"
+focus_b = &"core:focus/fortress"
+id = &"core:synergy/bastion"
+name_key = "SYNERGY_BASTION"

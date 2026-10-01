@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="JobDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_cwpsu"]
+[ext_resource type="Script" path="res://sim/defs/job_def.gd" id="2_f0slx"]
+
+[resource]
+script = ExtResource("2_f0slx")
+outputs = {
+&"core:resource/munitions": 8
+}
+inputs = {
+&"core:resource/ore": 2
+}
+priority = 32
+id = &"core:job/munitions_worker"
+name_key = "JOB_MUNITIONS_WORKER"

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="BuildingDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_nlfpc"]
+[ext_resource type="Script" path="res://sim/defs/building_def.gd" id="2_53dtn"]
+
+[resource]
+script = ExtResource("2_53dtn")
+jobs = {
+&"core:job/engineer": 2
+}
+cost = {
+&"core:resource/alloys": 80
+}
+build_days = 90
+upkeep = {
+&"core:resource/credits": 1
+}
+id = &"core:building/fabricator"
+name_key = "BUILDING_FABRICATOR"

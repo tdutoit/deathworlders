@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SynergyDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_21ekb"]
+[ext_resource type="Script" path="res://sim/defs/synergy_def.gd" id="2_4pghm"]
+
+[sub_resource type="Resource" id="Resource_dxf73"]
+script = ExtResource("1_21ekb")
+key = &"job.output.researcher"
+mode = 1
+value = 100
+scope = 2
+
+[resource]
+script = ExtResource("2_4pghm")
+focus_a = &"core:focus/research"
+focus_b = &"core:focus/economy"
+id = &"core:synergy/academy_world"
+name_key = "SYNERGY_ACADEMY_WORLD"
+modifiers = Array[ExtResource("1_21ekb")]([SubResource("Resource_dxf73")])
