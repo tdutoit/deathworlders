@@ -30,6 +30,13 @@ static var _types := {  # class refs are not constant expressions
 	CmdColonise.TYPE: CmdColonise,
 	CmdSaveDesign.TYPE: CmdSaveDesign,
 	CmdDeleteDesign.TYPE: CmdDeleteDesign,
+	CmdCreateFleet.TYPE: CmdCreateFleet,
+	CmdMergeFleets.TYPE: CmdMergeFleets,
+	CmdSplitFleet.TYPE: CmdSplitFleet,
+	CmdRenameFleet.TYPE: CmdRenameFleet,
+	CmdMoveFleet.TYPE: CmdMoveFleet,
+	CmdSetDoctrine.TYPE: CmdSetDoctrine,
+	CmdMoveSquadron.TYPE: CmdMoveSquadron,
 }
 
 

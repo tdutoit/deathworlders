@@ -65,6 +65,10 @@ const VETERANCY: Array[String] = ["green", "regular", "veteran", "elite"]
 # Crew and ammunition placeholders (owner, 2026-10-01; A2 has none)
 @export var crew_by_size: Dictionary = {}  # hull size -> crew
 @export var ammo_per_weapon: int  # ammo_max per ammo-using weapon
+# Naval hierarchy (main spec 7.1): ships auto-group into squadrons of one class, squadrons into task forces
+@export var squadron_max: int
+@export var task_force_squadrons: int
+@export var fleet_task_forces: int
 # Who pirates fly (B9 raiders, D9 bases)
 @export var pirate_raider_design: StringName
 @export var pirate_base_design: StringName
@@ -77,7 +81,7 @@ const _INTS: Array[String] = ["hit_min", "hit_max", "variance_min", "variance_ma
 	"pursuit_rounds", "boarding_min", "boarding_max", "boarding_fail_loss", "capture_salvage_mult",
 	"decisive_enemy_loss", "decisive_own_loss", "victory_min_loss", "pyrrhic_own_loss", "draw_band", "salvage",
 	"xp_per_round", "xp_per_kill", "out_of_supply_accuracy", "attrition_after_days", "attrition_per_day",
-	"ammo_per_weapon"]
+	"ammo_per_weapon", "squadron_max", "task_force_squadrons", "fleet_task_forces"]
 
 
 func category() -> String:

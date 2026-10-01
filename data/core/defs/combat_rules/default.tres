@@ -75,6 +75,9 @@ crew_by_size = {
 &"XL": 120
 }
 ammo_per_weapon = 20
+squadron_max = 6
+task_force_squadrons = 4
+fleet_task_forces = 5
 pirate_raider_design = &"core:design/pirate_raider"
 pirate_base_design = &"core:design/pirate_base"
 id = &"core:combat_rules/default"

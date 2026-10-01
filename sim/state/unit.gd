@@ -27,6 +27,14 @@ var target_owner: int = StateIO.NONE  # raiders: the empire they hunt
 var months_left := 0  # raiders: months before leaving (0 = stays, e.g. a base's guard)
 var design := 0  # warships: the design it was built from (may since be edited or deleted)
 var components: Array[String] = []  # warships: its components, in hull slot order ("" = empty)
+var fleet: int = StateIO.NONE  # warships: the fleet it belongs to
+var hp := 0  # warships: current hull points (A1 hull)
+var armor := 0  # current armour (ablates, A9)
+var shield := 0  # current shield
+var ammo := 0
+var crew := 0
+var marines := 0
+var xp := 0  # veterancy (A12, A13)
 
 
 func is_moving() -> bool:
@@ -47,6 +55,8 @@ func to_dict() -> Dictionary:
 		"body": body, "route": route, "phase": phase, "wait_hours": wait_hours, "impulse_to": impulse_to,
 		"cargo": cargo.duplicate(), "job": job.duplicate(), "target_planet": target_planet, "out_of_fuel": out_of_fuel, "raid_checked": raid_checked,
 		"target_owner": target_owner, "months_left": months_left, "design": design, "components": components.duplicate(),
+		"fleet": fleet, "hp": hp, "armor": armor, "shield": shield, "ammo": ammo, "crew": crew, "marines": marines,
+		"xp": xp,
 	}
 
 
@@ -74,6 +84,14 @@ static func from_dict(d: Dictionary) -> Unit:
 	u.months_left = int(d.get("months_left", 0))
 	u.design = int(d.get("design", 0))
 	u.components.assign(d.get("components", []))
+	u.fleet = int(d.get("fleet", StateIO.NONE))
+	u.hp = int(d.get("hp", 0))
+	u.armor = int(d.get("armor", 0))
+	u.shield = int(d.get("shield", 0))
+	u.ammo = int(d.get("ammo", 0))
+	u.crew = int(d.get("crew", 0))
+	u.marines = int(d.get("marines", 0))
+	u.xp = int(d.get("xp", 0))
 	u.job = {}
 	var j: Dictionary = d.get("job", {})
 	if not j.is_empty():

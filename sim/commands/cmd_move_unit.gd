@@ -14,6 +14,8 @@ func validate(state: MatchState) -> bool:
 		return reject("unknown unit %d" % p_int("unit"))
 	if unit.owner != player_id:
 		return reject("unit %d is not owned by player %d" % [unit.id, player_id])
+	if unit.fleet != StateIO.NONE:
+		return reject("unit %d moves with its fleet (move_fleet)" % unit.id)
 	var target := p_int("to")
 	if state.galaxy.system(target) == null:
 		return reject("unknown system %d" % target)

@@ -21,6 +21,16 @@ into an ordered build plan. Builds on M2 (docs/M2_PLAN.md); same rules (CLAUDE.m
   the hull's. Shipyard size gates the hull (B10). Stats: `ShipStats.of` (module modifiers summed per A0).
   Sharing (`io/`): `DesignCode` (C5 JSON, `base64(deflate(json))`; import reports missing mods and rejects
   other-species hulls) and `DesignLibrary` (`user://designs/*.json`, across matches).
+- 2026-10-01 (WP3, owner decisions): a warship's hull `speed` is also its lane speed (lane units per day);
+  a fleet moves at its slowest ship's speed, halved while any of its ships is out of fuel, and its ships share
+  one route so they stay together. Ships auto-group by class into squadrons (≤ 6), task forces (≤ 4
+  squadrons) and fleets (≤ 5 task forces): `combat_rules` data; capital classes first (battleship,
+  battlecruiser, carrier, cruiser, destroyer, assault, frigate, corvette). Manual reorganisation moves a
+  squadron between task forces (`move_squadron`) until ships next join or leave. Formation and stance are
+  stored only. Doctrine is per fleet in M3 (task-force overrides later). New warships get full combat state
+  from their design and join their system's reserve fleet (one per system, until it moves) or start one.
+  Commands: create, merge, split, rename, move (`move_fleet`; `move_unit` refuses fleet ships), set doctrine,
+  move squadron. Ship credit upkeep uses `credit_upkeep_milli` (B10's 1.5 etc.).
 
 ---
 

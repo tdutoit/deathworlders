@@ -111,6 +111,8 @@ static func _launch(state: MatchState, s: Station, b: Construction) -> bool:
 	var u := spawn(state, s.owner, b.def_id, s.system_id, s.planet_id)
 	u.design = b.design
 	u.components = b.components.duplicate()
+	if u.kind == "warship":
+		Fleets.commission(state, u)
 	return true
 
 
@@ -214,7 +216,8 @@ static func upkeep(state: MatchState) -> Dictionary:
 		var hull := state.defs.get_def(StringName(u.hull_id)) as HullDef if u.hull_id != "" else null
 		if hull == null:
 			continue
-		var credits: int = hull.upkeep.get(&"core:resource/credits", 0)
+		var credits: int = hull.credit_upkeep_milli if hull.credit_upkeep_milli > 0 \
+				else int(hull.upkeep.get(&"core:resource/credits", 0)) * Stockpile.MILLI  # B10 ships, B6 freighters
 		if credits > 0:
-			due[u.owner] = due.get(u.owner, 0) + credits * Stockpile.MILLI
+			due[u.owner] = due.get(u.owner, 0) + credits
 	return due
