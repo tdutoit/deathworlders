@@ -21,6 +21,7 @@ const CREDIT_NET_LOW := 5000  # milli-credits a month
 const CREDIT_LOW := 300000  # milli-credits: below this (with a low net) the Core Sector runs on Research
 const SMALL_COLONY_POPS := 3
 const MAX_SMALL_COLONIES := 2  # no new colony ship while this many colonies are still under SMALL_COLONY_POPS
+const ORE_SITE_SCORE := 300  # outpost targeting: a body that takes an ore mining station
 const CREDIT_CUSHION := 100000  # milli-credits kept before taking on new upkeep
 
 
@@ -85,6 +86,8 @@ static func best_colony_target(state: MatchState, eid: int, from_system: int) ->
 			continue
 		if not _served(state, eid, p.system_id):
 			continue  # no own hub's freighters reach it: its Farm would never arrive
+		if state.pirate_bases.has(p.system_id) or Pirates.raided_systems(state, eid).has(p.system_id):
+			continue  # raiders there (a base never leaves without warships)
 		var size: PlanetSizeDef = state.defs.get_def(PlanetSizeDef.id_for(p.size))
 		var score := hab + size.housing * 20 + _deposit_score(p) - int(hops[p.system_id]) * 300 - (200 if owner == StateIO.NONE else 0)
 		if score > best_score or (score == best_score and pid < best):
@@ -119,6 +122,15 @@ static func _near_territory(state: MatchState, eid: int, extra: int) -> Dictiona
 			out[sys_id] = mini(int(out.get(sys_id, Sectors.FAR)), int(hops[sys_id]))
 	scratch[key] = out
 	return out
+
+
+## A body a mining station producing ore can orbit (placement only; slots are checked when building).
+static func _ore_site(state: MatchState, p: Planet) -> bool:
+	for def in state.defs.defs("station"):
+		var d: StationDef = def
+		if d.function == &"mining" and d.outputs.has(&"core:resource/ore") and StringName(p.planet_type) in d.placement:
+			return true
+	return false
 
 
 static func _deposit_score(p: Planet) -> int:
@@ -184,11 +196,14 @@ static func _outpost(state: MatchState, eid: int) -> void:
 		for lid in sys.lane_ids:
 			if state.galaxy.system(state.galaxy.lane(lid).other_end(sys_id)).owner == eid:
 				near = true
-		if not near:
+		if not near or state.pirate_bases.has(sys_id) or Pirates.raided_systems(state, eid).has(sys_id):
 			continue
 		var score := 0
 		for pid in sys.planet_ids:
-			score += _deposit_score(state.galaxy.planet(pid)) + 50
+			var p := state.galaxy.planet(pid)
+			score += _deposit_score(p) + 50 + int(p.deposits.get("core:resource/ore", 0)) * 100
+			if _ore_site(state, p):
+				score += ORE_SITE_SCORE  # Foundries need ore: belts and barren moons take mining stations
 		if score > best_score:
 			best = sys_id
 			best_score = score

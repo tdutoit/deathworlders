@@ -70,6 +70,12 @@
   - B20: the year-15 freighter target is **logistics health, not a count**: over the last year freighters
     average at most 80% busy, with at most 3 months above 95% (the harness checks this).
   - B17: the stock reading above is **confirmed** (production surplus or a 3-month food buffer on hand).
+- 2026-10-01 (M2 WP14, part 4): Autopilot skips colony and outpost targets where raiders sit or a pirate base
+  is (no warships in M2 to clear them; colonies there waited 10+ years for a Farm), and its outpost scoring
+  values ore: +100 per ore deposit level and +300 per body that takes an ore mining station (ore-poor empires
+  had Foundries starved of ore). Tried and reverted: letting builds stalled 60+ days send freight through
+  raided systems ("blockade running") — losses went to 17-49 freighters per empire and 15 -> 4 empires met
+  B20. Harness: 15 of 20 empires meet B20 (5 seeds x 15 years, small).
 
 ---
 
