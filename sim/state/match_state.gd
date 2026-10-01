@@ -14,6 +14,9 @@ var galaxy := Galaxy.new()
 var empires := IdMap.new()  # id -> Empire
 var units := IdMap.new()  # id -> Unit
 var next_id := 1
+var paused := true  # matches start paused
+var speed := 1  # 1, 2, 4 or 8 (CmdSetSpeed)
+var command_log: Array[Dictionary] = []  # executed commands {tick, type_id, player, payload}
 
 
 ## A fresh state with every RNG stream seeded from match_seed.
@@ -51,6 +54,9 @@ func to_dict() -> Dictionary:
 		"empires": StateIO.map_to_array(empires),
 		"units": StateIO.map_to_array(units),
 		"next_id": next_id,
+		"paused": paused,
+		"speed": speed,
+		"command_log": command_log.duplicate(true),
 	}
 
 
@@ -68,15 +74,20 @@ static func from_dict(d: Dictionary) -> MatchState:
 	s.empires = StateIO.array_to_map(d["empires"], Empire.from_dict)
 	s.units = StateIO.array_to_map(d["units"], Unit.from_dict)
 	s.next_id = int(d["next_id"])
+	s.paused = d["paused"] == true
+	s.speed = int(d["speed"])
+	for entry: Dictionary in d["command_log"]:
+		s.command_log.append(entry.duplicate(true))
 	return s
 
 
 ## Per-subsystem hashes, so a desync report can say where states diverged. "meta" covers the
-## tick, seed, settings and ID counter; "total" combines everything.
+## tick, seed, settings, ID counter, pause and speed; "total" combines everything. The command log
+## is input history, not state, so it is left out.
 func checksum() -> Dictionary:
 	var d := to_dict()
 	var parts := {
-		"meta": DetHash.hash_value([d["tick"], d["match_seed"], d["settings"], d["next_id"]]),
+		"meta": DetHash.hash_value([d["tick"], d["match_seed"], d["settings"], d["next_id"], d["paused"], d["speed"]]),
 		"galaxy": DetHash.hash_value(d["galaxy"]),
 		"empires": DetHash.hash_value(d["empires"]),
 		"units": DetHash.hash_value(d["units"]),

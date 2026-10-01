@@ -24,6 +24,16 @@
   `planets (IdMap)`; `corridors` is the sorted list of lane IDs joining clusters. Positions are `x`, `y` ints;
   owner `0` = none (IDs start at 1). Collections serialise as arrays of entity dicts in ID order.
   `checksum()` adds `meta` (tick, seed, settings, next_id) and `total` to the four planned parts.
+- 2026-10-01 (WP5/6): `paused` and `speed` are sim state, changed only by `core:cmd/pause` and
+  `core:cmd/set_speed`. These run with delay 0 at the next tick boundary, and the client executes due
+  commands even while paused (otherwise an unpause stamped for tick + 2 could never run). Other commands
+  use delay 2. Matches start paused at 1x. Pending commands live in `CommandSchedule` (owned by the
+  `CommandQueue` autoload), not in `MatchState`; same-tick order is (exec_tick, player_id, seq).
+- 2026-10-01 (WP5/6): `Sim.step` = `execute` (commands) + `advance` (movement, tick, day/month hooks).
+  `Command.validate` sets `cmd.error` on rejection. M1 `player_id` = the issuing empire's ID. Routes are
+  shortest by total lane length (ties: lower system ID). The command log is not part of the checksum.
+  `Sim.replay_from(snapshot, log, until_tick)` replays from a snapshot; `replay(seed, settings, ...)`
+  follows in WP7 once a match can be generated from a seed.
 - 2026-10-01 (WP3): game version lives in `application/config/version` (0.1.0); core has a `mod.json` like any mod.
 
 ---

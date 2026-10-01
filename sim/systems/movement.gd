@@ -1,0 +1,23 @@
+class_name Movement
+extends RefCounted
+## Hour-tick unit movement along hyperlanes (M1 WP5). Units are processed in ID order.
+
+
+static func tick(state: MatchState) -> void:
+	for id: int in state.units:
+		var u: Unit = state.units.get_or(id)
+		if not u.is_moving():
+			continue
+		u.progress += u.speed
+		while u.is_moving():
+			var lane := state.galaxy.lane_between(u.system_id, u.path[0])
+			if lane == null:  # lane vanished; stop where we are
+				u.path.clear()
+				u.progress = 0
+				break
+			if u.progress < lane.length:
+				break
+			u.progress -= lane.length
+			u.system_id = u.path.pop_front()
+		if not u.is_moving():
+			u.progress = 0
