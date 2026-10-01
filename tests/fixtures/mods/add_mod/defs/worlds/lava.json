@@ -1,0 +1,27 @@
+{
+  "category": "planet_type",
+  "id": "planet_type/lava",
+  "name_key": "PLANET_LAVA",
+  "color": "#d0461e",
+  "size_weights": {
+    "small": 1,
+    "medium": 1
+  },
+  "zone_weights": {
+    "inner": 10
+  },
+  "modifiers": [
+    {
+      "key": "planet.heat",
+      "mode": "add",
+      "value": 5,
+      "scope": "planet"
+    },
+    {
+      "key": "planet.housing",
+      "mode": "permille",
+      "value": -200,
+      "scope": "planet"
+    }
+  ]
+}

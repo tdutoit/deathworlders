@@ -1,0 +1,14 @@
+{
+  "id": "core",
+  "name": "Deathworlders",
+  "version": "0.1.0",
+  "game_version": ">=0.1.0",
+  "authors": ["Deathworlders"],
+  "description": "The base game, loaded as a mod.",
+  "dependencies": [],
+  "load_after": [],
+  "load_before": [],
+  "affects_sim": true,
+  "has_scripts": false,
+  "entry_scripts": []
+}

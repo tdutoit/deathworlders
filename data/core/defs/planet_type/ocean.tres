@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="PlanetTypeDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_cimdu"]
+[ext_resource type="Script" path="res://sim/defs/planet_type_def.gd" id="2_cpm0j"]
+
+[resource]
+script = ExtResource("2_cpm0j")
+color = "#3a6ea5"
+size_weights = {
+&"huge": 10,
+&"large": 30,
+&"medium": 40,
+&"small": 20,
+&"tiny": 0
+}
+zone_weights = {
+&"habitable": 25,
+&"inner": 0,
+&"outer": 5
+}
+id = &"core:planet_type/ocean"
+name_key = "PLANET_OCEAN"

@@ -1,0 +1,9 @@
+{
+  "category": "star_type",
+  "id": "pink",
+  "name_key": "STAR_PINK",
+  "color": "#ff88cc",
+  "weight": 0,
+  "planet_min": 0,
+  "planet_max": 0
+}

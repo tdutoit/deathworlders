@@ -1,0 +1,17 @@
+{
+  "id": "add_mod",
+  "name": "add_mod",
+  "version": "1.0.0",
+  "game_version": ">=0.1.0",
+  "dependencies": [
+    {
+      "id": "core",
+      "version": ">=0.1.0"
+    }
+  ],
+  "load_after": [],
+  "load_before": [],
+  "affects_sim": true,
+  "has_scripts": false,
+  "entry_scripts": []
+}

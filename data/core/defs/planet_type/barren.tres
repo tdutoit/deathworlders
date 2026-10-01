@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="PlanetTypeDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_rnvpb"]
+[ext_resource type="Script" path="res://sim/defs/planet_type_def.gd" id="2_g1x5t"]
+
+[resource]
+script = ExtResource("2_g1x5t")
+color = "#8a8580"
+size_weights = {
+&"huge": 0,
+&"large": 0,
+&"medium": 20,
+&"small": 40,
+&"tiny": 40
+}
+zone_weights = {
+&"habitable": 10,
+&"inner": 30,
+&"outer": 30
+}
+id = &"core:planet_type/barren"
+name_key = "PLANET_BARREN"

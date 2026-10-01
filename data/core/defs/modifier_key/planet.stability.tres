@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ModifierKeyDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_maf33"]
+[ext_resource type="Script" path="res://sim/defs/modifier_key_def.gd" id="2_5hs08"]
+
+[resource]
+script = ExtResource("2_5hs08")
+scope = 2
+id = &"core:modifier_key/planet.stability"
+name_key = "MODKEY_PLANET_STABILITY"

@@ -1,0 +1,8 @@
+{
+  "op": "patch",
+  "category": "resource",
+  "id": "core:resource/ore",
+  "set": {
+    "base_value": 1100
+  }
+}

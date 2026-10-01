@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="PlanetTypeDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_6nmbc"]
+[ext_resource type="Script" path="res://sim/defs/planet_type_def.gd" id="2_u5v3b"]
+
+[resource]
+script = ExtResource("2_u5v3b")
+color = "#8fa63a"
+size_weights = {
+&"huge": 0,
+&"large": 20,
+&"medium": 40,
+&"small": 30,
+&"tiny": 10
+}
+zone_weights = {
+&"habitable": 10,
+&"inner": 25,
+&"outer": 5
+}
+id = &"core:planet_type/toxic"
+name_key = "PLANET_TOXIC"

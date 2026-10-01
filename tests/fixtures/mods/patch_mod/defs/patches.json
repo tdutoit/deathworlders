@@ -1,0 +1,43 @@
+[
+  {
+    "op": "patch",
+    "category": "resource",
+    "id": "core:resource/fuel",
+    "set": {
+      "base_value": 1800
+    },
+    "add": {
+      "tags": [
+        "volatile"
+      ]
+    },
+    "adjust": {
+      "stockpile_default_cap": 100
+    }
+  },
+  {
+    "op": "patch",
+    "category": "species",
+    "id": "core:species/human",
+    "adjust": {
+      "habitability": {
+        "core:planet_type/toxic": 100
+      }
+    },
+    "remove": {
+      "habitability": [
+        "core:planet_type/barren"
+      ]
+    },
+    "add": {
+      "modifiers": [
+        {
+          "key": "planet.housing",
+          "mode": "permille",
+          "value": 100,
+          "scope": "planet"
+        }
+      ]
+    }
+  }
+]

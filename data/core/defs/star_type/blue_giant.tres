@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="StarTypeDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_nq5a7"]
+[ext_resource type="Script" path="res://sim/defs/star_type_def.gd" id="2_c4rlr"]
+
+[resource]
+script = ExtResource("2_c4rlr")
+color = "#9cc4ff"
+weight = 5
+planet_min = 1
+planet_max = 4
+id = &"core:star_type/blue_giant"
+name_key = "STAR_BLUE_GIANT"

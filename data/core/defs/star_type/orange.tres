@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="StarTypeDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_hay63"]
+[ext_resource type="Script" path="res://sim/defs/star_type_def.gd" id="2_e0siq"]
+
+[resource]
+script = ExtResource("2_e0siq")
+color = "#ffc27a"
+weight = 20
+planet_min = 2
+planet_max = 7
+id = &"core:star_type/orange"
+name_key = "STAR_ORANGE"

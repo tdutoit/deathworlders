@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="PlanetTypeDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_rj2ec"]
+[ext_resource type="Script" path="res://sim/defs/planet_type_def.gd" id="2_yona1"]
+
+[resource]
+script = ExtResource("2_yona1")
+color = "#dfe8ef"
+size_weights = {
+&"huge": 0,
+&"large": 20,
+&"medium": 40,
+&"small": 30,
+&"tiny": 10
+}
+zone_weights = {
+&"habitable": 15,
+&"inner": 0,
+&"outer": 25
+}
+id = &"core:planet_type/arctic"
+name_key = "PLANET_ARCTIC"

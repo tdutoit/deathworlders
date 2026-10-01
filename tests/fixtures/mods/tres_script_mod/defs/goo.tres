@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ResourceDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/resource_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"tres_script_mod:resource/goo"
+name_key = "RES_GOO"
+physical = true
+base_value = 500

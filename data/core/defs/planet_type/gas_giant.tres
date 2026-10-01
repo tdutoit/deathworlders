@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="PlanetTypeDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_iaomy"]
+[ext_resource type="Script" path="res://sim/defs/planet_type_def.gd" id="2_ud3s0"]
+
+[resource]
+script = ExtResource("2_ud3s0")
+color = "#c7926b"
+orbital_only = true
+size_weights = {
+&"huge": 40,
+&"large": 40,
+&"medium": 20,
+&"small": 0,
+&"tiny": 0
+}
+zone_weights = {
+&"habitable": 5,
+&"inner": 0,
+&"outer": 40
+}
+id = &"core:planet_type/gas_giant"
+name_key = "PLANET_GAS_GIANT"

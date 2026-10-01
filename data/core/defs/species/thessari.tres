@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SpeciesDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_1v3uk"]
+[ext_resource type="Script" path="res://sim/defs/species_def.gd" id="2_0ulpg"]
+
+[resource]
+script = ExtResource("2_0ulpg")
+color = "#3b9a8a"
+habitability = {
+&"core:planet_type/arctic": 600,
+&"core:planet_type/barren": 200,
+&"core:planet_type/deathworld": 100,
+&"core:planet_type/desert": 500,
+&"core:planet_type/ocean": 700,
+&"core:planet_type/terran": 1000,
+&"core:planet_type/toxic": 300
+}
+home_template = &"standard"
+home_planet_type = &"core:planet_type/terran"
+id = &"core:species/thessari"
+name_key = "SPECIES_THESSARI"

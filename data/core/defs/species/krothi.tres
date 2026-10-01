@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SpeciesDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_k3ei1"]
+[ext_resource type="Script" path="res://sim/defs/species_def.gd" id="2_n37xh"]
+
+[resource]
+script = ExtResource("2_n37xh")
+color = "#a8503b"
+habitability = {
+&"core:planet_type/arctic": 300,
+&"core:planet_type/barren": 300,
+&"core:planet_type/deathworld": 300,
+&"core:planet_type/desert": 900,
+&"core:planet_type/ocean": 500,
+&"core:planet_type/terran": 800,
+&"core:planet_type/toxic": 700
+}
+home_template = &"standard"
+home_planet_type = &"core:planet_type/desert"
+id = &"core:species/krothi"
+name_key = "SPECIES_KROTHI"

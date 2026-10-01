@@ -1,0 +1,10 @@
+{
+  "op": "override",
+  "category": "star_type",
+  "id": "core:star_type/neutron",
+  "name_key": "STAR_NEUTRON",
+  "color": "#ffffff",
+  "weight": 1,
+  "planet_min": 0,
+  "planet_max": 1
+}

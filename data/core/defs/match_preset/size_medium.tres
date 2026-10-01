@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MatchPresetDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_at62n"]
+[ext_resource type="Script" path="res://sim/defs/match_preset_def.gd" id="2_a4ds4"]
+
+[resource]
+script = ExtResource("2_a4ds4")
+kind = &"galaxy_size"
+sort_order = 2
+target_systems = 120
+cluster_count = 12
+id = &"core:match_preset/size_medium"
+name_key = "PRESET_SIZE_MEDIUM"

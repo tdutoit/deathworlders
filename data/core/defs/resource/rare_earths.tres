@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ResourceDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_a4h30"]
+[ext_resource type="Script" path="res://sim/defs/resource_def.gd" id="2_lms6i"]
+
+[resource]
+script = ExtResource("2_lms6i")
+physical = true
+base_value = 4000
+stockpile_default_cap = 500
+id = &"core:resource/rare_earths"
+name_key = "RES_RARE_EARTHS"

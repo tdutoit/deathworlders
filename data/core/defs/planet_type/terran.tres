@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="PlanetTypeDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_kr84m"]
+[ext_resource type="Script" path="res://sim/defs/planet_type_def.gd" id="2_u5mny"]
+
+[resource]
+script = ExtResource("2_u5mny")
+color = "#4f8f5a"
+size_weights = {
+&"huge": 10,
+&"large": 30,
+&"medium": 40,
+&"small": 20,
+&"tiny": 0
+}
+zone_weights = {
+&"habitable": 30,
+&"inner": 0,
+&"outer": 0
+}
+id = &"core:planet_type/terran"
+name_key = "PLANET_TERRAN"

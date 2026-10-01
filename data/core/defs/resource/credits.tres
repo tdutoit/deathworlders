@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ResourceDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_07nt4"]
+[ext_resource type="Script" path="res://sim/defs/resource_def.gd" id="2_lyn06"]
+
+[resource]
+script = ExtResource("2_lyn06")
+base_value = 1000
+id = &"core:resource/credits"
+name_key = "RES_CREDITS"

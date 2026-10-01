@@ -1,0 +1,7 @@
+{
+  "category": "modifier_key",
+  "id": "planet.heat",
+  "name_key": "MODKEY_PLANET_HEAT",
+  "scope": "planet",
+  "max_value": 100
+}

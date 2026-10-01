@@ -2,6 +2,10 @@
 
 *Version 0.1. Companion to the main Game Design Spec v1.0 (sections 4, 5, 6, 8, 13). All numbers are **starting values** at **Standard pace**; the balance harness tunes them.*
 
+**Change log**
+- 2026-10-01 (M1 WP3) B1: `ResourceDef.base_value` is stored in milli-credits (Fuel 1.5 = 1500, Food 1 = 1000);
+  Research and Influence have base value 0. `stockpile_default_cap` is in whole units (B5: 500), 0 = uncapped.
+
 ---
 
 ## B0. Conventions

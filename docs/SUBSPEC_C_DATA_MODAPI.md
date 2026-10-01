@@ -2,6 +2,18 @@
 
 *Version 0.1. Companion to the main Game Design Spec v1.0 (sections 16, 18, 18b) and Sub-specs A & B. Target: Godot 4.x, GDScript.*
 
+**Change log**
+- 2026-10-01 (M1 WP3) C6/C9: loading a `.tres` can run embedded script code, so mods may ship `.tres`
+  Defs only if `mod.json` sets `has_scripts: true` (warning badge). Data-only mods use `.json`; core uses `.tres`.
+- 2026-10-01 (M1 WP3) C6: a `.json` Def file holds one Def object or an array of them. A `.tres` Def takes its
+  op from resource metadata `op` (`add` or `override`) and must use full IDs in references.
+- 2026-10-01 (M1 WP3) C6: `add` must use the mod's own ID prefix (use `override`/`patch` for other mods' Defs).
+  JSON numbers must be whole numbers. `remove` on `modifiers` takes modifier keys.
+- 2026-10-01 (M1 WP3) C4: a `ModifierKeyDef` declares the key named by its ID
+  (`core:modifier_key/planet.housing` declares `planet.housing`); a key declared twice is an error.
+- 2026-10-01 (M1 WP3) C6: `content_hash` includes a Def if any mod that added, overrode or patched it has
+  `affects_sim: true`. The runtime class is `DefDatabase` (the `Database` name is the autoload).
+
 ---
 
 ## C0. Principles

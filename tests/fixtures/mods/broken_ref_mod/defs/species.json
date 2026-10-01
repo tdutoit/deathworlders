@@ -1,0 +1,11 @@
+{
+  "category": "species",
+  "id": "lizard",
+  "name_key": "SPECIES_LIZARD",
+  "color": "#00ff00",
+  "home_template": "standard",
+  "home_planet_type": "core:planet_type/lava",
+  "habitability": {
+    "core:planet_type/swamp": 900
+  }
+}

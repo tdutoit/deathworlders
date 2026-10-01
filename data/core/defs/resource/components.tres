@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ResourceDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_3w12k"]
+[ext_resource type="Script" path="res://sim/defs/resource_def.gd" id="2_vmkj4"]
+
+[resource]
+script = ExtResource("2_vmkj4")
+physical = true
+base_value = 8000
+stockpile_default_cap = 500
+id = &"core:resource/components"
+name_key = "RES_COMPONENTS"

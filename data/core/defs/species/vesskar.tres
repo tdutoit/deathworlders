@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SpeciesDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_0fwpv"]
+[ext_resource type="Script" path="res://sim/defs/species_def.gd" id="2_6h3a1"]
+
+[resource]
+script = ExtResource("2_6h3a1")
+color = "#7a5ca8"
+habitability = {
+&"core:planet_type/arctic": 300,
+&"core:planet_type/barren": 100,
+&"core:planet_type/deathworld": 100,
+&"core:planet_type/desert": 400,
+&"core:planet_type/ocean": 1000,
+&"core:planet_type/terran": 900,
+&"core:planet_type/toxic": 200
+}
+home_template = &"standard"
+home_planet_type = &"core:planet_type/ocean"
+id = &"core:species/vesskar"
+name_key = "SPECIES_VESSKAR"

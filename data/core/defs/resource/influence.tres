@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ResourceDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mwkdy"]
+[ext_resource type="Script" path="res://sim/defs/resource_def.gd" id="2_pqp65"]
+
+[resource]
+script = ExtResource("2_pqp65")
+id = &"core:resource/influence"
+name_key = "RES_INFLUENCE"

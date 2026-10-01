@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SpeciesDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_7qnb7"]
+[ext_resource type="Script" path="res://sim/defs/species_def.gd" id="2_imeg3"]
+
+[resource]
+script = ExtResource("2_imeg3")
+color = "#3b5b92"
+habitability = {
+&"core:planet_type/arctic": 700,
+&"core:planet_type/barren": 200,
+&"core:planet_type/deathworld": 1000,
+&"core:planet_type/desert": 700,
+&"core:planet_type/ocean": 800,
+&"core:planet_type/terran": 1000,
+&"core:planet_type/toxic": 400
+}
+home_template = &"sol"
+home_planet_type = &"core:planet_type/terran"
+id = &"core:species/human"
+name_key = "SPECIES_HUMAN"

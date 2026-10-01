@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MatchPresetDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_0dg44"]
+[ext_resource type="Script" path="res://sim/defs/match_preset_def.gd" id="2_ob0gg"]
+
+[resource]
+script = ExtResource("2_ob0gg")
+kind = &"galaxy_size"
+sort_order = 1
+target_systems = 60
+cluster_count = 6
+id = &"core:match_preset/size_small"
+name_key = "PRESET_SIZE_SMALL"

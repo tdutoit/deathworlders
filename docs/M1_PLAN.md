@@ -10,6 +10,17 @@
 - 2026-09-30 (WP2): `IdMap` uses `put` / `get_or` (Object already defines `set` / `get`); keys are all int
   or all String per map. `DetHash.hash_value` hashes a type tag plus a length prefix for strings, arrays and
   maps; an IdMap hashes the same as a Dictionary with the same entries; floats are rejected.
+- 2026-10-01: sim lint (section F) added as `tools/lint_sim.gd` + a GUT test; also bans `Basis`, `Quaternion`,
+  `get_tree()`, `load()`, `DirAccess`, `ResourceLoader/Saver` in `sim/`. `Vector2i`/`Vector3i` are allowed.
+- 2026-10-01 (WP3): Defs and the frozen `DefDatabase` live in `sim/defs/`; file reading, JSON and mod
+  discovery live in `res://io/` (`ContentLoader`, `ModManifest`, `ContentReport`, `Semver`), since `sim/` has
+  no file access. The `Database` autoload owns the result. `tools/validate_content.gd` runs it headless.
+- 2026-10-01 (WP3): core has 11 resources (B1 incl. Credits/Research/Influence as `physical = false`) and
+  the 8 planet types from main spec 4.1 (Deathworld included). Star types, planet-type weights and
+  non-human habitability are placeholders for WP7 tuning. `SpeciesDef` adds `home_planet_type`;
+  `home_template` is `sol` or `standard`. `MatchPresetDef` has `kind` (`galaxy_size` / `pace`).
+  `PlanetTypeDef` has no terrain or deposit table yet (no TerrainDef in M1).
+- 2026-10-01 (WP3): game version lives in `application/config/version` (0.1.0); core has a `mod.json` like any mod.
 
 ---
 

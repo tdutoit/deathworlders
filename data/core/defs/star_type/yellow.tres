@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="StarTypeDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_jjrao"]
+[ext_resource type="Script" path="res://sim/defs/star_type_def.gd" id="2_vj5yw"]
+
+[resource]
+script = ExtResource("2_vj5yw")
+color = "#fff1b0"
+weight = 20
+planet_min = 2
+planet_max = 8
+id = &"core:star_type/yellow"
+name_key = "STAR_YELLOW"

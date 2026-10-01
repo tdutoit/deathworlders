@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="PlanetTypeDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_ywal8"]
+[ext_resource type="Script" path="res://sim/defs/planet_type_def.gd" id="2_nm5iy"]
+
+[resource]
+script = ExtResource("2_nm5iy")
+color = "#5e3b2e"
+size_weights = {
+&"huge": 10,
+&"large": 40,
+&"medium": 40,
+&"small": 10,
+&"tiny": 0
+}
+zone_weights = {
+&"habitable": 3,
+&"inner": 0,
+&"outer": 0
+}
+id = &"core:planet_type/deathworld"
+name_key = "PLANET_DEATHWORLD"

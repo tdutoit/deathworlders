@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="MatchPresetDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_aamep"]
+[ext_resource type="Script" path="res://sim/defs/match_preset_def.gd" id="2_x200j"]
+
+[resource]
+script = ExtResource("2_x200j")
+kind = &"pace"
+sort_order = 1
+pace_permille = 600
+id = &"core:match_preset/pace_fast"
+name_key = "PRESET_PACE_FAST"

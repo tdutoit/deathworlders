@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="StarTypeDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_7n8fg"]
+[ext_resource type="Script" path="res://sim/defs/star_type_def.gd" id="2_25exm"]
+
+[resource]
+script = ExtResource("2_25exm")
+color = "#c9d6ff"
+weight = 3
+planet_min = 1
+planet_max = 2
+id = &"core:star_type/neutron"
+name_key = "STAR_NEUTRON"

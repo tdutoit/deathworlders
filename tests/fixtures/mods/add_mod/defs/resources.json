@@ -1,0 +1,10 @@
+[
+  {
+    "category": "resource",
+    "id": "plasma",
+    "name_key": "RES_PLASMA",
+    "physical": true,
+    "base_value": 12000,
+    "stockpile_default_cap": 200
+  }
+]

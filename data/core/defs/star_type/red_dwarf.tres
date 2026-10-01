@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="StarTypeDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_hp00s"]
+[ext_resource type="Script" path="res://sim/defs/star_type_def.gd" id="2_rr6t6"]
+
+[resource]
+script = ExtResource("2_rr6t6")
+color = "#ff7a5c"
+weight = 35
+planet_min = 1
+planet_max = 5
+id = &"core:star_type/red_dwarf"
+name_key = "STAR_RED_DWARF"
