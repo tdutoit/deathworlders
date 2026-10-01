@@ -82,6 +82,8 @@
   Industrial templates; the AI diversifying to Research above 110-120 alloys/month; the AI queueing extra
   Foundries below 70. Per-empire alloy output swings +/-40 between near-identical runs, so single rule nudges
   don't move the 18/20 bar; it needs AI production planning (M4 AI work) or a wider B20 alloy band.
+- 2026-10-01 (owner decision): B20's year-15 alloy band is **50–140/month** (was 60–120), matching the spread
+  the economy actually produces; tighter AI production planning is left to M4.
 
 ---
 
@@ -394,7 +396,8 @@ Jobs: 6 Farmers, 2 Miners, 6 Workers, 2 Engineers, 1 Munitions, 4 Researchers, 3
 
 - First colony founded: by month 6–12.
 - First cruiser: by year 2–3 (Standard).
-- Mid-game (year 15): ~6–10 colonies, 2–3 shipyards, 60–120 alloys/month, and freight that isn't a bottleneck:
+- Mid-game (year 15): ~6–10 colonies, 2–3 shipyards, 50–140 alloys/month (was 60–120; widened 2026-10-01),
+  and freight that isn't a bottleneck:
   over the last year freighters average ≤ 80% busy, with at most 3 months above 95% (was "20–40 freighters";
   changed 2026-10-01, see change log).
 - **Logistics should cap growth, not block it:** an empire with half the needed freighters should run at ~70% efficiency, not collapse.

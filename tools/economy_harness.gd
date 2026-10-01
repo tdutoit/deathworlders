@@ -94,11 +94,11 @@ static func run(db: DefDatabase, seed_value: int, years: int, size: String, play
 			"alloys_per_month": FixedMath.floor_div(alloys, 1000),
 			"credits": FixedMath.floor_div(int(e.treasury.get("core:resource/credits", 0)), 1000), "lost": e.losses.size(),
 		}
-		# B20 (year 15): first colony by month 12; 6-10 colonies; 2-3 shipyards; 60-120 alloys/month; freighters
+		# B20 (year 15): first colony by month 12; 6-10 colonies; 2-3 shipyards; 50-140 alloys/month (owner, 2026-10-01; was 60-120); freighters
 		# not a bottleneck (last year: average use <= 80%, at most 3 months over 95%).
 		row["ok"] = first_colony.get(eid, 999) <= 12 and row["colonies"] >= 6 and row["colonies"] <= 10 and shipyards >= 2 \
 				and fr[0] > 0 and row["busy_avg"] <= BUSY_AVG_MAX and short <= SHORT_MONTHS_MAX \
-				and row["alloys_per_month"] >= 60 and row["alloys_per_month"] <= 120
+				and row["alloys_per_month"] >= 50 and row["alloys_per_month"] <= 140
 		out.append(row)
 	return {"empires": out, "seconds": (Time.get_ticks_usec() - t0) / 1000000.0, "worst_month_ms": worst,
 		"avg_month_ms": month_ms_total / maxi(1, years * Calendar.MONTHS_PER_YEAR)}
