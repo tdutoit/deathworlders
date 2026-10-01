@@ -79,6 +79,14 @@ into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.m
   target's freight, may found a base (10%/month) that sends out a raider every 6 months, and otherwise leave
   after 6 months. A freighter rolls once per passage through a raider's system (B9: 500 permille at sensor 50);
   detected = lost with its cargo (logged per empire, last 50). No escorts or captures until M3/M4.
+- 2026-10-01 (WP11): `Autopilot` runs monthly for AI slots only (humans keep the governor and auto-logistics,
+  never an expansion rule). It settles idle colony ships (habitable >= 500, scored by habitability, housing,
+  deposits, distance <= 2 lanes, unclaimed systems slightly penalised), queues one colony ship at a time,
+  claims the best adjacent unclaimed system by outpost when influence allows, builds mining stations in own
+  systems (one site at a time) and adds a Light freighter when berthed freighters are over 95% busy.
+  AI actions go through each command's validate/apply but are never logged (replay re-derives them).
+  Sector creation by the AI, and spending its surplus credits, wait for WP14/M4. A 5-year, 4-empire small
+  match runs in ~17 s headless (profile in WP13).
 
 ---
 

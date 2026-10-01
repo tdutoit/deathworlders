@@ -70,6 +70,7 @@ static func _month_tick(state: MatchState) -> void:
 	Pirates.month_tick(state)
 	Sectors.update_membership(state)
 	Governor.month_tick(state)
+	Autopilot.month_tick(state)
 
 
 ## Rebuilds a match from its seed and settings plus a command log (main spec 18.4 debug replay).
