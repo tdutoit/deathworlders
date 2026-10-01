@@ -22,6 +22,7 @@ const CREDIT_LOW := 300000  # milli-credits: below this (with a low net) the Cor
 const SMALL_COLONY_POPS := 3
 const MAX_SMALL_COLONIES := 2  # no new colony ship while this many colonies are still under SMALL_COLONY_POPS
 const ORE_SITE_SCORE := 300  # outpost targeting: a body that takes an ore mining station
+const MAX_COLONIES := 10  # the AI stops sending colony ships here (B20 mid-game empire: 6-10 colonies)
 const CREDIT_CUSHION := 100000  # milli-credits kept before taking on new upkeep
 
 
@@ -156,10 +157,15 @@ static func _colonise(state: MatchState, eid: int) -> void:
 	if busy or best_colony_target(state, eid, capital_sys) == StateIO.NONE:
 		return
 	var small := 0
+	var owned := 0
 	for pid: int in state.colonies:
 		var c: Colony = state.colonies.get_or(pid)
-		if c.owner == eid and c.total_pops() < SMALL_COLONY_POPS:
-			small += 1
+		if c.owner == eid:
+			owned += 1
+			if c.total_pops() < SMALL_COLONY_POPS:
+				small += 1
+	if owned >= MAX_COLONIES:
+		return
 	if small >= MAX_SMALL_COLONIES:
 		return  # let the young colonies grow first (each costs upkeep and freight until its Farm)
 	for sid: int in state.stations:

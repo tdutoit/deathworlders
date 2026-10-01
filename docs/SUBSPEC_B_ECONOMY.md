@@ -76,6 +76,12 @@
   had Foundries starved of ore). Tried and reverted: letting builds stalled 60+ days send freight through
   raided systems ("blockade running") — losses went to 17-49 freighters per empire and 15 -> 4 empires met
   B20. Harness: 15 of 20 empires meet B20 (5 seeds x 15 years, small).
+- 2026-10-01 (M2 WP14, part 5): the AI stops sending colony ships at 10 colonies (B20's 6-10). Harness: 15 of
+  20 (all colony counts now <= 10). Remaining misses: alloys 46-55 in three empires (ore-poor or few
+  Industrial worlds) and 127-138 in two. Tried and reverted (each scored 9 of 20): Foundry moved up the
+  Industrial templates; the AI diversifying to Research above 110-120 alloys/month; the AI queueing extra
+  Foundries below 70. Per-empire alloy output swings +/-40 between near-identical runs, so single rule nudges
+  don't move the 18/20 bar; it needs AI production planning (M4 AI work) or a wider B20 alloy band.
 
 ---
 
