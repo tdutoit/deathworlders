@@ -68,6 +68,9 @@
   files go to `user://determinism/` for cross-machine diffs. Full run (20 seeds x 4 sizes x 60 months)
   takes ~45 min, so the GUT suite runs one short case. Pathfinder switched to a binary heap (tie-break by
   system ID) after the harness exposed O(V^2 log V) routing.
+  Result 2026-10-01 (Windows 10, Godot 4.7.2): 20 seeds x 4 sizes x 60 months x 4 runs, 0 mismatches
+  (small 427 s, medium 587 s, large 785 s, huge 1024 s, sizes run in parallel). Cross-machine check pending
+  a second machine.
 - 2026-10-01 (WP12): core `hull` category (`HullDef` + `SlotDef`, C5 subset) with
   `core:hull/human_corvette_mk1` (A2 stats, B10 cost) using the starter's skill-built .glb. The content
   validator reads hardpoint names from the .glb's JSON chunk (`io/glb_reader.gd`). Model paths resolve
