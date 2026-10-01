@@ -36,3 +36,17 @@ static func int_map(d: Dictionary) -> Dictionary:
 	for k: Variant in d:
 		out[String(k)] = int(d[k])
 	return out
+
+
+## Nested JSON data with every whole number back as int (saves store numbers as floats).
+static func ints_deep(v: Variant) -> Variant:
+	if v is float:  # lint-allow: float JSON numbers load as floats; converted to int here
+		return int(v)
+	if v is Array:
+		return (v as Array).map(func(x: Variant) -> Variant: return ints_deep(x))
+	if v is Dictionary:
+		var out := {}
+		for k: Variant in v:
+			out[String(k)] = ints_deep(v[k])
+		return out
+	return v

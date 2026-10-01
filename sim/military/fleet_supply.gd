@@ -22,8 +22,8 @@ static func day_tick(state: MatchState) -> void:
 	var docks := {}  # owner -> {system: [stockpile of each own operational shipyard / depot there]}
 	for uid: int in state.units.keys():
 		var u: Unit = state.units.get_or(uid)
-		if u == null or u.kind != "warship" or u.owner < 0:
-			continue
+		if u == null or u.kind != "warship" or u.owner < 0 or Battles.in_battle(state, u.id):
+			continue  # no resupply or repair in battle
 		if not cover.has(u.owner):
 			cover[u.owner] = Supply._coverage(state, u.owner)
 			docks[u.owner] = _docks(state, u.owner)

@@ -83,7 +83,7 @@ static func month_tick(state: MatchState) -> void:
 		if not state.pirate_bases.has(u.system_id) and rng.range(0, 1000) < r.pirate_base_chance_permille:
 			state.pirate_bases[u.system_id] = r.pirate_base_spawn_months
 			u.months_left = 0  # guards its base from now on
-		elif not u.is_moving():
+		elif not u.is_moving() and not Battles.in_battle(state, u.id):
 			_hunt(state, u, reach, traffic)
 	# Bases send out raiders.
 	for sys_id: int in IdMap.sort_keys(state.pirate_bases.keys()):
@@ -117,6 +117,12 @@ static func spawn_raider(state: MatchState, system_id: int, target: int) -> Unit
 	u.speed = CmdDebugSpawnScout.SCOUT_SPEED
 	u.target_owner = target
 	u.months_left = Economy.rules(state.defs).raider_months
+	var cr := state.defs.get_def(CombatRulesDef.ID) as CombatRulesDef
+	var design := state.defs.get_def(cr.pirate_raider_design) as DesignDef if cr != null else null
+	if design != null:  # M3: raiders fly the pirate raider design and fight
+		u.hull_id = String(design.hull)
+		u.components.assign(Array(design.components).map(func(c: StringName) -> String: return String(c)))
+		Fleets.arm(state, u)
 	state.units.put(u.id, u)
 	return u
 

@@ -54,6 +54,8 @@ static func _finish_station(state: MatchState, s: Station) -> void:
 		var def: StationDef = state.defs.get_def(StringName(s.def_id))
 		if def.function == &"outpost":  # claims the system (D2)
 			state.galaxy.system(s.system_id).owner = s.owner
+		if def.function == &"defence":  # M3: armed from its design
+			Battles.arm_station(state, s)
 
 
 static func _halted(state: MatchState, empire_id: int) -> bool:

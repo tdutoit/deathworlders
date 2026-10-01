@@ -26,5 +26,7 @@ static func tick(state: MatchState) -> void:
 				break
 			u.progress -= lane.length * MILLI
 			u.system_id = u.path.pop_front()
+			if u.is_moving() and u.kind in Battles.COMBATANT_KINDS and Battles.hostile_present(state, u.system_id, u.owner):
+				u.path.clear()  # interdiction: hostile armed ships or platforms here stop it (battle next)
 		if not u.is_moving():
 			u.progress = 0

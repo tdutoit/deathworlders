@@ -20,6 +20,7 @@ var target_priority := "largest"
 var retreat_at := 500
 var formation := "screen_forward"
 var stance := "balanced"
+var defeated_tick := 0  # last lost battle (A10: recent defeat, -100 starting morale)
 
 
 ## Every ship in hierarchy order.
@@ -39,7 +40,7 @@ func size() -> int:
 func to_dict() -> Dictionary:
 	return {"id": id, "owner": owner, "name": name, "reserve": reserve, "task_forces": task_forces.duplicate(true),
 		"range_pref": range_pref, "target_priority": target_priority, "retreat_at": retreat_at,
-		"formation": formation, "stance": stance}
+		"formation": formation, "stance": stance, "defeated_tick": defeated_tick}
 
 
 static func from_dict(d: Dictionary) -> Fleet:
@@ -58,4 +59,5 @@ static func from_dict(d: Dictionary) -> Fleet:
 	f.retreat_at = int(d.get("retreat_at", 500))
 	f.formation = String(d.get("formation", "screen_forward"))
 	f.stance = String(d.get("stance", "balanced"))
+	f.defeated_tick = int(d.get("defeated_tick", 0))
 	return f

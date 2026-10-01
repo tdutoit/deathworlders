@@ -35,6 +35,7 @@ static func advance(state: MatchState) -> int:
 		Freight.tick(state)
 		Colonisation.tick(state)
 		Pirates.tick(state)
+		Battles.tick(state)
 	state.tick += 1
 	var flags := 0
 	if Calendar.is_day_start(state.tick):

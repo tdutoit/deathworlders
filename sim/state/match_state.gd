@@ -20,6 +20,9 @@ var demands := IdMap.new()  # id -> Demand (M2, B8)
 var sectors := IdMap.new()  # id -> Sector (M2, D3)
 var designs := IdMap.new()  # id -> ShipDesign (M3)
 var fleets := IdMap.new()  # id -> Fleet (M3)
+var battles := IdMap.new()  # id -> Battle in progress (M3)
+var reports := IdMap.new()  # id -> BattleReport of finished battles (M3)
+var wars := {}  # "a:b" (lower empire ID first) -> true while those empires are at war (M3 toggle)
 var pirate_bases := {}  # system ID -> months until it sends out the next raider (D9)
 var reserves := {}  # "holder:resource" -> whole units auto-logistics leaves alone (B8; default 20% of cap)
 var next_id := 1
@@ -109,6 +112,9 @@ func to_dict() -> Dictionary:
 		"sectors": StateIO.map_to_array(sectors),
 		"designs": StateIO.map_to_array(designs),
 		"fleets": StateIO.map_to_array(fleets),
+		"battles": StateIO.map_to_array(battles),
+		"reports": StateIO.map_to_array(reports),
+		"wars": wars.duplicate(),
 		"pirate_bases": pirate_bases.duplicate(),
 		"reserves": reserves.duplicate(),
 		"next_id": next_id,
@@ -138,6 +144,10 @@ static func from_dict(d: Dictionary) -> MatchState:
 	s.sectors = StateIO.array_to_map(d.get("sectors", []), Sector.from_dict)
 	s.designs = StateIO.array_to_map(d.get("designs", []), ShipDesign.from_dict)
 	s.fleets = StateIO.array_to_map(d.get("fleets", []), Fleet.from_dict)
+	s.battles = StateIO.array_to_map(d.get("battles", []), Battle.from_dict)
+	s.reports = StateIO.array_to_map(d.get("reports", []), BattleReport.from_dict)
+	for k: Variant in d.get("wars", {}):
+		s.wars[String(k)] = true
 	for k: Variant in d.get("pirate_bases", {}):
 		s.pirate_bases[int(k)] = int(d["pirate_bases"][k])
 	s.reserves = StateIO.int_map(d.get("reserves", {}))
@@ -162,6 +172,7 @@ func checksum() -> Dictionary:
 		"economy": DetHash.hash_value([d["colonies"], d["stations"], d["sectors"]]),
 		"logistics": DetHash.hash_value([d["routes"], d["demands"], d["reserves"]]),
 		"military": DetHash.hash_value([d["designs"], d["fleets"]]),
+		"combat": DetHash.hash_value([d["battles"], d["reports"], d["wars"]]),
 		"rng": DetHash.hash_value(d["rng_streams"]),
 	}
 	parts["total"] = DetHash.hash_value(parts)

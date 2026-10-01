@@ -25,6 +25,8 @@ static func check_ships(state: MatchState, eid: int, ships: Variant) -> String:
 		seen[u.id] = true
 		if u.is_moving():
 			return "unit %d is moving" % u.id
+		if Battles.in_battle(state, u.id):
+			return "unit %d is in battle" % u.id
 		if system != StateIO.NONE and u.system_id != system:
 			return "the ships must be in one system"
 		system = u.system_id

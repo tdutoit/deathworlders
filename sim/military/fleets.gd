@@ -146,6 +146,12 @@ static func set_route(state: MatchState, f: Fleet, route: Array[int]) -> void:
 
 ## A just-launched warship: full combat state from its design, then the system's reserve fleet (or a new one).
 static func commission(state: MatchState, u: Unit) -> void:
+	arm(state, u)
+	join_reserve(state, u)
+
+
+## Full combat state from the unit's hull and components.
+static func arm(state: MatchState, u: Unit) -> void:
 	var st := ShipStats.of(state.defs, u.hull_id, u.components)
 	u.hp = st.hull
 	u.armor = st.armor
@@ -153,6 +159,10 @@ static func commission(state: MatchState, u: Unit) -> void:
 	u.ammo = st.ammo
 	u.crew = st.crew
 	u.marines = st.marines
+
+
+## The system's reserve fleet takes the ship (or a new reserve fleet is started there).
+static func join_reserve(state: MatchState, u: Unit) -> void:
 	for fid: int in state.fleets.ordered():
 		var f: Fleet = state.fleets.get_or(fid)
 		var l := lead(state, f)

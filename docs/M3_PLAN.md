@@ -40,6 +40,22 @@ into an ordered build plan. Builds on M2 (docs/M2_PLAN.md); same rules (CLAUDE.m
   else 1% a day in supply range (open question 1 settled: docked plus field repair; the field rate's cost,
   1 alloy per 20 hull points from the covering stockpiles like docked repair, is a placeholder). Armour returns
   in step with hull; shields refill fully outside battle. A13's out-of-supply combat penalties apply in WP5.
+- 2026-10-01 (WP5, owner decisions): battles (`Battles`, hourly after movement) start where hostile armed
+  combatants (warships, raiders, pirate bases, defence stations) sit stationary in one system; same-owner
+  arrivals join as reinforcements; one battle per system, two sides (a third hostile party waits). Hostile =
+  pirates, or empires in `MatchState.wars` (the WP7 toggle). Interdiction: a warship or raider arriving in a
+  system with hostile stationary armed ships or platforms stops there (freighters don't). Formations are a
+  fleet's task forces (doctrine from the fleet), one group per owner for ships outside fleets, one for
+  stations (never retreat). Rounds follow A4 exactly; a side's range preference is its costliest formation's
+  doctrine (Line for stations and pirates); A6's top-3 pick is weighted, screened capital ships at 50%.
+  Retreat: a formation disengages for 2 rounds (not firing, +200 incoming accuracy), one more when the
+  pursuers are at least as fast (A10 pursuit), then leaves as its own fleet toward the nearest system its
+  owner supplies (pirates: toward a base). Captured ships fight for the captor from the next round and join
+  its reserve fleet afterwards. Battle value (A1 cost) = resource cost at base value. Salvage counts into
+  `Empire.tech_fragments` (spent in M5). Recent defeat = a lost battle in the last 30 days. Ships in battle
+  can't be ordered, resupplied or repaired. Battles and reports are match state (`combat` checksum part;
+  `BattleReport` keeps the log for the F11 screen). Pirate raiders now fly the pirate raider design (WP8 adds
+  bases). No terrain in M3 (the galaxy has none; open question 7). Formation and stance: no effect yet.
 
 ---
 

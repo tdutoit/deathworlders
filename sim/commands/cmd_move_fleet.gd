@@ -16,6 +16,8 @@ func validate(state: MatchState) -> bool:
 	if state.galaxy.system(target) == null:
 		return reject("unknown system %d" % target)
 	var lead := Fleets.lead(state, f)
+	if Battles.in_battle(state, lead.id):
+		return reject("fleet %d is in battle (doctrine decides retreat)" % f.id)
 	var start := lead.path[0] if lead.is_moving() else lead.system_id
 	var route := Pathfinder.route(state.galaxy, start, target)
 	if route.is_empty() and start != target:
