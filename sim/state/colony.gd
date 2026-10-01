@@ -20,6 +20,7 @@ var starving_months := 0
 var job_priority: Array[String] = []  # player-set order (D4)
 var job_caps := {}  # job ID -> max employed (D4 priorities + caps)
 var stockpile := Stockpile.new()
+var queue: Array[Construction] = []  # planet buildings; only the first progresses (B10)
 var produced := {}  # resource ID -> milli-units this month (globals included)
 var consumed := {}
 var last_produced := {}  # last full month, for the UI and growth
@@ -57,6 +58,7 @@ func to_dict() -> Dictionary:
 		"stability": stability, "growth": growth, "stage": stage, "founded_tick": founded_tick,
 		"starving": starving, "starving_months": starving_months, "job_priority": job_priority.duplicate(),
 		"job_caps": job_caps.duplicate(), "stockpile": stockpile.to_dict(),
+		"queue": queue.map(func(q: Construction) -> Dictionary: return q.to_dict()),
 		"produced": produced.duplicate(), "consumed": consumed.duplicate(),
 		"last_produced": last_produced.duplicate(), "last_consumed": last_consumed.duplicate(),
 	}
@@ -84,6 +86,8 @@ static func from_dict(d: Dictionary) -> Colony:
 		c.job_priority.append(String(j))
 	c.job_caps = StateIO.int_map(d["job_caps"])
 	c.stockpile = Stockpile.from_dict(d["stockpile"])
+	for q: Dictionary in d.get("queue", []):
+		c.queue.append(Construction.from_dict(q))
 	c.produced = StateIO.int_map(d["produced"])
 	c.consumed = StateIO.int_map(d["consumed"])
 	c.last_produced = StateIO.int_map(d["last_produced"])

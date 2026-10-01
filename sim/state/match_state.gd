@@ -14,6 +14,7 @@ var galaxy := Galaxy.new()
 var empires := IdMap.new()  # id -> Empire
 var units := IdMap.new()  # id -> Unit
 var colonies := IdMap.new()  # planet id -> Colony (M2)
+var stations := IdMap.new()  # id -> Station (M2)
 var next_id := 1
 var paused := true  # matches start paused
 var speed := 1  # 1, 2, 4 or 8 (CmdSetSpeed)
@@ -36,6 +37,10 @@ static func create(match_settings: MatchSettings, seed_value: int) -> MatchState
 
 func colony(planet_id: int) -> Colony:
 	return colonies.get_or(planet_id)
+
+
+func station(id: int) -> Station:
+	return stations.get_or(id)
 
 
 func empire(id: int) -> Empire:
@@ -67,6 +72,7 @@ func to_dict() -> Dictionary:
 		"empires": StateIO.map_to_array(empires),
 		"units": StateIO.map_to_array(units),
 		"colonies": StateIO.map_to_array(colonies),
+		"stations": StateIO.map_to_array(stations),
 		"next_id": next_id,
 		"paused": paused,
 		"speed": speed,
@@ -88,6 +94,7 @@ static func from_dict(d: Dictionary) -> MatchState:
 	s.empires = StateIO.array_to_map(d["empires"], Empire.from_dict)
 	s.units = StateIO.array_to_map(d["units"], Unit.from_dict)
 	s.colonies = StateIO.array_to_map(d.get("colonies", []), Colony.from_dict)
+	s.stations = StateIO.array_to_map(d.get("stations", []), Station.from_dict)
 	s.next_id = int(d["next_id"])
 	s.paused = d["paused"] == true
 	s.speed = int(d["speed"])
@@ -106,7 +113,7 @@ func checksum() -> Dictionary:
 		"galaxy": DetHash.hash_value(d["galaxy"]),
 		"empires": DetHash.hash_value(d["empires"]),
 		"units": DetHash.hash_value(d["units"]),
-		"economy": DetHash.hash_value(d["colonies"]),
+		"economy": DetHash.hash_value([d["colonies"], d["stations"]]),
 		"rng": DetHash.hash_value(d["rng_streams"]),
 	}
 	parts["total"] = DetHash.hash_value(parts)

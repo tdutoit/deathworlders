@@ -18,6 +18,14 @@ into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.m
   the content (set on creation and load, never saved). Monthly totals are spread over the 30 days without
   drift; jobs produce in JobDef.priority order. Growth needs a strictly positive monthly food net.
   Strikes pick the offline building on the `events` stream; revolts (B18 < 5) wait for M6 ground forces.
+- 2026-10-01 (WP3): construction draws today's share of materials from the **site's own stockpile**: the
+  colony for buildings, the station for stations and upgrades. A new station is a site with an empty
+  stockpile that freighters fill (WP5/6); nothing moves between stockpiles for free. One building at a time
+  per colony; one build per station. Cancelling refunds the materials used so far. Outposts may be placed in
+  unclaimed systems and claim the system when finished (influence cost in WP8). The start (StartDef) adds
+  B19's orbitals: Logistics T1 and Shipyard S at the capital, three belt Mining Stations; a homeworld system
+  without an asteroid belt gets one (fair starts). B19's Listening Post waits for M5. Mining focus boosts
+  same-system stations +250 permille (B11) at Primary, half at Secondary.
 
 ---
 

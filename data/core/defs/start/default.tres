@@ -26,5 +26,7 @@ stockpile = {
 treasury = {
 &"core:resource/credits": 500
 }
+capital_stations = Array[StringName]([&"core:station/logistics_t1", &"core:station/shipyard_t1"])
+belt_stations = Array[StringName]([&"core:station/mining_belt", &"core:station/mining_belt", &"core:station/mining_belt"])
 id = &"core:start/default"
 name_key = "START_DEFAULT"

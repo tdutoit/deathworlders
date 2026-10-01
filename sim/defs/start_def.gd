@@ -11,6 +11,8 @@ extends Def
 @export var stockpile: Dictionary = {}  # resource ID -> whole units on the capital
 @export var treasury: Dictionary = {}  # global resource ID -> whole units (credits, research, influence)
 @export var stage: StringName = &"core"
+@export var capital_stations: Array[StringName] = []  # station IDs placed in the capital's orbit
+@export var belt_stations: Array[StringName] = []  # station IDs placed at the system's asteroid belt
 
 
 func category() -> String:
@@ -27,4 +29,6 @@ func schema() -> Dictionary:
 		"stockpile": {"type": "int_map", "key_ref": "resource", "min": 0},
 		"treasury": {"type": "int_map", "key_ref": "resource", "min": 0},
 		"stage": {"type": "enum", "values": ["outpost", "colony", "developed", "core"]},
+		"capital_stations": {"type": "id_list", "ref": "station"},
+		"belt_stations": {"type": "id_list", "ref": "station"},
 	}

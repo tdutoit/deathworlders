@@ -31,6 +31,49 @@ static func apply(state: MatchState, db: DefDatabase) -> void:
 		c.founded_tick = state.tick
 		Economy.assign_jobs(c, db)
 		state.colonies.put(c.id, c)
+		for st in start.capital_stations:
+			_place_built(state, e.id, planet.id, String(st))
+		if not start.belt_stations.is_empty():
+			var belt := _belt_of(state, planet)
+			for st in start.belt_stations:
+				_place_built(state, e.id, belt.id, String(st))
+
+
+## A finished station in orbit of a body (start only: no construction).
+static func _place_built(state: MatchState, empire_id: int, planet_id: int, station_id: String) -> void:
+	var s := Station.new()
+	s.id = state.alloc_id()
+	s.owner = empire_id
+	s.def_id = station_id
+	s.planet_id = planet_id
+	s.system_id = state.galaxy.planet(planet_id).system_id
+	s.operational = true
+	state.stations.put(s.id, s)
+
+
+## The home system's asteroid belt; one is added (outermost orbit) if the system has none, so every
+## start has B19's belt income.
+static func _belt_of(state: MatchState, capital: Planet) -> Planet:
+	var sys := state.galaxy.system(capital.system_id)
+	var outer := 0
+	for pid in sys.planet_ids:
+		var p := state.galaxy.planet(pid)
+		if p.planet_type == "core:planet_type/asteroid_belt":
+			return p
+		outer = maxi(outer, p.orbit_radius)
+	var belt := Planet.new()
+	belt.id = state.alloc_id()
+	belt.system_id = sys.id
+	belt.name = NameGenerator.planet_name(sys.name, sys.planet_ids.size())
+	belt.planet_type = "core:planet_type/asteroid_belt"
+	belt.size = "medium"
+	belt.orbit_index = sys.planet_ids.size()
+	belt.orbit_radius = outer + 30
+	belt.deposits = {"core:resource/ore": 3}
+	belt.orbital_slots = (state.defs.get_def(PlanetSizeDef.id_for("medium")) as PlanetSizeDef).orbital_slots
+	state.galaxy.planets.put(belt.id, belt)
+	sys.planet_ids.append(belt.id)
+	return belt
 
 
 ## A start building that needs a deposit gets one rich enough to hold all its copies.

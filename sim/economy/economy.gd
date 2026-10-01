@@ -44,6 +44,9 @@ static func month_tick(state: MatchState) -> void:
 				else:
 					c.stockpile.take(String(res), b.upkeep[res] * MILLI)
 		_roll_flows(c)
+	var stations_due := StationOps.upkeep(state)
+	for eid: int in stations_due:
+		upkeep_due[eid] = upkeep_due.get(eid, 0) + stations_due[eid]
 	for eid: int in state.empires:
 		var e: Empire = state.empires.get_or(eid)
 		var due: int = upkeep_due.get(eid, 0)

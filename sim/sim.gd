@@ -51,6 +51,8 @@ static func _day_tick(state: MatchState) -> void:
 	@warning_ignore("integer_division")
 	var day := (state.tick / Calendar.HOURS_PER_DAY - 1) % Calendar.DAYS_PER_MONTH  # day just completed
 	Economy.day_tick(state, day)
+	StationOps.day_tick(state, day)
+	Builder.day_tick(state)
 
 
 ## Settlement: growth, stability, taxes and upkeep (M2).

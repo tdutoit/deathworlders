@@ -7,6 +7,11 @@ static var _types := {  # class refs are not constant expressions
 	CmdSetSpeed.TYPE: CmdSetSpeed,
 	CmdMoveUnit.TYPE: CmdMoveUnit,
 	CmdDebugSpawnScout.TYPE: CmdDebugSpawnScout,
+	CmdQueueBuilding.TYPE: CmdQueueBuilding,
+	CmdQueueStation.TYPE: CmdQueueStation,
+	CmdUpgradeStation.TYPE: CmdUpgradeStation,
+	CmdCancelConstruction.TYPE: CmdCancelConstruction,
+	CmdSetFocus.TYPE: CmdSetFocus,
 }
 
 
