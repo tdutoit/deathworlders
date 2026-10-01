@@ -84,6 +84,12 @@
   don't move the 18/20 bar; it needs AI production planning (M4 AI work) or a wider B20 alloy band.
 - 2026-10-01 (owner decision): B20's year-15 alloy band is **50–140/month** (was 60–120), matching the spread
   the economy actually produces; tighter AI production planning is left to M4.
+- 2026-10-01 (M2 WP14, part 6, 20-seed check): 66 of 80 empires meet B20 (82.5%; the DoD bar is 90%).
+  Autopilot colony targets: habitability >= 500 preferred, >= 300 accepted when nothing better is in reach
+  (Vesskar likes only ocean/terran; its misses fell 8 -> 3). Remaining misses: 7-8 empires over 140
+  alloys/month (142-209, strong 10-colony industrial empires), 4-5 under 50, two at 5 colonies, one at 85%
+  average freighter use. Tried and reverted: the Core Sector switching to Research above 130 alloys/month
+  (no effect: the directive only sets the focus of newly Developed planets).
 
 ---
 

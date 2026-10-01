@@ -6,6 +6,7 @@ extends Node
 ##   --screenshot=<path>   save a PNG after the camera settles, then quit
 ##   --perf=<seconds>      print average / worst FPS over that time, then quit
 ##   --ui=menu|setup       with --screenshot: capture that screen instead of a match
+##   --load=<save>         open that save and unpause (with --speed=<1|2|4|8>, --perf=<seconds>)
 ##   --months=<n>          run the quickstart match n months before showing it
 ##   --screen=planet|sectors|logistics|stockpile|alerts   (--tab=routes|demands|hubs|losses) open that panel
 
@@ -22,8 +23,27 @@ func _ready() -> void:
 			($UI/UiRoot as UiRoot).show_setup()
 		await _wait(0.6)
 		_save_screenshot()
+	elif _args.has("load"):
+		_load_and_run()
 	elif _args.has("quickstart") or _args.has("screenshot") or _args.has("perf"):
 		_quickstart()
+
+
+## --load=<save> [--speed=1|2|4|8] [--perf=<s>]: open a save, unpause at that speed, optionally measure FPS.
+func _load_and_run() -> void:
+	var errors := GameState.load_from(_args["load"])
+	if not errors.is_empty():
+		printerr("\n".join(errors))
+		get_tree().quit(1)
+		return
+	($UI/UiRoot as UiRoot).show_hud()
+	CommandQueue.submit_new(CmdSetSpeed.TYPE, {"speed": int(_args.get("speed", "1"))})
+	CommandQueue.submit_new(CmdPause.TYPE, {"paused": 0})
+	if _args.has("perf"):
+		var start := GameState.state.tick
+		await _measure(float(_args["perf"]))
+		print("perf: %d sim hours in %s s" % [GameState.state.tick - start, _args["perf"]])
+		get_tree().quit()
 
 
 func _quickstart() -> void:

@@ -22,6 +22,8 @@ const CREDIT_LOW := 300000  # milli-credits: below this (with a low net) the Cor
 const SMALL_COLONY_POPS := 3
 const MAX_SMALL_COLONIES := 2  # no new colony ship while this many colonies are still under SMALL_COLONY_POPS
 const ORE_SITE_SCORE := 300  # outpost targeting: a body that takes an ore mining station
+const HAB_GOOD := 500  # colony targets: habitability permille the AI prefers
+const HAB_FALLBACK := 300  # ... and the least it accepts when nothing better is in reach
 const MAX_COLONIES := 10  # the AI stops sending colony ships here (B20 mid-game empire: 6-10 colonies)
 const CREDIT_CUSHION := 100000  # milli-credits kept before taking on new upkeep
 
@@ -69,8 +71,8 @@ static func _do(state: MatchState, eid: int, type_id: StringName, payload: Dicti
 static func best_colony_target(state: MatchState, eid: int, from_system: int) -> int:
 	var species: SpeciesDef = state.defs.get_def(StringName(state.empire(eid).species))
 	var hops := _near_territory(state, eid, from_system)
-	var best := StateIO.NONE
-	var best_score := 0
+	var best := [StateIO.NONE, StateIO.NONE]  # [good habitability, fallback], each with its score below
+	var best_score := [0, 0]
 	var candidates: Array[int] = []
 	for sys_id: int in IdMap.sort_keys(hops.keys()):
 		if int(hops[sys_id]) <= OUTPOST_RANGE:
@@ -83,18 +85,20 @@ static func best_colony_target(state: MatchState, eid: int, from_system: int) ->
 			continue
 		var ptype: PlanetTypeDef = state.defs.get_def(StringName(p.planet_type))
 		var hab := int(species.habitability.get(StringName(p.planet_type), 0))
-		if ptype.orbital_only or hab < 500 or int(hops[p.system_id]) > OUTPOST_RANGE:
+		if ptype.orbital_only or hab < HAB_FALLBACK or int(hops[p.system_id]) > OUTPOST_RANGE:
 			continue
+		var tier := 0 if hab >= HAB_GOOD else 1
 		if not _served(state, eid, p.system_id):
 			continue  # no own hub's freighters reach it: its Farm would never arrive
 		if state.pirate_bases.has(p.system_id) or Pirates.raided_systems(state, eid).has(p.system_id):
 			continue  # raiders there (a base never leaves without warships)
 		var size: PlanetSizeDef = state.defs.get_def(PlanetSizeDef.id_for(p.size))
 		var score := hab + size.housing * 20 + _deposit_score(p) - int(hops[p.system_id]) * 300 - (200 if owner == StateIO.NONE else 0)
-		if score > best_score or (score == best_score and pid < best):
-			best = pid
-			best_score = score
-	return best
+		if score > best_score[tier] or (score == best_score[tier] and pid < best[tier]):
+			best[tier] = pid
+			best_score[tier] = score
+	# Poorer worlds only when nothing good is in reach (species with few liked planet types, e.g. Vesskar).
+	return best[0] if best[0] != StateIO.NONE else best[1]
 
 
 ## True when some own hub with berths has the system within its freight range (B8).
