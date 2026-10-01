@@ -21,6 +21,7 @@ const SHIP_SIZES: Array[String] = ["S", "M", "L"]
 @export var docks: int
 @export var shipyard_size: StringName  # "S", "M" or "L"
 @export var supply_range: int  # lanes (B12)
+@export var sector_range: int  # lanes a sector anchored here reaches (D3: T2 3, T3 5; 0 = can't anchor)
 
 
 func category() -> String:
@@ -44,6 +45,7 @@ func schema() -> Dictionary:
 		"docks": {"type": "int", "min": 0},
 		"shipyard_size": {"type": "enum", "values": SHIP_SIZES},
 		"supply_range": {"type": "int", "min": 0},
+		"sector_range": {"type": "int", "min": 0},
 	}
 
 

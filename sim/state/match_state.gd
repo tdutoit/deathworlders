@@ -17,6 +17,7 @@ var colonies := IdMap.new()  # planet id -> Colony (M2)
 var stations := IdMap.new()  # id -> Station (M2)
 var routes := IdMap.new()  # id -> Route (M2)
 var demands := IdMap.new()  # id -> Demand (M2, B8)
+var sectors := IdMap.new()  # id -> Sector (M2, D3)
 var reserves := {}  # "holder:resource" -> whole units auto-logistics leaves alone (B8; default 20% of cap)
 var next_id := 1
 var paused := true  # matches start paused
@@ -78,6 +79,7 @@ func to_dict() -> Dictionary:
 		"stations": StateIO.map_to_array(stations),
 		"routes": StateIO.map_to_array(routes),
 		"demands": StateIO.map_to_array(demands),
+		"sectors": StateIO.map_to_array(sectors),
 		"reserves": reserves.duplicate(),
 		"next_id": next_id,
 		"paused": paused,
@@ -103,6 +105,7 @@ static func from_dict(d: Dictionary) -> MatchState:
 	s.stations = StateIO.array_to_map(d.get("stations", []), Station.from_dict)
 	s.routes = StateIO.array_to_map(d.get("routes", []), Route.from_dict)
 	s.demands = StateIO.array_to_map(d.get("demands", []), Demand.from_dict)
+	s.sectors = StateIO.array_to_map(d.get("sectors", []), Sector.from_dict)
 	s.reserves = StateIO.int_map(d.get("reserves", {}))
 	s.next_id = int(d["next_id"])
 	s.paused = d["paused"] == true
@@ -122,7 +125,7 @@ func checksum() -> Dictionary:
 		"galaxy": DetHash.hash_value(d["galaxy"]),
 		"empires": DetHash.hash_value(d["empires"]),
 		"units": DetHash.hash_value(d["units"]),
-		"economy": DetHash.hash_value([d["colonies"], d["stations"]]),
+		"economy": DetHash.hash_value([d["colonies"], d["stations"], d["sectors"]]),
 		"logistics": DetHash.hash_value([d["routes"], d["demands"], d["reserves"]]),
 		"rng": DetHash.hash_value(d["rng_streams"]),
 	}

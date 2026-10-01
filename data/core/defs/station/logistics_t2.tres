@@ -19,5 +19,6 @@ upkeep = {
 stockpile_cap = 2500
 berths = 12
 hub_range = 5
+sector_range = 3
 id = &"core:station/logistics_t2"
 name_key = "STATION_LOGISTICS_T2"
