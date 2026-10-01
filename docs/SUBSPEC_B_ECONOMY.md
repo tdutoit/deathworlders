@@ -90,6 +90,9 @@
   alloys/month (142-209, strong 10-colony industrial empires), 4-5 under 50, two at 5 colonies, one at 85%
   average freighter use. Tried and reverted: the Core Sector switching to Research above 130 alloys/month
   (no effect: the directive only sets the focus of newly Developed planets).
+- 2026-10-01 (owner decision): M2 accepts the 20-seed result (66 of 80 empires, 82.5%) for B20. Open for M4
+  (AI): production planning so strong empires stop near the top of the alloy band and weak ones (few
+  liked planet types, ore-poor) reach it; species habitability balance (Vesskar) with the species pass.
 
 ---
 
