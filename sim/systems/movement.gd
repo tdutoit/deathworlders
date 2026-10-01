@@ -11,7 +11,7 @@ static func tick(state: MatchState) -> void:
 		var u: Unit = state.units.get_or(id)
 		if not u.is_moving():
 			continue
-		u.progress += u.speed
+		u.progress += u.speed if not u.out_of_fuel else FixedMath.floor_div(u.speed, 2)
 		while u.is_moving():
 			var lane := state.galaxy.lane_between(u.system_id, u.path[0])
 			if lane == null:  # lane vanished; stop where we are

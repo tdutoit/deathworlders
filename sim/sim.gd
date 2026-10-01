@@ -65,6 +65,7 @@ static func _month_tick(state: MatchState) -> void:
 	if state.defs == null:
 		return
 	Economy.month_tick(state)
+	Supply.month_tick(state)
 	Sectors.update_membership(state)
 	Governor.month_tick(state)
 

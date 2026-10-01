@@ -53,5 +53,6 @@ claim_influence_per_system_permille = 60
 new_colony_upkeep_credits = 5
 new_colony_growth_permille = 1000
 new_colony_growth_years = 5
+planet_supply_range = 1
 id = &"core:economy_rules/default"
 name_key = "ECONOMY_RULES_DEFAULT"

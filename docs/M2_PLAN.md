@@ -68,6 +68,10 @@ into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.m
   Mars-style colonies inside owned systems need none. New colonies: 5 credits upkeep until their first Farm,
   +100% growth for 5 years; homeworlds are backdated so they aren't "new". The payback estimate is a
   placeholder (colony ship value / (pops x (tax + ~4 credits) - upkeep)) for the colonise screen.
+- 2026-10-01 (WP9): fuel is the hull's fuel upkeep (B6 for freighters), drawn monthly from the nearest own
+  stockpile in supply range (owned planet 1 lane per B12, stations by `supply_range`: outpost 1, depot 2/3/4).
+  Out of fuel: half speed until a later draw succeeds. Moving-warship fuel (B12 by size) and attrition come
+  with M3.
 
 ---
 

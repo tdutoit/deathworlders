@@ -56,6 +56,7 @@ const ID := &"core:economy_rules/default"
 @export var new_colony_upkeep_credits: int  # D9: 5 a month until its Farm completes
 @export var new_colony_growth_permille: int  # B17: +100% growth
 @export var new_colony_growth_years: int  # B17: for 5 years
+@export var planet_supply_range: int  # B12: an owned planet supplies units 1 lane away
 
 
 func category() -> String:
@@ -74,6 +75,6 @@ func schema() -> Dictionary:
 			"core_hub_lanes", "reach_1", "reach_2", "reach_3", "reach_upkeep_1", "reach_upkeep_2", "reach_upkeep_3",
 			"reach_stability_1", "reach_stability_2", "reach_stability_3", "input_buffer_months",
 			"food_buffer_months", "hub_collect_permille", "claim_influence_base", "claim_influence_per_system_permille",
-			"new_colony_upkeep_credits", "new_colony_growth_permille", "new_colony_growth_years"]:
+			"new_colony_upkeep_credits", "new_colony_growth_permille", "new_colony_growth_years", "planet_supply_range"]:
 		s[field] = {"type": "int"}
 	return s
