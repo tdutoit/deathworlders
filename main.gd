@@ -37,6 +37,8 @@ func _load_and_run() -> void:
 		get_tree().quit(1)
 		return
 	($UI/UiRoot as UiRoot).show_hud()
+	if _args.has("no-autosave"):
+		GameState.autosave_enabled = false
 	CommandQueue.submit_new(CmdSetSpeed.TYPE, {"speed": int(_args.get("speed", "1"))})
 	CommandQueue.submit_new(CmdPause.TYPE, {"paused": 0})
 	if _args.has("perf"):

@@ -4,6 +4,7 @@ extends Node
 
 var state: MatchState
 var autosave_enabled := true
+var _autosave_task := -1  # WorkerThreadPool task of the autosave being written, or -1
 
 
 func _ready() -> void:
@@ -19,6 +20,7 @@ func save_to(path: String) -> String:
 
 ## Loads a save and makes it current. Returns errors (empty on success).
 func load_from(path: String) -> Array[String]:
+	finish_autosave()  # it may be writing the very file being loaded
 	var save := SaveGame.read(path, Database.defs, Database.manifests)
 	if not save.errors.is_empty():
 		return save.errors
@@ -29,9 +31,20 @@ func load_from(path: String) -> Array[String]:
 
 func _on_month(tick: int) -> void:
 	if autosave_enabled and state != null:
-		var err := save_to(SaveGame.autosave_path(tick))
-		if err != "":
-			printerr("Autosave failed: " + err)
+		finish_autosave()  # one at a time (a month at 8x is ~4 s, a write ~30 ms)
+		_autosave_task = SaveGame.write_async(SaveGame.autosave_path(tick), state, CommandQueue.schedule, Database.defs,
+			Database.manifests)
+
+
+## Waits for an autosave still being written (before the next one, and on exit).
+func finish_autosave() -> void:
+	if _autosave_task != -1:
+		WorkerThreadPool.wait_for_task_completion(_autosave_task)
+		_autosave_task = -1
+
+
+func _exit_tree() -> void:
+	finish_autosave()
 
 
 ## Generates a match from settings and makes it current. Returns errors (empty on success).
@@ -53,6 +66,7 @@ func adopt(new_state: MatchState) -> void:
 
 
 func end_match() -> void:
+	finish_autosave()
 	state = null
 	CommandQueue.reset()
 	EventBus.match_ended.emit()

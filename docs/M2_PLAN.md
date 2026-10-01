@@ -114,6 +114,12 @@ into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.m
   membership) stays on the month boundary; fuel supply, pirates, governors and the AI autopilot run 1, 2,
   3 and 4 hours after it (`Sim._month_phase`), so no single hour carries all monthly work. The first month
   keeps its old cadence (phases start after the first settlement).
+- 2026-10-01 (performance pass, frame rate): Huge, 8 AIs, year 15 at 8x: 138 fps average over 30 s (DoD
+  >= 60), sim keeping pace (~195 hours/s). The monthly autosave (C12, still every month) now snapshots on
+  the main thread (~15 ms) and encodes/compresses/writes on a WorkerThreadPool task (`SaveGame.write_async`;
+  loading and ending a match wait for it). Worst frame 93 -> 66 ms; the rest is the month-boundary hour
+  (~41 ms) landing in one frame every ~4 s at 8x. Manual saves stay synchronous. Dev flags: `--load=<save>`,
+  `--speed`, `--no-autosave`.
 
 ---
 

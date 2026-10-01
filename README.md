@@ -56,6 +56,6 @@ All commands from the project folder, with `GODOT` pointing at the console build
 | Dev quick start / screenshot / FPS | `$GODOT --path . -- --quickstart [--size=huge] [--view=solar] [--screenshot=out.png] [--perf=5]` |
 | Economy harness (B20 targets) | `$GODOT --headless -s tools/economy_harness.gd -- [seeds=5] [years=15] [size=small] [players=4]` |
 | Screenshot an economy screen | `$GODOT --path . -- --months=24 --screen=planet\|sectors\|logistics\|stockpile\|alerts --screenshot=out.png` |
-| FPS on a save at a speed | `$GODOT --path . -- --load=<save> --speed=8 --perf=20` |
+| FPS on a save at a speed | `$GODOT --path . -- --load=<save> --speed=8 --perf=20 [--no-autosave]` |
 
 Tip: run `-s` tools under `timeout`; a script that fails to compile leaves Godot running.

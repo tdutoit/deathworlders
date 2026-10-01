@@ -18,7 +18,23 @@ var errors: Array[String] = []
 
 ## Writes state (and pending commands) to path. Returns an error string or "".
 static func write(path: String, s: MatchState, schedule: CommandSchedule, db: DefDatabase, manifests: Dictionary) -> String:
+	return store(path, snapshot(s, schedule, db, manifests))
+
+
+## Starts writing a save on a worker thread and returns its task ID (WorkerThreadPool). Only the snapshot is
+## taken here, on the calling thread; it shares no containers with the live state (every to_dict copies),
+## so the match can keep running while the JSON is encoded, compressed and written.
+static func write_async(path: String, s: MatchState, schedule: CommandSchedule, db: DefDatabase, manifests: Dictionary) -> int:
+	var data := snapshot(s, schedule, db, manifests)
 	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
+	return WorkerThreadPool.add_task(func() -> void:
+		var err := store(path, data)
+		if err != "":
+			printerr("Save failed: " + err))
+
+
+## The save's data as plain values (header, state, pending commands).
+static func snapshot(s: MatchState, schedule: CommandSchedule, db: DefDatabase, manifests: Dictionary) -> Dictionary:
 	var d := s.to_dict()
 	var mods := []
 	for id: String in IdMap.sort_keys(manifests.keys()):
@@ -37,6 +53,12 @@ static func write(path: String, s: MatchState, schedule: CommandSchedule, db: De
 		"pending_commands": schedule.to_array() if schedule else [],
 		"command_log_tail": s.command_log.slice(maxi(0, s.command_log.size() - LOG_TAIL)),
 	}
+	return data
+
+
+## Encodes and writes snapshot data (safe on a worker thread). Returns an error string or "".
+static func store(path: String, data: Dictionary) -> String:
+	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
 	var f := FileAccess.open_compressed(path, FileAccess.WRITE, FileAccess.COMPRESSION_DEFLATE)
 	if f == null:
 		return "cannot write %s (%s)" % [path, error_string(FileAccess.get_open_error())]
