@@ -151,7 +151,7 @@ func _build_overlay() -> void:
 	add_child(layer)
 	_overlay = Control.new()
 	_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	layer.add_child(_overlay)
 	for cid: int in state.galaxy.clusters:
 		var l := DrawUtil.overlay_label(state.galaxy.cluster(cid).name, UiTokens.color("ink_1"), 16)

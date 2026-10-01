@@ -55,6 +55,10 @@
   extras: APP-6 frames and echelon marks, grid-morph transition, drop lines, glass blur, edge pan,
   territory wash. `main.gd` has dev flags (`--quickstart`, `--screenshot`, `--perf`) until WP9's menu.
   Measured: Huge galaxy 144 fps (monitor cap) in all three views.
+- 2026-10-01 (WP9): UI screens are built in code (`ui/`), shown by `UiRoot` under `main.tscn`'s UI layer.
+  Translations from `loc/` are registered at runtime by the `Database` autoload. UI scale options
+  100 / 125 / 150% (`user://settings.cfg`). The F10 menu pauses the match and restores it on resume.
+  An empty seed draws a random one outside the sim. Load/Save buttons are disabled until WP10.
 - 2026-10-01 (WP3): game version lives in `application/config/version` (0.1.0); core has a `mod.json` like any mod.
 
 ---

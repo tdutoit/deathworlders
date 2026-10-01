@@ -5,6 +5,7 @@
 [ext_resource type="Script" path="res://views/map/map_view.gd" id="3_map"]
 [ext_resource type="Script" path="res://views/solar/solar_view.gd" id="4_solar"]
 [ext_resource type="Script" path="res://views/camera_rig.gd" id="5_rig"]
+[ext_resource type="Script" path="res://ui/ui_root.gd" id="6_ui"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -32,3 +33,14 @@ transform = Transform3D(0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, -0.433, 0.75, 
 light_energy = 1.1
 
 [node name="UI" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="UiRoot" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("6_ui")

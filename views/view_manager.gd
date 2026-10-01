@@ -39,7 +39,7 @@ func _ready() -> void:
 	_fade.color = UiTokens.color("void")
 	_fade.modulate.a = 0.0
 	_fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_fade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_fade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	layer.add_child(_fade)
 	EventBus.match_started.connect(_on_match_started)
 	EventBus.match_ended.connect(_on_match_ended)
@@ -187,6 +187,17 @@ func back() -> void:
 	elif level == "cluster":
 		rig.map_to(Vector2.ZERO, rig.map_size_max * 0.75)
 		_select("", 0)
+
+
+## Outliner/search: centre the operational plot on a system or unit and select it.
+func focus_on(kind: String, id: int) -> void:
+	var state := GameState.state
+	if level == "solar":
+		await back()
+	var sid := id if kind == "system" else (state.units.get_or(id) as Unit).system_id
+	var s := state.galaxy.system(sid)
+	rig.map_to(Vector2(s.x, s.y), CLUSTER_VIEW_SIZE * 0.8)
+	_select(kind, id)
 
 
 func _select(kind: String, id: int) -> void:

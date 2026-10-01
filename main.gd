@@ -1,19 +1,26 @@
 extends Node
-## Boot. Dev flags (after `--` on the command line):
+## Boot: shows the main menu (ui/ui_root.gd). Dev flags (after `--` on the command line):
 ##   --quickstart          start a debug match immediately (human + 3 AI) with a scout at the capital
 ##   --size=small|medium|large|huge   --seed=<text>
 ##   --view=galaxy|cluster|solar      initial instrument for the shots below
 ##   --screenshot=<path>   save a PNG after the camera settles, then quit
 ##   --perf=<seconds>      print average / worst FPS over that time, then quit
+##   --ui=menu|setup       with --screenshot: capture that screen instead of a match
 
 var _args := {}
 
 
 func _ready() -> void:
+	($UI/UiRoot as UiRoot).view_manager = $ViewContainer
 	for arg in OS.get_cmdline_user_args():
 		var kv := arg.trim_prefix("--").split("=", true, 1)
 		_args[kv[0]] = kv[1] if kv.size() > 1 else "true"
-	if _args.has("quickstart") or _args.has("screenshot") or _args.has("perf"):
+	if _args.has("ui") and _args.has("screenshot"):
+		if _args["ui"] == "setup":
+			($UI/UiRoot as UiRoot).show_setup()
+		await _wait(0.6)
+		_save_screenshot()
+	elif _args.has("quickstart") or _args.has("screenshot") or _args.has("perf"):
 		_quickstart()
 
 
@@ -36,9 +43,7 @@ func _quickstart() -> void:
 	await _show_view(home)
 	if _args.has("screenshot"):
 		await _wait(1.2)
-		get_viewport().get_texture().get_image().save_png(_args["screenshot"])
-		print("screenshot saved: ", _args["screenshot"])
-		get_tree().quit()
+		_save_screenshot()
 	elif _args.has("perf"):
 		await _measure(float(_args["perf"]))
 		get_tree().quit()
@@ -52,6 +57,12 @@ func _show_view(home: int) -> void:
 			vm.rig.map_to(Vector2(s.x, s.y), ViewManager.CLUSTER_VIEW_SIZE, true)
 		"solar":
 			await vm.dive_system(home)
+
+
+func _save_screenshot() -> void:
+	get_viewport().get_texture().get_image().save_png(_args["screenshot"])
+	print("screenshot saved: ", _args["screenshot"])
+	get_tree().quit()
 
 
 func _wait(seconds: float) -> void:

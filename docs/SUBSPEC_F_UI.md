@@ -8,6 +8,10 @@
   needed for keyboard-only navigation, `ui_accept` can't be used because it includes Space = pause),
   `zoom_in` / `zoom_out` also on PageUp / PageDown, and `pan_drag` = middle mouse. Right-click orders the
   selected unit to the system under the cursor; with no unit selected it backs out (like `view_up`).
+- 2026-10-01 (M1 WP9) F21: the Theme is built at runtime from `ui/themes/tokens.json`
+  (`ControlRoomTheme`) instead of a saved `control_room.tres`, so palettes swap without a re-export.
+  Fonts bundled in `assets/fonts/` with their OFL texts. Glass blur is not implemented yet (flat
+  translucent panels). `open_outliner` = Tab is in the InputMap; Esc returns focus to the map.
 
 ---
 

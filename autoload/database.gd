@@ -9,7 +9,19 @@ var report: ContentReport
 
 
 func _ready() -> void:
+	load_translations()
 	load_content()
+
+
+## Registers the imported core translations (loc/*.translation, Sub-spec C13). Mod loc comes later.
+func load_translations() -> void:
+	var dir := DirAccess.open("res://loc")
+	if dir == null:
+		return
+	for f in dir.get_files():
+		var path := "res://loc/" + f.trim_suffix(".remap")
+		if path.ends_with(".translation"):
+			TranslationServer.add_translation(load(path))
 
 
 ## (Re)loads core plus every mod in MODS_DIR. Prints the report if anything went wrong.
