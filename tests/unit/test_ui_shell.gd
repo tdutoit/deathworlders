@@ -40,7 +40,7 @@ func test_strings_are_localised() -> void:
 func test_every_ui_loc_key_exists() -> void:
 	var re := RegEx.create_from_string("\"([A-Z][A-Z0-9]*_[A-Z0-9_]+)\"")
 	var missing := []
-	for dir in ["res://ui", "res://ui/hud"]:
+	for dir in ["res://ui", "res://ui/hud", "res://ui/screens"]:
 		for f in DirAccess.get_files_at(dir):
 			if not f.ends_with(".gd"):
 				continue
@@ -127,7 +127,8 @@ func test_context_panel_shows_selection() -> void:
 	EventBus.selection_changed.emit("planet", human.capital_planet)
 	var texts := []
 	for c in _ui.context_panel._box.get_children():
-		texts.append((c as Label).text)
+		if c is Label:
+			texts.append((c as Label).text)
 	assert_has(texts, "Earth")
 	assert_has(texts, "Capital")
 	assert_has(texts, "Type: Terran")

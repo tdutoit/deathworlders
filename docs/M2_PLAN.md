@@ -65,7 +65,7 @@ into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.m
   target own or unclaimed systems, not orbital-only or uninhabitable bodies. Every new system claim costs D9's
   influence (outposts pay when placed and are refunded if cancelled; colonising an unclaimed system pays and
   claims when ordered). Empires start with no influence (B16 3/month), so the first claim comes around month 8;
-  Mars-style colonies inside owned systems need none. New colonies: 5 credits upkeep until their first Farm,
+  Mars-style colonies inside owned systems need none. New colonies: 3 credits upkeep (WP14; was 5) until their first Farm,
   +100% growth for 5 years; homeworlds are backdated so they aren't "new". The payback estimate is a
   placeholder (colony ship value / (pops x (tax + ~4 credits) - upkeep)) for the colonise screen.
 - 2026-10-01 (WP9): fuel is the hull's fuel upkeep (B6 for freighters), drawn monthly from the nearest own
@@ -96,6 +96,16 @@ into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.m
   station security. Huge, 8 AI empires, 15 years: month tick avg 49.9 ms, worst 71 ms (was ~80/105).
   First harness run: no empire meets B20 yet (2-6 colonies, 1 shipyard, 3-6 freighters, 9-26 alloys/month,
   credits piling up): WP14's job.
+- 2026-10-01 (WP12): economy UI. Top bar credits / research / influence with last month's net and an alert
+  count; planet panel F4 colony block (stage, focus, pops/housing, stability, jobs, autonomy switch, local
+  stockpile, buildings, current build, governor plan or suggestion, orbitals; "Colonise..." when a colony
+  ship can go); screens F6 Sectors (directive, planets, summed stock and net, export quotas, freight), F7
+  Logistics (routes, demand targets, hubs & freighters, losses), F8 Colonise, F9 Stockpiles (resource and
+  near-full/empty filters), F12 Alerts (D6 alerts with Show and a previewed one-click Fix). Bindings and the
+  open_alerts clash: Sub-spec F change log. Map: freighter diamonds, pirate raiders in signal red; stations
+  in the tactical scope. `MatchState.clear_scratch()` at the start of `Sim.execute` / `Sim.advance`: the UI
+  calls sim helpers that cache in the per-tick scratch, and a cache filled between ticks (before the
+  tick's movement) must never reach the sim. Dev flags for screenshots: `--months`, `--screen`, `--tab`.
 
 ---
 

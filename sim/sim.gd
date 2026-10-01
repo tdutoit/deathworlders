@@ -12,6 +12,7 @@ const MONTH := 2
 ## Validates and applies commands in order. Applied ones go to state.command_log; rejected ones
 ## are returned (with cmd.error set) so the caller can log them.
 static func execute(state: MatchState, commands: Array[Command]) -> Array[Command]:
+	state.clear_scratch()
 	var rejected: Array[Command] = []
 	for cmd in commands:
 		if cmd.validate(state):
@@ -27,6 +28,7 @@ static func execute(state: MatchState, commands: Array[Command]) -> Array[Comman
 
 ## One hour: movement, then the clock moves on. Returns DAY / MONTH flags for boundaries reached.
 static func advance(state: MatchState) -> int:
+	state.clear_scratch()
 	Movement.tick(state)
 	if state.defs != null:
 		Freight.tick(state)

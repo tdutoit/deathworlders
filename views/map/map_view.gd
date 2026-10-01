@@ -24,7 +24,9 @@ var _system_ids: Array = []
 var _systems_mm: MultiMeshInstance3D
 var _owned_mm: MultiMeshInstance3D
 var _clusters_mm: MultiMeshInstance3D
-var _units_mm: MultiMeshInstance3D
+var _units_mm: MultiMeshInstance3D  # chevrons: scouts, colony ships, warships
+var _freight_mm: MultiMeshInstance3D  # diamonds: freighters (F22)
+var _raider_mm: MultiMeshInstance3D  # signal chevrons: pirate raiders (owner Pirates.PIRATES)
 var _select_mi: MeshInstance3D
 var _lanes_mat: StandardMaterial3D
 var _systems_mat: StandardMaterial3D
@@ -48,6 +50,8 @@ func build(s: MatchState) -> void:
 	_owned_mm.set_meta("ids", owned)
 	_clusters_mm = _multimesh(DrawUtil.ring_mesh(0.9, 40), DrawUtil.ink_material(UiTokens.color("ink_2")), g.clusters.size())
 	_units_mm = _multimesh(DrawUtil.chevron_mesh(), DrawUtil.ink_material(UiTokens.color("ink_1")), 0)
+	_freight_mm = _multimesh(DrawUtil.diamond_mesh(), DrawUtil.ink_material(UiTokens.color("ink_2")), 0)
+	_raider_mm = _multimesh(DrawUtil.chevron_mesh(), DrawUtil.ink_material(UiTokens.color("signal")), 0)
 	_select_mi = MeshInstance3D.new()
 	_select_mi.mesh = DrawUtil.ring_mesh(0.8, 32)
 	_select_mi.material_override = DrawUtil.ink_material(UiTokens.color("ink_1"))
@@ -239,19 +243,26 @@ func _layout_markers(px: float) -> void:
 
 
 func _layout_units(px: float, frac: float) -> void:
-	var mm := _units_mm.multimesh
-	var ids: Array = state.units.keys()
-	if mm.instance_count != ids.size():
-		mm.instance_count = ids.size()
+	var layers := {_units_mm: [], _freight_mm: [], _raider_mm: []}
+	for uid: int in state.units:
+		var u: Unit = state.units.get_or(uid)
+		var layer := _raider_mm if u.owner == Pirates.PIRATES else (_freight_mm if u.kind == "freighter" else _units_mm)
+		layers[layer].append(u)
 	var r := UNIT_PX * px
-	for i in ids.size():
-		var u: Unit = state.units.get_or(ids[i])
-		var p := ViewMath.unit_point(state, u, frac)
-		var offset := Vector3(0, 2, -r * 1.6) if not u.is_moving() else Vector3(0, 2, 0)
-		var basis := Basis(Vector3.UP, -ViewMath.unit_heading(state, u)).scaled(Vector3(r, 1, r))
-		mm.set_instance_transform(i, Transform3D(basis, Vector3(p.x, 0, p.y) + offset))
-		if selected_kind == "unit" and ids[i] == selected_id:
-			_select_mi.transform = Transform3D(Basis.from_scale(Vector3.ONE * SELECT_PX * px), Vector3(p.x, 1, p.y) + offset)
+	for layer: MultiMeshInstance3D in layers:
+		var units: Array = layers[layer]
+		var mm := layer.multimesh
+		if mm.instance_count != units.size():
+			mm.instance_count = units.size()
+		for i in units.size():
+			var u: Unit = units[i]
+			var p := ViewMath.unit_point(state, u, frac)
+			var offset := Vector3(0, 2, -r * 1.6) if not u.is_moving() else Vector3(0, 2, 0)
+			var rr := r * (0.7 if layer == _freight_mm else 1.0)
+			var basis := Basis(Vector3.UP, -ViewMath.unit_heading(state, u)).scaled(Vector3(rr, 1, rr))
+			mm.set_instance_transform(i, Transform3D(basis, Vector3(p.x, 0, p.y) + offset))
+			if selected_kind == "unit" and u.id == selected_id:
+				_select_mi.transform = Transform3D(Basis.from_scale(Vector3.ONE * SELECT_PX * px), Vector3(p.x, 1, p.y) + offset)
 
 
 func _layout_labels(camera: Camera3D) -> void:

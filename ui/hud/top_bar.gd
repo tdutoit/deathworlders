@@ -1,8 +1,17 @@
 class_name TopBar
 extends PanelContainer
-## Top bar (F2/F22): command console title, current instrument, date, pause and speed controls.
-## Buttons submit Commands; the bar only reads state.
+## Top bar (F2/F22): command console title, current instrument, global resources (credits, research,
+## influence with last month's net), date, pause and speed controls, and the alerts count.
+## Buttons submit Commands or open screens; the bar only reads state.
 
+signal stockpile_requested
+signal alerts_requested
+
+const GLOBALS: Array[String] = ["core:resource/credits", "core:resource/research", "core:resource/influence"]
+const SYMBOLS := {"core:resource/credits": "₵", "core:resource/research": "RP", "core:resource/influence": "✦"}  # ⚗/⚠ fall back to colour emoji
+
+var _globals := {}  # resource ID -> Button
+var _alerts: Button
 var _title: Label
 var _view: Label
 var _date: Label
@@ -21,6 +30,15 @@ func _ready() -> void:
 	titles.add_child(_title)
 	titles.add_child(_view)
 	row.add_child(titles)
+	for res in GLOBALS:
+		var b := Button.new()
+		b.name = "Res_" + res.get_slice("/", 1)
+		b.flat = true
+		b.focus_mode = Control.FOCUS_ALL
+		b.add_theme_font_override("font", ControlRoomTheme.mono_font())
+		b.pressed.connect(func() -> void: stockpile_requested.emit())
+		row.add_child(b)
+		_globals[res] = b
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(spacer)
@@ -37,6 +55,12 @@ func _ready() -> void:
 		b.pressed.connect(func() -> void: CommandQueue.submit_new(CmdSetSpeed.TYPE, {"speed": s}))
 		row.add_child(b)
 		_speeds[s] = b
+	_alerts = Button.new()
+	_alerts.name = "Alerts"
+	_alerts.focus_mode = Control.FOCUS_ALL
+	_alerts.add_theme_font_override("font", ControlRoomTheme.mono_font())
+	_alerts.pressed.connect(func() -> void: alerts_requested.emit())
+	row.add_child(_alerts)
 	EventBus.view_changed.connect(_on_view_changed)
 	EventBus.match_started.connect(_refresh_title)
 
@@ -61,6 +85,37 @@ func _process(_delta: float) -> void:
 	_pause.text = TranslationServer.translate("HUD_RESUME" if state.paused else "HUD_PAUSE")
 	for s: int in _speeds:
 		(_speeds[s] as Button).set_pressed_no_signal(s == state.speed)
+	if Engine.get_process_frames() % 30 == 0:
+		_refresh_economy(state)
+
+
+## Treasury and last month's net per global resource; alerts recounted at the same pace.
+func _refresh_economy(state: MatchState) -> void:
+	var eid := CommandQueue.local_player
+	var e := state.empire(eid)
+	if e == null:
+		return
+	var nets := month_nets(state, eid)
+	for res: String in _globals:
+		var b: Button = _globals[res]
+		b.text = "%s %s %s" % [SYMBOLS[res], UiKit.units(int(e.treasury.get(res, 0))), UiKit.signed(int(nets.get(res, 0)))]
+		b.tooltip_text = TranslationServer.translate("TOP_" + res.get_slice("/", 1).to_upper())
+	var n := Alerts.count(state, eid)
+	_alerts.text = "△ %d" % n
+	_alerts.tooltip_text = TranslationServer.translate("TOP_ALERTS")
+
+
+## Last month's net per global resource: credits are income minus upkeep (Empire.credit_net); research
+## and influence are what the colonies produced minus what they used.
+static func month_nets(state: MatchState, eid: int) -> Dictionary:
+	var out := {"core:resource/credits": state.empire(eid).credit_net}
+	for pid: int in state.colonies:
+		var c: Colony = state.colonies.get_or(pid)
+		if c.owner != eid:
+			continue
+		for res in ["core:resource/research", "core:resource/influence"]:
+			out[res] = int(out.get(res, 0)) + int(c.last_produced.get(res, 0)) - int(c.last_consumed.get(res, 0))
+	return out
 
 
 func _toggle_pause() -> void:

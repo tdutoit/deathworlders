@@ -47,6 +47,30 @@ static func centered_panel(parent: Control, min_width := 420) -> VBoxContainer:
 	return box
 
 
+## Milli-units as whole units with thousands separators ("1,240"); one decimal below 10 ("2.5").
+static func units(milli: int) -> String:
+	var neg := milli < 0
+	var m := absi(milli)
+	var text := ""
+	if m < 10000 and m % 1000 != 0:
+		text = "%d.%d" % [m / 1000, (m % 1000) / 100]
+	else:
+		var whole := str(m / 1000)
+		var i := whole.length() - 3
+		while i > 0:
+			whole = whole.insert(i, ",")
+			i -= 3
+		text = whole
+	return ("−" if neg else "") + text
+
+
+## Signed monthly delta: "+12", "−6", "±0".
+static func signed(milli: int) -> String:
+	if milli == 0:
+		return "±0"
+	return ("+" if milli > 0 else "") + units(milli)
+
+
 static func tr_fmt(key: String, params := {}) -> String:
 	var text := TranslationServer.translate(key)
 	return text.format(params) if not params.is_empty() else text

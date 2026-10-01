@@ -32,6 +32,13 @@ var _scratch := {}
 var _scratch_tick := -1
 
 
+## Forget the cache. Sim.execute and Sim.advance call this first, so data cached by views or tools between
+## ticks (possibly before this tick's movement) never reaches the sim; peers without a UI must agree.
+func clear_scratch() -> void:
+	_scratch = {}
+	_scratch_tick = -1
+
+
 ## Runtime only: a cache that is emptied whenever the tick changes. For derived data (reach maps) that
 ## several subsystems need in the same tick. Never saved or hashed.
 func scratch() -> Dictionary:

@@ -192,6 +192,16 @@ func back() -> void:
 ## Outliner/search: centre the operational plot on a system or unit and select it.
 func focus_on(kind: String, id: int) -> void:
 	var state := GameState.state
+	if kind == "planet":  # planets live in the tactical scope: dive into their system and select the body
+		var psys := state.galaxy.planet(id).system_id
+		if level != "solar" or focus_system != psys:
+			if level == "solar":
+				await back()
+			await dive_system(psys)
+		_select("planet", id)
+		return
+	if kind == "unit" and state.units.get_or(id) == null:
+		return  # gone (destroyed or landed) since the row or alert was drawn
 	if level == "solar":
 		await back()
 	var sid := id if kind == "system" else (state.units.get_or(id) as Unit).system_id

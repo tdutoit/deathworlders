@@ -15,6 +15,12 @@ var context_panel: ContextPanel
 var outliner: Outliner
 var game_menu: GameMenu
 var load_screen: LoadScreen
+var sector_screen: SectorScreen
+var logistics_screen: LogisticsScreen
+var stockpile_screen: StockpileScreen
+var alerts_screen: AlertsScreen
+var colonise_screen: ColoniseScreen
+var _screens: Array[ScreenPanel] = []
 
 var _resume_unpauses := false
 
@@ -52,6 +58,11 @@ func _ready() -> void:
 	outliner.focus_requested.connect(func(kind: String, id: int) -> void:
 		if view_manager:
 			view_manager.focus_on(kind, id))
+	top_bar.stockpile_requested.connect(func() -> void: toggle_screen(stockpile_screen))
+	top_bar.alerts_requested.connect(func() -> void: toggle_screen(alerts_screen))
+	context_panel.colonise_requested.connect(func(pid: int) -> void:
+		_close_screens()
+		colonise_screen.open_for(pid))
 	EventBus.match_started.connect(show_hud)
 	if GameState.state != null:
 		show_hud()
@@ -77,6 +88,18 @@ func _build_hud() -> void:
 	outliner.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT, Control.PRESET_MODE_MINSIZE, MARGIN)
 	outliner.position.y = 84
 	hud.add_child(outliner)
+	sector_screen = SectorScreen.new()
+	logistics_screen = LogisticsScreen.new()
+	stockpile_screen = StockpileScreen.new()
+	alerts_screen = AlertsScreen.new()
+	colonise_screen = ColoniseScreen.new()
+	_screens = [sector_screen, logistics_screen, stockpile_screen, alerts_screen, colonise_screen]
+	for screen in _screens:
+		hud.add_child(screen)
+		screen.focus_requested.connect(func(kind: String, id: int) -> void:
+			screen.close()
+			if view_manager:
+				view_manager.focus_on(kind, id))
 	var hint := UiKit.label("HUD_HINT", "Caption")
 	hint.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM, Control.PRESET_MODE_MINSIZE, MARGIN)
 	hint.grow_horizontal = Control.GROW_DIRECTION_BOTH
@@ -88,6 +111,19 @@ func _show_only(screen: Control) -> void:
 		c.visible = c == screen
 	if screen == game_menu:
 		hud.visible = true
+
+
+## Opens a management screen (closing any other), or closes it if it is already open.
+func toggle_screen(screen: ScreenPanel) -> void:
+	var was_open := screen.visible
+	_close_screens()
+	if not was_open:
+		screen.open()
+
+
+func _close_screens() -> void:
+	for screen in _screens:
+		screen.close()
 
 
 func show_main_menu() -> void:
@@ -153,6 +189,7 @@ func _on_load(path: String) -> void:
 
 func _on_exit() -> void:
 	_resume_unpauses = false
+	_close_screens()
 	GameState.end_match()
 	show_main_menu()
 
@@ -164,6 +201,16 @@ func _unhandled_input(event: InputEvent) -> void:
 		open_game_menu()
 	elif event.is_action_pressed("open_outliner") and not game_menu.visible:
 		outliner.take_focus()
+	elif game_menu.visible:
+		return
+	elif event.is_action_pressed("open_sectors"):
+		toggle_screen(sector_screen)
+	elif event.is_action_pressed("open_logistics"):
+		toggle_screen(logistics_screen)
+	elif event.is_action_pressed("open_stockpile"):
+		toggle_screen(stockpile_screen)
+	elif event.is_action_pressed("open_alerts"):
+		toggle_screen(alerts_screen)
 	else:
 		return
 	get_viewport().set_input_as_handled()

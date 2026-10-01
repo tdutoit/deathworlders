@@ -1,5 +1,16 @@
 # DEATHWORLDERS — Sub-spec D: Scale, Expansion & World Mechanics
 
+**Change log**
+- 2026-10-01 (M2 WP12): D6 alerts are derived from the state when shown (`ui/alerts.gd`), with no alert
+  history, so the time-based triggers use what the state records: Starvation = food runs out within 90 days
+  at last month's rate (fix: a Critical food demand for 3 months of the shortfall); Construction stalled =
+  14+ stalled days (fix: a Critical demand for the rest of the missing resource); Shipyard idle = an empty
+  queue now (fix: queue a Light Freighter); Freighter shortage = over 95% of freighters busy now (fix: queue
+  a Light Freighter at the first yard that can); Convoy lost = a loss in the last 30 days; Unemployment >= 2
+  (fix: queue the template's next building); Stability < 30; Stockpile overflow >= 90% of cap; Frontier
+  unrest = raiders hunting the empire; Supply warning = a ship out of fuel; plus a Credit deficit alert.
+  Muting is not in M2.
+
 *Version 0.1. Companion to the main Game Design Spec v1.1 and Sub-specs A–C. Numbers are starting values at Standard pace, in the integer conventions of Sub-spec A0.*
 
 **Goal:** a 60-planet empire should be *less* work per planet than a 6-planet empire, without removing meaningful choices. Expansion should be a real investment with visible costs, not a free snowball.
@@ -145,7 +156,7 @@ outpost_influence = 25 * (1000 + owned_systems * 60) / 1000
 
 ### Colonies are investments
 - Colony ship takes 1 pop from the source world (B10/B17).
-- New colony upkeep: 5 credits/month + food until its Farm completes.
+- New colony upkeep: 3 credits/month + food until its Farm completes (WP14; was 5, see Sub-spec B change log).
 - A typical colony pays back its cost in **5–10 years**; the colonise screen shows an estimated **payback date** based on the planet and the sector directive.
 
 ### Frontier security and pirates

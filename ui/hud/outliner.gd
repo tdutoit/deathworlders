@@ -46,6 +46,10 @@ func _process(_delta: float) -> void:
 		var u: Unit = state.units.get_or(uid)
 		if u.owner == me:
 			rows.append(["  %s · %s" % [TranslationServer.translate("UNIT_" + u.kind.to_upper()), state.galaxy.system(u.system_id).name], "unit", uid])
+	rows.append([TranslationServer.translate("OUTLINER_PLANETS"), "", 0])
+	for pid: int in state.colonies:
+		if (state.colonies.get_or(pid) as Colony).owner == me:
+			rows.append(["  " + state.galaxy.planet(pid).name, "planet", pid])
 	rows.append([TranslationServer.translate("OUTLINER_SYSTEMS"), "", 0])
 	for sid: int in state.galaxy.systems:
 		var s := state.galaxy.system(sid)

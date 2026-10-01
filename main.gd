@@ -6,6 +6,8 @@ extends Node
 ##   --screenshot=<path>   save a PNG after the camera settles, then quit
 ##   --perf=<seconds>      print average / worst FPS over that time, then quit
 ##   --ui=menu|setup       with --screenshot: capture that screen instead of a match
+##   --months=<n>          run the quickstart match n months before showing it
+##   --screen=planet|sectors|logistics|stockpile|alerts   (--tab=routes|demands|hubs|losses) open that panel
 
 var _args := {}
 
@@ -40,7 +42,11 @@ func _quickstart() -> void:
 	var home := state.galaxy.planet(human.capital_planet).system_id
 	var spawn := CommandRegistry.create(CmdDebugSpawnScout.TYPE, human.id, {"system": home})
 	Sim.execute(state, [spawn] as Array[Command])
+	var none: Array[Command] = []
+	for h in int(_args.get("months", "0")) * Calendar.HOURS_PER_MONTH:
+		Sim.step(state, none)
 	await _show_view(home)
+	_open_screen(human)
 	if _args.has("screenshot"):
 		await _wait(1.2)
 		_save_screenshot()
@@ -57,6 +63,22 @@ func _show_view(home: int) -> void:
 			vm.rig.map_to(Vector2(s.x, s.y), ViewManager.CLUSTER_VIEW_SIZE, true)
 		"solar":
 			await vm.dive_system(home)
+
+
+func _open_screen(human: Empire) -> void:
+	var ui := $UI/UiRoot as UiRoot
+	match _args.get("screen", ""):
+		"planet":
+			EventBus.selection_changed.emit("planet", human.capital_planet)
+		"sectors":
+			ui.toggle_screen(ui.sector_screen)
+		"logistics":
+			ui.logistics_screen._tab = _args.get("tab", "routes")
+			ui.toggle_screen(ui.logistics_screen)
+		"stockpile":
+			ui.toggle_screen(ui.stockpile_screen)
+		"alerts":
+			ui.toggle_screen(ui.alerts_screen)
 
 
 func _save_screenshot() -> void:

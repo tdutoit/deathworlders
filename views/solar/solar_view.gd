@@ -25,6 +25,9 @@ var _bearing_labels: Array = []  # [Label, Vector3]
 var _overlay: Control
 var _select_mi: MeshInstance3D
 var _scope_radius := 100.0
+var _stations: Node3D  # station markers, rebuilt when the system's stations change
+var _station_labels := {}  # station id -> [Label, world position]
+var _station_sig := ""
 
 
 func build(s: MatchState, sid: int) -> void:
@@ -74,6 +77,9 @@ func build(s: MatchState, sid: int) -> void:
 	for pid: int in _bodies:
 		add_child(_planet_mesh(s.galaxy.planet(pid), _bodies[pid]))
 	_build_units()
+	_stations = Node3D.new()
+	_stations.name = "Stations"
+	add_child(_stations)
 	_select_mi = MeshInstance3D.new()
 	_select_mi.mesh = DrawUtil.ring_mesh(0.85, 32)
 	_select_mi.material_override = DrawUtil.ink_material(UiTokens.color("ink_1"))
@@ -96,6 +102,9 @@ func clear() -> void:
 	_units.clear()
 	_labels.clear()
 	_bearing_labels.clear()
+	_station_labels.clear()
+	_station_sig = ""
+	_stations = null
 	selected_kind = ""
 	selected_id = 0
 	state = null
@@ -230,6 +239,51 @@ func update_view(camera: Camera3D) -> void:
 	for entry: Array in _bearing_labels:
 		var l: Label = entry[0]
 		l.position = camera.unproject_position(entry[1]) - l.size * 0.5
+	if Engine.get_process_frames() % 30 == 0 or _station_sig == "":
+		_sync_stations()
+	for sid: int in _station_labels:
+		var l: Label = _station_labels[sid][0]
+		var p: Vector3 = _station_labels[sid][1]
+		var s: Station = state.stations.get_or(sid)
+		# Names only for the selected body's stations; around a busy planet they would overlap.
+		l.visible = s != null and selected_kind == "planet" and selected_id == s.planet_id and not camera.is_position_behind(p)
+		l.position = camera.unproject_position(p) + Vector2(8, -l.size.y * 0.5)
+
+
+## Station markers (WP12): a small square beside the body it orbits; hollow while under construction.
+func _sync_stations() -> void:
+	var here: Array[Station] = []
+	var sig := ""
+	for sid: int in state.stations:
+		var s: Station = state.stations.get_or(sid)
+		if s.system_id == system_id and _bodies.has(s.planet_id):
+			here.append(s)
+			sig += "%d:%s:%s;" % [s.id, s.def_id, s.operational]
+	if sig == _station_sig and sig != "":
+		return
+	_station_sig = sig if sig != "" else "-"
+	for c in _stations.get_children():
+		_stations.remove_child(c)
+		c.free()
+	for sid: int in _station_labels:
+		(_station_labels[sid][0] as Label).free()
+	_station_labels.clear()
+	var per_body := {}
+	for s in here:
+		var k: int = per_body.get(s.planet_id, 0)
+		per_body[s.planet_id] = k + 1
+		var body: Vector3 = _bodies[s.planet_id]
+		var r: float = BODY_SIZE[state.galaxy.planet(s.planet_id).size] + 2.5 + k * 2.2
+		var pos := body + Vector3(r, 0.5, -r * 0.4)
+		var mi := MeshInstance3D.new()
+		mi.mesh = DrawUtil.diamond_mesh(0.0 if s.operational else 0.6)
+		mi.material_override = DrawUtil.ink_material(UiTokens.color("ink_1" if s.operational else "ink_3"))
+		mi.transform = Transform3D(Basis(Vector3.UP, PI * 0.25).scaled(Vector3.ONE * 1.1), pos)
+		_stations.add_child(mi)
+		var def: StationDef = state.defs.get_def(StringName(s.def_id))
+		var l := DrawUtil.overlay_label(TranslationServer.translate(def.name_key) if def else s.def_id, UiTokens.color("ink_2"), 11)
+		_overlay.add_child(l)
+		_station_labels[s.id] = [l, pos]
 
 
 func pick(camera: Camera3D, screen: Vector2) -> Array:

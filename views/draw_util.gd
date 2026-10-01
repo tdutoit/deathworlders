@@ -45,6 +45,17 @@ static func chevron_mesh() -> ArrayMesh:
 	return _mesh(PackedVector3Array([tip, l, notch, tip, notch, r]), Mesh.PRIMITIVE_TRIANGLES)
 
 
+## Hollow diamond (freighter glyph, F22) of radius 1 on the XZ plane.
+static func diamond_mesh(inner := 0.55) -> ArrayMesh:
+	var verts := PackedVector3Array()
+	var pts := [Vector3(1, 0, 0), Vector3(0, 0, 1), Vector3(-1, 0, 0), Vector3(0, 0, -1)]
+	for i in 4:
+		var o0: Vector3 = pts[i]
+		var o1: Vector3 = pts[(i + 1) % 4]
+		verts.append_array([o0, o1, o0 * inner, o1, o1 * inner, o0 * inner])
+	return _mesh(verts, Mesh.PRIMITIVE_TRIANGLES)
+
+
 static func _mesh(verts: PackedVector3Array, primitive: Mesh.PrimitiveType) -> ArrayMesh:
 	var arrays := []
 	arrays.resize(Mesh.ARRAY_MAX)
