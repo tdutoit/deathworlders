@@ -64,6 +64,7 @@ static func _day_tick(state: MatchState) -> void:
 	Builder.day_tick(state)
 	Shipyards.day_tick(state)
 	AutoLogistics.day_tick(state)
+	FleetSupply.day_tick(state)
 
 
 ## Settlement at the month boundary: growth, stability, taxes and upkeep, then sector membership (M2).

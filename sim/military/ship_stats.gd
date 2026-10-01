@@ -29,6 +29,20 @@ var ammo := 0  # ammo_max
 var weapons: Array[ComponentDef] = []  # weapon and hangar components, slot order
 
 
+# Content is frozen for a match: stats per hull + components are cached (runtime only, never state).
+static var _cache := {}
+
+
+## ShipStats.of, cached per content database, hull and components. Read-only for callers.
+static func cached(db: DefDatabase, hull_id: String, components: Array) -> ShipStats:
+	var key := [db, hull_id, components]
+	var hit: Variant = _cache.get(key)
+	if hit == null:
+		hit = of(db, hull_id, components)
+		_cache[key] = hit
+	return hit
+
+
 ## Stats for a hull and its components ("" = empty slot). Unknown IDs are skipped (validation reports them).
 static func of(db: DefDatabase, hull_id: String, components: Array) -> ShipStats:
 	var st := ShipStats.new()

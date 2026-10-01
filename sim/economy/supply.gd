@@ -15,7 +15,12 @@ static func month_tick(state: MatchState) -> void:
 		var u: Unit = state.units.get_or(uid)
 		var hull := state.defs.get_def(StringName(u.hull_id)) as HullDef if u.hull_id != "" else null
 		var need: int = int(hull.upkeep.get(StringName(FUEL), 0)) * Stockpile.MILLI if hull else 0
+		if u.kind == "warship":  # B12: by size, moving vs idle this month
+			var r := state.defs.get_def(CombatRulesDef.ID) as CombatRulesDef
+			need = int((r.fuel_moving_milli if u.moved else r.fuel_idle_milli).get(hull.size, 0))
+			u.moved = false
 		if need <= 0:
+			u.out_of_fuel = false if u.kind == "warship" else u.out_of_fuel
 			continue
 		if not cover.has(u.owner):
 			cover[u.owner] = _coverage(state, u.owner)

@@ -31,6 +31,15 @@ into an ordered build plan. Builds on M2 (docs/M2_PLAN.md); same rules (CLAUDE.m
   from their design and join their system's reserve fleet (one per system, until it moves) or start one.
   Commands: create, merge, split, rename, move (`move_fleet`; `move_unit` refuses fleet ships), set doctrine,
   move squadron. Ship credit upkeep uses `credit_upkeep_milli` (B10's 1.5 etc.).
+- 2026-10-01 (WP4, owner decisions): fuel stays a monthly draw; warships pay B12's table by hull size, the
+  moving rate if they moved on a lane that month, else the idle rate (`fuel_moving_milli` /
+  `fuel_idle_milli` data). Daily (`FleetSupply`): a warship is in supply when an own holder's supply range
+  covers its system; there it refills ammo from the nearest covering stockpiles (1 munition per 2 ammo).
+  Out of supply for more than 30 days: 1% of hull_max a day (a ship at 0 is lost). Repairs while not moving:
+  5% of hull_max a day in a system with an own operational shipyard or supply depot (paid from that station),
+  else 1% a day in supply range (open question 1 settled: docked plus field repair; the field rate's cost,
+  1 alloy per 20 hull points from the covering stockpiles like docked repair, is a placeholder). Armour returns
+  in step with hull; shields refill fully outside battle. A13's out-of-supply combat penalties apply in WP5.
 
 ---
 

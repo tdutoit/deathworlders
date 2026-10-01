@@ -65,6 +65,13 @@ const VETERANCY: Array[String] = ["green", "regular", "veteran", "elite"]
 # Crew and ammunition placeholders (owner, 2026-10-01; A2 has none)
 @export var crew_by_size: Dictionary = {}  # hull size -> crew
 @export var ammo_per_weapon: int  # ammo_max per ammo-using weapon
+# Fleet supply (B12) and repair (owner placeholders 2026-10-01)
+@export var fuel_moving_milli: Dictionary = {}  # hull size -> fuel per month while it moved that month
+@export var fuel_idle_milli: Dictionary = {}  # hull size -> fuel per month otherwise
+@export var ammo_per_munition: int  # B12: 1 munition refills 2 ammo
+@export var repair_docked: int  # permille of hull_max per day at an own shipyard or supply depot
+@export var repair_field: int  # permille of hull_max per day elsewhere in supply range
+@export var repair_hull_per_alloy: int  # hull points one alloy repairs
 # Naval hierarchy (main spec 7.1): ships auto-group into squadrons of one class, squadrons into task forces
 @export var squadron_max: int
 @export var task_force_squadrons: int
@@ -81,7 +88,8 @@ const _INTS: Array[String] = ["hit_min", "hit_max", "variance_min", "variance_ma
 	"pursuit_rounds", "boarding_min", "boarding_max", "boarding_fail_loss", "capture_salvage_mult",
 	"decisive_enemy_loss", "decisive_own_loss", "victory_min_loss", "pyrrhic_own_loss", "draw_band", "salvage",
 	"xp_per_round", "xp_per_kill", "out_of_supply_accuracy", "attrition_after_days", "attrition_per_day",
-	"ammo_per_weapon", "squadron_max", "task_force_squadrons", "fleet_task_forces"]
+	"ammo_per_weapon", "squadron_max", "task_force_squadrons", "fleet_task_forces", "ammo_per_munition",
+	"repair_docked", "repair_field", "repair_hull_per_alloy"]
 
 
 func category() -> String:
@@ -97,6 +105,8 @@ func schema() -> Dictionary:
 	s["veterancy_accuracy"] = {"type": "int_map", "keys": VETERANCY}
 	s["veterancy_morale_resist"] = {"type": "int_map", "keys": VETERANCY}
 	s["crew_by_size"] = {"type": "int_map", "keys": SIZES, "min": 0}
+	s["fuel_moving_milli"] = {"type": "int_map", "keys": SIZES, "min": 0}
+	s["fuel_idle_milli"] = {"type": "int_map", "keys": SIZES, "min": 0}
 	s["pirate_raider_design"] = {"type": "id", "ref": "design"}
 	s["pirate_base_design"] = {"type": "id", "ref": "design"}
 	return s

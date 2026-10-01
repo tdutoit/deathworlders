@@ -11,6 +11,7 @@ static func tick(state: MatchState) -> void:
 		var u: Unit = state.units.get_or(id)
 		if not u.is_moving():
 			continue
+		u.moved = true
 		if u.fleet != StateIO.NONE:
 			u.progress += Fleets.move_speed(state, u.fleet)  # the fleet moves as one (its slowest ship, fuel)
 		else:

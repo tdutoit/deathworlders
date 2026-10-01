@@ -76,6 +76,22 @@ crew_by_size = {
 }
 ammo_per_weapon = 20
 squadron_max = 6
+fuel_moving_milli = {
+&"S": 1000,
+&"M": 2000,
+&"L": 4000,
+&"XL": 6000
+}
+fuel_idle_milli = {
+&"S": 0,
+&"M": 500,
+&"L": 1000,
+&"XL": 1500
+}
+ammo_per_munition = 2
+repair_docked = 50
+repair_field = 10
+repair_hull_per_alloy = 20
 task_force_squadrons = 4
 fleet_task_forces = 5
 pirate_raider_design = &"core:design/pirate_raider"
