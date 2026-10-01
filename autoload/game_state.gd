@@ -3,6 +3,35 @@ extends Node
 ## change it. The state itself is a plain MatchState (sim/state); this node only owns the reference.
 
 var state: MatchState
+var autosave_enabled := true
+
+
+func _ready() -> void:
+	GameClock.month_passed.connect(_on_month)
+
+
+## Saves the current match (state + pending commands). Returns an error string or "".
+func save_to(path: String) -> String:
+	if state == null:
+		return "no match running"
+	return SaveGame.write(path, state, CommandQueue.schedule, Database.defs, Database.manifests)
+
+
+## Loads a save and makes it current. Returns errors (empty on success).
+func load_from(path: String) -> Array[String]:
+	var save := SaveGame.read(path, Database.defs, Database.manifests)
+	if not save.errors.is_empty():
+		return save.errors
+	_begin(save.state)
+	CommandQueue.schedule.restore(save.pending)
+	return save.errors
+
+
+func _on_month(tick: int) -> void:
+	if autosave_enabled and state != null:
+		var err := save_to(SaveGame.autosave_path(tick))
+		if err != "":
+			printerr("Autosave failed: " + err)
 
 
 ## Generates a match from settings and makes it current. Returns errors (empty on success).

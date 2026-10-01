@@ -13,6 +13,7 @@ const MAX_SAFE_INT := 9007199254740992  # 2^53: larger JSON numbers lost precisi
 
 var db := DefDatabase.new()
 var report := ContentReport.new()
+var manifests := {}  # mod id -> ModManifest, for every mod that loaded
 
 var _set_by := {}  # "id.field" -> mod_id of the last patch "set", for conflict warnings
 
@@ -37,11 +38,12 @@ static func game_version() -> String:
 
 ## Loads core plus the given mod folders. Always freezes db; check report.has_errors().
 func load_mods(mod_dirs: Array[String]) -> void:
-	var manifests := _read_manifests(mod_dirs)
-	var order := _load_order(manifests)
+	var found := _read_manifests(mod_dirs)
+	var order := _load_order(found)
 	report.load_order = order
 	for mod_id in order:
-		_load_mod(manifests[mod_id])
+		manifests[mod_id] = found[mod_id]
+		_load_mod(found[mod_id])
 	_validate()
 	db.freeze()
 

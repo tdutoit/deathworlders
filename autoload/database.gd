@@ -6,6 +6,7 @@ const MODS_DIR := "res://mods"
 
 var defs: DefDatabase
 var report: ContentReport
+var manifests := {}  # mod id -> ModManifest of every loaded mod
 
 
 func _ready() -> void:
@@ -30,6 +31,7 @@ func load_content() -> ContentReport:
 	loader.load_mods(ContentLoader.discover(MODS_DIR))
 	defs = loader.db
 	report = loader.report
+	manifests = loader.manifests
 	if not report.entries.is_empty():
 		printerr(report.format_text())
 	return report

@@ -13,6 +13,11 @@
   (`core:modifier_key/planet.housing` declares `planet.housing`); a key declared twice is an error.
 - 2026-10-01 (M1 WP3) C6: `content_hash` includes a Def if any mod that added, overrode or patched it has
   `affects_sim: true`. The runtime class is `DefDatabase` (the `Database` name is the autoload).
+- 2026-10-01 (M1 WP10) C12: saves also hold `pending_commands` (lockstep commands stamped but not yet
+  executed), so a save taken mid-delay resumes identically. `state` keeps the full command log (replay
+  from seed); the header's `command_log_tail` is the last 100 entries. `mods` entries carry
+  `affects_sim`; only missing sim-affecting mods block a load. `content_hash` is 8 hex digits.
+  Files: `user://saves/*.sav`; autosaves rotate `autosave_1..3` monthly.
 
 ---
 

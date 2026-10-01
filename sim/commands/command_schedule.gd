@@ -34,6 +34,24 @@ func clear() -> void:
 	_pending.clear()
 
 
+## Pending commands in execution order (for saves), and their restore.
+func to_array() -> Array:
+	var out := []
+	for cmd in _pending:
+		out.append(cmd.to_dict())
+	return out
+
+
+func restore(items: Array) -> void:
+	_pending.clear()
+	_next_seq = 0
+	for d: Dictionary in items:
+		var cmd := CommandRegistry.from_dict(d)
+		_pending.append(cmd)
+		_next_seq = maxi(_next_seq, cmd.seq + 1)
+	_pending.sort_custom(_before)
+
+
 static func _before(a: Command, b: Command) -> bool:
 	if a.exec_tick != b.exec_tick:
 		return a.exec_tick < b.exec_tick

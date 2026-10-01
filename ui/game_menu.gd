@@ -8,6 +8,7 @@ signal load_requested
 signal exit_requested
 
 var first_focus: Control
+var _status: Label
 
 
 func _ready() -> void:
@@ -28,16 +29,18 @@ func _ready() -> void:
 	var exit := UiKit.button("GAME_MENU_EXIT", exit_requested.emit)
 	for b in [resume, save, load_game, exit]:
 		box.add_child(b)
+	_status = UiKit.label("", "Caption")
+	box.add_child(_status)
 	UiKit.chain_focus([resume, save, load_game, exit])
 	first_focus = resume
 
 
-func set_archive_enabled(enabled: bool) -> void:
-	(find_child("Save", true, false) as Button).disabled = not enabled
-	(find_child("Load", true, false) as Button).disabled = not enabled
+func set_status(text: String) -> void:
+	_status.text = text
 
 
 func focus_first() -> void:
+	_status.text = ""
 	first_focus.grab_focus()
 
 

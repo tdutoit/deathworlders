@@ -59,6 +59,9 @@
   Translations from `loc/` are registered at runtime by the `Database` autoload. UI scale options
   100 / 125 / 150% (`user://settings.cfg`). The F10 menu pauses the match and restores it on resume.
   An empty seed draws a random one outside the sim. Load/Save buttons are disabled until WP10.
+- 2026-10-01 (WP10): `io/save_game.gd` (`SaveGame`) writes/reads saves; `GameState.save_to/load_from`
+  and the archive screen use it. Load errors are shown with English reasons inside a loc'd message
+  (M1 shortcut; error codes later).
 - 2026-10-01 (WP3): game version lives in `application/config/version` (0.1.0); core has a `mod.json` like any mod.
 
 ---

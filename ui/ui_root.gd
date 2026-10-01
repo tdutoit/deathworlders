@@ -14,6 +14,7 @@ var top_bar: TopBar
 var context_panel: ContextPanel
 var outliner: Outliner
 var game_menu: GameMenu
+var load_screen: LoadScreen
 
 var _resume_unpauses := false
 
@@ -30,14 +31,24 @@ func _ready() -> void:
 	add_child(setup)
 	game_menu = GameMenu.new()
 	add_child(game_menu)
+	load_screen = LoadScreen.new()
+	add_child(load_screen)
 	main_menu.new_game_requested.connect(show_setup)
 	main_menu.quit_requested.connect(func() -> void: get_tree().quit())
-	main_menu.set_load_enabled(false)  # the archive arrives in WP10
+	main_menu.load_requested.connect(show_load)
+	load_screen.back_requested.connect(func() -> void:
+		if GameState.state != null:
+			_show_only(game_menu)
+			game_menu.focus_first()
+		else:
+			show_main_menu())
+	load_screen.load_requested.connect(_on_load)
+	game_menu.save_requested.connect(_on_save)
+	game_menu.load_requested.connect(show_load)
 	setup.back_requested.connect(show_main_menu)
 	setup.start_requested.connect(_on_start)
 	game_menu.resume_requested.connect(close_game_menu)
 	game_menu.exit_requested.connect(_on_exit)
-	game_menu.set_archive_enabled(false)
 	outliner.focus_requested.connect(func(kind: String, id: int) -> void:
 		if view_manager:
 			view_manager.focus_on(kind, id))
@@ -73,7 +84,7 @@ func _build_hud() -> void:
 
 
 func _show_only(screen: Control) -> void:
-	for c in [main_menu, setup, hud, game_menu]:
+	for c in [main_menu, setup, hud, game_menu, load_screen]:
 		c.visible = c == screen
 	if screen == game_menu:
 		hud.visible = true
@@ -87,6 +98,11 @@ func show_main_menu() -> void:
 func show_setup() -> void:
 	_show_only(setup)
 	setup.focus_first()
+
+
+func show_load() -> void:
+	_show_only(load_screen)
+	load_screen.focus_first()
 
 
 func show_hud() -> void:
@@ -115,6 +131,22 @@ func _on_start(settings: MatchSettings, seed_value: int) -> void:
 	var errors := GameState.start_new_match(settings, seed_value)
 	if not errors.is_empty():
 		push_warning("Match setup: " + ", ".join(errors))
+		return
+	show_hud()
+
+
+func _on_save() -> void:
+	var name := "save_%s" % Calendar.format(GameState.state.tick).replace(" ", "_").replace(":", "")
+	var path := SaveGame.DIR.path_join(name + SaveGame.EXT)
+	var err := GameState.save_to(path)
+	game_menu.set_status(UiKit.tr_fmt("SAVE_FAILED", {"reason": err}) if err != "" else UiKit.tr_fmt("SAVE_DONE", {"name": name}))
+
+
+func _on_load(path: String) -> void:
+	_resume_unpauses = false
+	var errors := GameState.load_from(path)
+	if not errors.is_empty():
+		load_screen.show_error(errors)
 		return
 	show_hud()
 
