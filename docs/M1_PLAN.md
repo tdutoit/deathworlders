@@ -20,6 +20,10 @@
   non-human habitability are placeholders for WP7 tuning. `SpeciesDef` adds `home_planet_type`;
   `home_template` is `sol` or `standard`. `MatchPresetDef` has `kind` (`galaxy_size` / `pace`).
   `PlanetTypeDef` has no terrain or deposit table yet (no TerrainDef in M1).
+- 2026-10-01 (WP4): the sim class is `MatchState` (the `GameState` autoload holds it). `Galaxy` also has
+  `planets (IdMap)`; `corridors` is the sorted list of lane IDs joining clusters. Positions are `x`, `y` ints;
+  owner `0` = none (IDs start at 1). Collections serialise as arrays of entity dicts in ID order.
+  `checksum()` adds `meta` (tick, seed, settings, next_id) and `total` to the four planned parts.
 - 2026-10-01 (WP3): game version lives in `application/config/version` (0.1.0); core has a `mod.json` like any mod.
 
 ---

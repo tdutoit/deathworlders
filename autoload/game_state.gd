@@ -1,4 +1,5 @@
 extends Node
-## Holds the current match state (main spec 16.2). Views read it; only Commands and tick functions
-## change it. The state itself lives in plain sim/ classes; this node only owns the reference.
-## Stub for M1 WP1; implemented in WP4.
+## Holds the current match (main spec 16.2). Views read `state`; only Commands and tick functions
+## change it. The state itself is a plain MatchState (sim/state); this node only owns the reference.
+
+var state: MatchState
