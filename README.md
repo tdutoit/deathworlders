@@ -17,4 +17,34 @@ HFY 4X space strategy game for Godot 4. Design docs in `docs/`, project rules fo
 - [x] Deterministic RNG/hash reference + test vectors (`tools/reference/`), ahead of WP2
 - [x] Sample assets: human corvette & cruiser, Vess'kar corvette, railgun turret (`assets/models/`), verified in Godot 4.7.2
 
-Next: **M1 WP1** (docs/M1_PLAN.md).
+## M1 status
+
+WP1–WP12 are implemented (see `docs/M1_PLAN.md` and its change log). Start the game from the editor
+(F5) or the command line: main menu → New game → setup → the map.
+
+| Keys | |
+|---|---|
+| WASD / middle-drag | Pan |
+| Wheel / PageUp, PageDown | Zoom (galaxy → cluster) |
+| Click | Select; click a selected system again (or double-click) to enter its tactical scope |
+| Enter | Dive into what is under the screen centre |
+| Esc / Backspace | Back out |
+| Right-click | Send the selected unit to a system (otherwise back out) |
+| Space, + / − | Pause, speed 1×–8× |
+| Tab, F10 | Outliner, command menu (save / load / exit) |
+
+## Running things
+
+All commands from the project folder, with `GODOT` pointing at the console build.
+
+| What | Command |
+|---|---|
+| Tests (GUT, headless) | `tools/run_tests.sh` |
+| Content validation (core + `mods/`) | `$GODOT --headless -s tools/validate_content.gd [-- <mod dirs>]` |
+| Sim lint (no floats etc. in `sim/`) | `$GODOT --headless -s tools/lint_sim.gd` (also part of the tests) |
+| Determinism harness (~45 min) | `$GODOT --headless -s tools/determinism_test.gd -- [seeds=20] [sizes] [months=60]` |
+| Galaxy stress (500 seeds × 4 sizes) | `$GODOT --headless -s tools/galaxy_stress.gd -- 500` |
+| Print a galaxy | `$GODOT --headless -s tools/galaxy_debug.gd -- small "seed text" human,krothi` |
+| Dev quick start / screenshot / FPS | `$GODOT --path . -- --quickstart [--size=huge] [--view=solar] [--screenshot=out.png] [--perf=5]` |
+
+Tip: run `-s` tools under `timeout`; a script that fails to compile leaves Godot running.
