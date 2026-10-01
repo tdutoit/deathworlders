@@ -10,7 +10,7 @@ family = &"core:weapon_family/kinetic"
 damage = 30
 shots = 3
 accuracy = Array[int]([100, 650, 800])
-penetration = 10
+penetration = 20
 cost = {
 &"core:resource/alloys": 10,
 &"core:resource/components": 5

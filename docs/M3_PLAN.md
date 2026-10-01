@@ -56,6 +56,11 @@ into an ordered build plan. Builds on M2 (docs/M2_PLAN.md); same rules (CLAUDE.m
   can't be ordered, resupplied or repaired. Battles and reports are match state (`combat` checksum part;
   `BattleReport` keeps the log for the F11 screen). Pirate raiders now fly the pirate raider design (WP8 adds
   bases). No terrain in M3 (the galaxy has none; open question 7). Formation and stance: no effect yet.
+- 2026-10-01 (WP6): `tools/combat_harness.gd` (A14/A26): seeded battles per matchup from one prepared match,
+  CSV per matchup, `param_hash` over the combat rules, weapon families, components and hulls; win% = A wins
+  plus half the draws (morale retreats make even fights end in draws). "Missiles forced to close" starts at
+  Close with both sides preferring it. Tuning and the owner's decision on A14's 1.25× target: Sub-spec A
+  change log. The DoD's combat-harness item is met with the 1.25× check report-only.
 
 ---
 
@@ -235,8 +240,9 @@ Size: **S** ≈ one focused session, **M** ≈ 2–3 sessions, **L** ≈ 4+ sess
 
 - [ ] All WP acceptance criteria met.
 - [ ] `tools/run_tests.sh` green; determinism harness green (20 seeds × 4 sizes, with combat checksums).
-- [ ] Combat harness meets the A14 targets: mirror 45–55%; hard counter at equal cost 70–85%; a hard counter
-      holds to ~1.25× cost; typical battles 8–20 rounds; missiles dominant at standoff without PD, weak at close.
+- [x] Combat harness meets the A14 targets: mirror 45–55%; hard counter at equal cost 70–85%; typical battles
+      8–20 rounds; missiles dominant at standoff without PD, weak at close (WP6). "A hard counter holds to
+      ~1.25× cost" is report-only (owner, 2026-10-01; revisited in M4).
 - [ ] Economy harness with AI defence fleets at least at the M2 accepted level (66 of 80 empires).
 - [ ] Huge galaxy, 8 autopilot empires with fleets, year 15: 8× speed holds ≥ 60 fps; worst hour under 50 ms
       headless.

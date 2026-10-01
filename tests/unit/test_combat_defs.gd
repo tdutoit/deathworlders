@@ -72,10 +72,11 @@ func test_species_variations() -> void:
 
 func test_weapons_match_a2_and_families_a9() -> void:
 	var rail := _comp("railgun_m")
-	assert_eq([rail.damage, rail.shots, rail.penetration], [100, 1, 30])
+	assert_eq([rail.damage, rail.shots, rail.penetration], [100, 1, 40], "A2 pen 30 + 10 (WP6, A14 lever)")
 	assert_eq(rail.accuracy, [400, 750, 800] as Array[int])
 	var energy: WeaponFamilyDef = _db.get_def(&"core:weapon_family/energy")
-	assert_eq([energy.shield_mult, energy.armor_eff], [700, 500])
+	assert_eq([energy.shield_mult, energy.armor_eff], [700, 300], "A9 armour 500 -> 300 (WP6)")
+	assert_eq((_db.get_def(&"core:weapon_family/kinetic") as WeaponFamilyDef).shield_mult, 1250, "kinetics punch shields (WP6)")
 	var missile: WeaponFamilyDef = _db.get_def(&"core:weapon_family/missile")
 	assert_true(missile.interceptable and missile.uses_ammo and missile.ecm_affected)
 	assert_eq(_comp("torpedo_l").ammo_per_shot, 1)
@@ -109,7 +110,8 @@ func test_platform_station_and_pirates() -> void:
 
 func test_combat_rules_hold_sub_spec_a_numbers() -> void:
 	var r: CombatRulesDef = _db.get_def(CombatRulesDef.ID)
-	assert_eq([r.hit_min, r.hit_max, r.armor_k, r.pd_intercept, r.round_cap], [50, 950, 100, 450, 48])
+	assert_eq([r.hit_min, r.hit_max, r.armor_k, r.pd_intercept, r.round_cap], [50, 950, 100, 600, 48], "PD 450 -> 600 (WP6)")
+	assert_eq(r.ablation_divisor, 5, "A9 10 -> 5 (WP6, A14 lever)")
 	assert_eq(r.crew_by_size[&"XL"], 120)
 	assert_eq(r.ammo_per_weapon, 20)
 

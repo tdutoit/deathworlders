@@ -6,6 +6,6 @@
 [resource]
 script = ExtResource("2_e71e3")
 shield_mult = 700
-armor_eff = 500
+armor_eff = 300
 id = &"core:weapon_family/energy"
 name_key = "FAMILY_ENERGY"

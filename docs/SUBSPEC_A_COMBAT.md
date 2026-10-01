@@ -15,6 +15,15 @@
   every A2 weapon (A2 has no tracking column); defence, utility and core slot sizes follow hull size (A2
   gives counts only): S hulls S, M hulls D_M / U_S / C_M, L and XL hulls D_L / U_M / C_L; carriers have two L
   hangars. Modules come in size S and fit any slot of their type.
+- 2026-10-01 (M3 WP6, combat harness `tools/combat_harness.gd`, 300 seeded 6-vs-6 cruiser battles per
+  matchup): A14's levers applied as data. Kinetic penetration +10 (autocannon 20, railgun 40, mass driver 70);
+  armour ablation ×2 (divisor 10 → 5); kinetics punch shields (kinetic `shield_mult` 1000 → 1250); energy
+  ignores more armour (`armor_eff` 500 → 300); point defence intercepts at 600‰ (was 450). Results (draws
+  count half): mirror 50.5%; armour vs kinetic 81%; energy vs armour-heavy kinetic 72%; kinetic vs
+  shield-heavy energy 75%; missiles at standoff 100% vs no PD, 85% vs 1 PD module per ship, 0% forced to
+  Close; battles average 10 rounds. **Owner decision:** A14's "a hard counter holds to ~1.25× cost" conflicts
+  with 70–85% at equal cost under A4–A10 (Lanchester; known issue 1): at 4 vs 5 the counter wins ~4%. It is
+  report-only for M3 and revisited in M4 (species traits, morale).
 
 ---
 

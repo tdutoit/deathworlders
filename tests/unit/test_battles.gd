@@ -63,10 +63,11 @@ func test_damage_pipeline_a9() -> void:
 	t.armor = 20
 	var kinetic: WeaponFamilyDef = _db.get_def(&"core:weapon_family/kinetic")
 	var energy: WeaponFamilyDef = _db.get_def(&"core:weapon_family/energy")
-	assert_eq(Battles._damage(s, t, 100, kinetic, 0, r), 33, "60 absorbed, 40 x 100 / (100 + 20)")
-	assert_eq([t.shield, t.armor, t.hp], [0, 20, 267], "ablation (40 - 33) / 10 = 0")
+	# WP6 tuning: kinetic 1250 vs shields, ablation divisor 5, energy armour effectiveness 300.
+	assert_eq(Battles._damage(s, t, 100, kinetic, 0, r), 43, "60 absorbed (75 raw), 52 x 100 / (100 + 20)")
+	assert_eq([t.shield, t.armor, t.hp], [0, 19, 257], "ablation (52 - 43) / 5 = 1")
 	t.shield = 60
-	assert_eq(Battles._damage(s, t, 100, energy, 0, r), 13, "energy: 70% vs shields, half armour counts")
+	assert_eq(Battles._damage(s, t, 100, energy, 0, r), 14, "energy: 70% vs shields, 30% of armour counts")
 	t.shield = 0
 	t.armor = 200
 	var before := t.armor
