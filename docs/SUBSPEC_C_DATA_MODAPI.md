@@ -18,6 +18,16 @@
   from seed); the header's `command_log_tail` is the last 100 entries. `mods` entries carry
   `affects_sim`; only missing sim-affecting mods block a load. `content_hash` is 8 hex digits.
   Files: `user://saves/*.sav`; autosaves rotate `autosave_1..3` monthly.
+- 2026-10-01 (M3 WP1) C3/C5: `ComponentDef.family` is a `weapon_family` ID (WeaponFamilyDef: `shield_mult`,
+  `armor_eff`, `interceptable`, `uses_ammo`, plus `ecm_affected`); `accuracy` is an int list [L, M, C]; a
+  module's effects are the Def's own `modifiers` (SHIP-scope keys `ship.armor`, `ship.shield`, `ship.pd`,
+  `ship.crew`, `ship.marines`, `ship.ecm`), not a separate `stat_mods`. A component fits a slot of the same
+  type whose size is at least its own. `HullDef` adds roles `platform` and `raider`, `size` (S/M/L/XL),
+  `crew`, `pd`, `shield_regen`, `shipyard_size` and `credit_upkeep_milli` (B10's fractional upkeep).
+  New categories: `design` (DesignDef: a hull and one component ID per slot in slot order, `""` = empty;
+  used for standard designs, platforms and pirates) and `combat_rules`. Stations gain function `defence`
+  with the `design` it fights with. Schema: field type `int_list` (options min/max per item, `size`) and
+  `id_list` option `allow_empty`. IDs: `core:hull/<species>_<class>_mk1`, `core:design/<species>_<class>_standard`.
 
 ---
 

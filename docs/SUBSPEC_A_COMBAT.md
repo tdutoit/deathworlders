@@ -2,6 +2,20 @@
 
 *Version 0.1. Companion to the main Game Design Spec v1.0 (sections 7, 10, 18). All numbers are **starting values** for the balance harness, not final.*
 
+**Change log**
+- 2026-10-01 (M3 WP1): every number here is data: `combat_rules` (A0–A13) and `weapon_family` Defs (the A9
+  matrix, plus which families point defence and ECM act on). Placeholders agreed with the owner: a Fighter
+  Wing hangar component (fighter family, 40 dmg × 4, accuracy 800/750/700, ignores screening like torpedoes);
+  crew by hull size S 20 / M 40 / L 80 / XL 120; Marine Barracks (utility) +60 marines, +30 crew; ammo 20 per
+  ammo-using weapon; an Assault Ship (destroyer-sized: 700 hull, speed 7; 1S weapon, 1 defence, 2 utility);
+  Thessari armour +30% and speed −1, Ohlan evasion +100 and hull −10% (A2 names only Vess'kar and Krothi);
+  Defensive Platform and Pirate Base 1200 hull, 100 armour, 300 shield, immobile, 2M weapons (railguns),
+  2 defence, 1 utility; Pirate Raider = corvette stats with 2 autocannons. Further placeholders, to confirm:
+  veterancy XP thresholds Regular 100 / Veteran 300 / Elite 600 (A13 gives only the effects); tracking 0 for
+  every A2 weapon (A2 has no tracking column); defence, utility and core slot sizes follow hull size (A2
+  gives counts only): S hulls S, M hulls D_M / U_S / C_M, L and XL hulls D_L / U_M / C_L; carriers have two L
+  hangars. Modules come in size S and fit any slot of their type.
+
 ---
 
 ## A0. Conventions (apply to all formulas)

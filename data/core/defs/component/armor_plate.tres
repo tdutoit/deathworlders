@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ComponentDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_e5vil"]
+[ext_resource type="Script" path="res://sim/defs/component_def.gd" id="2_t11da"]
+
+[sub_resource type="Resource" id="Resource_xl12e"]
+script = ExtResource("1_e5vil")
+key = &"ship.armor"
+value = 80
+scope = 5
+
+[resource]
+script = ExtResource("2_t11da")
+slot_type = &"defence"
+cost = {
+&"core:resource/alloys": 20,
+&"core:resource/components": 5
+}
+id = &"core:component/armor_plate"
+name_key = "COMP_ARMOR_PLATE"
+modifiers = Array[ExtResource("1_e5vil")]([SubResource("Resource_xl12e")])

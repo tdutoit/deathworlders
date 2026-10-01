@@ -1,0 +1,63 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_as1nc"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_ootmr"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_hbb12"]
+
+[sub_resource type="Resource" id="Resource_b377s"]
+script = ExtResource("3_hbb12")
+slot_type = 4
+slot_size = 2
+hardpoint = &"HP_H_L_01"
+
+[sub_resource type="Resource" id="Resource_gndu1"]
+script = ExtResource("3_hbb12")
+slot_type = 4
+slot_size = 2
+hardpoint = &"HP_H_L_02"
+
+[sub_resource type="Resource" id="Resource_xld6h"]
+script = ExtResource("3_hbb12")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_01"
+
+[sub_resource type="Resource" id="Resource_ufww1"]
+script = ExtResource("3_hbb12")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_02"
+
+[sub_resource type="Resource" id="Resource_qdi76"]
+script = ExtResource("3_hbb12")
+slot_type = 2
+slot_size = 1
+hardpoint = &"HP_U_M_01"
+
+[sub_resource type="Resource" id="Resource_20kfh"]
+script = ExtResource("3_hbb12")
+slot_type = 3
+slot_size = 2
+hardpoint = &"HP_C_L_01"
+
+[resource]
+script = ExtResource("2_ootmr")
+species = &"core:species/vesskar"
+hull_class = &"carrier"
+hull = 1875
+armor = 80
+shield = 700
+evasion = 30
+speed = 4
+slots = Array[ExtResource("3_hbb12")]([SubResource("Resource_b377s"), SubResource("Resource_gndu1"), SubResource("Resource_xld6h"), SubResource("Resource_ufww1"), SubResource("Resource_qdi76"), SubResource("Resource_20kfh")])
+cost = {
+&"core:resource/alloys": 550,
+&"core:resource/components": 150,
+&"core:resource/exotics": 10
+}
+build_days = 240
+size = &"L"
+shipyard_size = &"M"
+credit_upkeep_milli = 8000
+id = &"core:hull/vesskar_carrier_mk1"
+name_key = "HULL_VESSKAR_CARRIER_MK1"

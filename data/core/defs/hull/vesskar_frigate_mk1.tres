@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_j3xi0"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_u6f5n"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_i8sms"]
+
+[sub_resource type="Resource" id="Resource_07uiu"]
+script = ExtResource("3_i8sms")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_8nfim"]
+script = ExtResource("3_i8sms")
+slot_type = 1
+hardpoint = &"HP_D_S_01"
+
+[sub_resource type="Resource" id="Resource_v7npb"]
+script = ExtResource("3_i8sms")
+slot_type = 1
+hardpoint = &"HP_D_S_02"
+
+[sub_resource type="Resource" id="Resource_j3wuh"]
+script = ExtResource("3_i8sms")
+slot_type = 2
+hardpoint = &"HP_U_S_01"
+
+[resource]
+script = ExtResource("2_u6f5n")
+species = &"core:species/vesskar"
+hull_class = &"frigate"
+hull = 375
+armor = 30
+shield = 140
+evasion = 200
+speed = 7
+slots = Array[ExtResource("3_i8sms")]([SubResource("Resource_07uiu"), SubResource("Resource_8nfim"), SubResource("Resource_v7npb"), SubResource("Resource_j3wuh")])
+cost = {
+&"core:resource/alloys": 90,
+&"core:resource/components": 15
+}
+build_days = 60
+credit_upkeep_milli = 1500
+id = &"core:hull/vesskar_frigate_mk1"
+name_key = "HULL_VESSKAR_FRIGATE_MK1"

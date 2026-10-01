@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DesignDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_7244d"]
+[ext_resource type="Script" path="res://sim/defs/design_def.gd" id="2_kexlj"]
+
+[resource]
+script = ExtResource("2_kexlj")
+hull = &"core:hull/krothi_carrier_mk1"
+components = Array[StringName]([&"core:component/fighter_wing", &"core:component/fighter_wing", &"core:component/point_defence", &"core:component/shield_gen", &"", &""])
+id = &"core:design/krothi_carrier_standard"
+name_key = "DESIGN_CARRIER_STANDARD"

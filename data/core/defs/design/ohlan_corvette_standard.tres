@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DesignDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_0uj74"]
+[ext_resource type="Script" path="res://sim/defs/design_def.gd" id="2_umtnb"]
+
+[resource]
+script = ExtResource("2_umtnb")
+hull = &"core:hull/ohlan_corvette_mk1"
+components = Array[StringName]([&"core:component/autocannon_s", &"core:component/autocannon_s", &"core:component/armor_plate"])
+id = &"core:design/ohlan_corvette_standard"
+name_key = "DESIGN_CORVETTE_STANDARD"

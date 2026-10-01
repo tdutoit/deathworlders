@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DesignDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_6e72y"]
+[ext_resource type="Script" path="res://sim/defs/design_def.gd" id="2_dsdeg"]
+
+[resource]
+script = ExtResource("2_dsdeg")
+hull = &"core:hull/pirate_raider"
+components = Array[StringName]([&"core:component/autocannon_s", &"core:component/autocannon_s", &"core:component/armor_plate"])
+id = &"core:design/pirate_raider"
+name_key = "DESIGN_PIRATE_RAIDER"

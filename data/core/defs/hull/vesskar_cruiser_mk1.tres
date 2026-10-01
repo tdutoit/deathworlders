@@ -1,0 +1,65 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_s4sx8"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_kliq3"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_cb36f"]
+
+[sub_resource type="Resource" id="Resource_rg0ab"]
+script = ExtResource("3_cb36f")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_2q5jh"]
+script = ExtResource("3_cb36f")
+slot_size = 1
+hardpoint = &"HP_W_M_01"
+
+[sub_resource type="Resource" id="Resource_e8q0o"]
+script = ExtResource("3_cb36f")
+slot_size = 1
+hardpoint = &"HP_W_M_02"
+
+[sub_resource type="Resource" id="Resource_glc1s"]
+script = ExtResource("3_cb36f")
+slot_type = 1
+slot_size = 1
+hardpoint = &"HP_D_M_01"
+
+[sub_resource type="Resource" id="Resource_7cf82"]
+script = ExtResource("3_cb36f")
+slot_type = 1
+slot_size = 1
+hardpoint = &"HP_D_M_02"
+
+[sub_resource type="Resource" id="Resource_8n50h"]
+script = ExtResource("3_cb36f")
+slot_type = 2
+hardpoint = &"HP_U_S_01"
+
+[sub_resource type="Resource" id="Resource_7fep2"]
+script = ExtResource("3_cb36f")
+slot_type = 3
+slot_size = 1
+hardpoint = &"HP_C_M_01"
+
+[resource]
+script = ExtResource("2_kliq3")
+species = &"core:species/vesskar"
+hull_class = &"cruiser"
+hull = 1125
+armor = 60
+shield = 280
+evasion = 80
+speed = 5
+slots = Array[ExtResource("3_cb36f")]([SubResource("Resource_rg0ab"), SubResource("Resource_2q5jh"), SubResource("Resource_e8q0o"), SubResource("Resource_glc1s"), SubResource("Resource_7cf82"), SubResource("Resource_8n50h"), SubResource("Resource_7fep2")])
+cost = {
+&"core:resource/alloys": 260,
+&"core:resource/components": 60,
+&"core:resource/rare_earths": 10
+}
+build_days = 120
+model = "assets/models/ships/human_cruiser_mk1.glb"
+size = &"M"
+shipyard_size = &"M"
+credit_upkeep_milli = 4000
+id = &"core:hull/vesskar_cruiser_mk1"
+name_key = "HULL_VESSKAR_CRUISER_MK1"

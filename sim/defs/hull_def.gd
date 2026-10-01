@@ -1,9 +1,12 @@
 class_name HullDef
 extends Def
 ## A ship hull (Sub-spec C5): combat stats (A2), cost and build days (B10), a fixed slot layout and the model
-## whose hardpoints the validator checks. M2 adds civilian roles: freighters (B6) and colony ships (B10).
+## whose hardpoints the validator checks. M2 adds civilian roles: freighters (B6) and colony ships (B10);
+## M3 the combat fields (A1: size, crew, point defence, shield regen), defensive platforms and pirate raiders.
 
-const ROLES: Array[String] = ["warship", "freighter", "colony", "scout"]
+const ROLES: Array[String] = ["warship", "freighter", "colony", "scout", "platform", "raider"]
+const SIZES: Array[String] = ["S", "M", "L", "XL"]  # A1 size (targeting, boarding, B12 fuel)
+const YARD_SIZES: Array[String] = ["S", "M", "L"]  # B10: S up to destroyers, M up to battlecruisers/carriers, L all
 
 static var _hardpoint_re := RegEx.create_from_string("^HP_[WDUCH]_[SML]_\\d{2}$")
 
@@ -24,6 +27,12 @@ static var _hardpoint_re := RegEx.create_from_string("^HP_[WDUCH]_[SML]_\\d{2}$"
 @export var lane_speed: int  # civilian travel speed, lane units per day (B6)
 @export var upkeep: Dictionary = {}  # resource ID -> units per month
 @export var pop_cost: int  # colony ships: pops taken from the building planet
+@export var size: StringName = &"S"
+@export var crew: int  # boarding defence (A11); 0 = combat_rules.crew_by_size for this size
+@export var pd: int  # point-defence attempts per round before modules (A8)
+@export var shield_regen: int  # permille of shield_max per round; 0 = combat_rules.shield_regen
+@export var shipyard_size: StringName = &"S"  # smallest shipyard that can build it (B10)
+@export var credit_upkeep_milli: int  # B10 credits per month in milli (fractional values); 0 = upkeep's credits
 
 
 func category() -> String:
@@ -49,6 +58,12 @@ func schema() -> Dictionary:
 		"lane_speed": {"type": "int", "min": 0},
 		"upkeep": {"type": "int_map", "key_ref": "resource", "min": 0},
 		"pop_cost": {"type": "int", "min": 0},
+		"size": {"type": "enum", "values": SIZES},
+		"crew": {"type": "int", "min": 0},
+		"pd": {"type": "int", "min": 0},
+		"shield_regen": {"type": "int", "min": 0},
+		"shipyard_size": {"type": "enum", "values": YARD_SIZES},
+		"credit_upkeep_milli": {"type": "int", "min": 0},
 	}
 
 

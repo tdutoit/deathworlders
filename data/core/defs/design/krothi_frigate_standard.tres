@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DesignDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_57cmn"]
+[ext_resource type="Script" path="res://sim/defs/design_def.gd" id="2_8ragv"]
+
+[resource]
+script = ExtResource("2_8ragv")
+hull = &"core:hull/krothi_frigate_mk1"
+components = Array[StringName]([&"core:component/autocannon_s", &"core:component/point_defence", &"core:component/point_defence", &""])
+id = &"core:design/krothi_frigate_standard"
+name_key = "DESIGN_FRIGATE_STANDARD"

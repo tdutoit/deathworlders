@@ -33,5 +33,6 @@ cost = {
 }
 build_days = 45
 model = "assets/models/ships/human_corvette_mk1.glb"
+credit_upkeep_milli = 1000
 id = &"core:hull/human_corvette_mk1"
 name_key = "HULL_HUMAN_CORVETTE_MK1"

@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_p4ads"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_aol11"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_vyaod"]
+
+[sub_resource type="Resource" id="Resource_45to3"]
+script = ExtResource("3_vyaod")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_2g4fw"]
+script = ExtResource("3_vyaod")
+slot_type = 1
+hardpoint = &"HP_D_S_01"
+
+[sub_resource type="Resource" id="Resource_1v6ac"]
+script = ExtResource("3_vyaod")
+slot_type = 1
+hardpoint = &"HP_D_S_02"
+
+[sub_resource type="Resource" id="Resource_0nwbh"]
+script = ExtResource("3_vyaod")
+slot_type = 2
+hardpoint = &"HP_U_S_01"
+
+[resource]
+script = ExtResource("2_aol11")
+species = &"core:species/thessari"
+hull_class = &"frigate"
+hull = 500
+armor = 39
+shield = 100
+evasion = 200
+speed = 6
+slots = Array[ExtResource("3_vyaod")]([SubResource("Resource_45to3"), SubResource("Resource_2g4fw"), SubResource("Resource_1v6ac"), SubResource("Resource_0nwbh")])
+cost = {
+&"core:resource/alloys": 90,
+&"core:resource/components": 15
+}
+build_days = 60
+credit_upkeep_milli = 1500
+id = &"core:hull/thessari_frigate_mk1"
+name_key = "HULL_THESSARI_FRIGATE_MK1"

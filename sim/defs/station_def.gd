@@ -3,7 +3,7 @@ extends Def
 ## An orbital station tier (main spec 5, Sub-spec B5/B6/B10/B11/B12). One Def per tier; a tier names the
 ## next one in upgrades_to. Stations occupy a planet's orbital slot; placement limits the planet types.
 
-const FUNCTIONS: Array[String] = ["outpost", "mining", "logistics", "shipyard", "depot"]
+const FUNCTIONS: Array[String] = ["outpost", "mining", "logistics", "shipyard", "depot", "defence"]
 const SHIP_SIZES: Array[String] = ["S", "M", "L"]
 
 @export var function: StringName
@@ -22,6 +22,7 @@ const SHIP_SIZES: Array[String] = ["S", "M", "L"]
 @export var shipyard_size: StringName  # "S", "M" or "L"
 @export var supply_range: int  # lanes (B12)
 @export var sector_range: int  # lanes a sector anchored here reaches (D3: T2 3, T3 5; 0 = can't anchor)
+@export var design: StringName  # defence stations: the design it fights with (a platform hull, M3)
 @export var security: int  # D9: +10 for defensive platforms and listening posts (none in M2)
 
 
@@ -48,6 +49,7 @@ func schema() -> Dictionary:
 		"supply_range": {"type": "int", "min": 0},
 		"sector_range": {"type": "int", "min": 0},
 		"security": {"type": "int", "min": 0},
+		"design": {"type": "id", "ref": "design"},
 	}
 
 
@@ -55,6 +57,10 @@ func validate(db: DefDatabase) -> Array[String]:
 	var errors: Array[String] = []
 	if function == &"shipyard" and (docks <= 0 or shipyard_size == &""):
 		errors.append("shipyards need docks > 0 and a shipyard_size")
+	if function == &"defence":
+		var d := db.get_def(design) as DesignDef
+		if d == null or (db.get_def(d.hull) as HullDef) == null or (db.get_def(d.hull) as HullDef).role != &"platform":
+			errors.append("defence stations need a design on a platform hull")
 	if upgrades_to != &"":
 		var next := db.get_def(upgrades_to) as StationDef
 		if next != null and (next.function != function or next.tier != tier + 1):

@@ -1,0 +1,105 @@
+class_name CombatRulesDef
+extends Def
+## Space combat constants (Sub-spec A0–A13; the A9 family matrix lives in weapon_family Defs) as data, so the combat harness can tune them and mods can
+## patch them. Core ships one: core:combat_rules/default. Permille unless named otherwise.
+
+const ID := &"core:combat_rules/default"
+const SIZES: Array[String] = ["S", "M", "L", "XL"]
+const VETERANCY: Array[String] = ["green", "regular", "veteran", "elite"]
+
+# A0, A7
+@export var hit_min: int
+@export var hit_max: int
+@export var variance_min: int  # damage roll range [min, max) permille
+@export var variance_max: int
+# A1, A9
+@export var shield_regen: int  # default per round when a hull sets none
+@export var armor_k: int
+@export var ablation_divisor: int
+@export var crippled_hull: int  # below this share of hull_max a ship is crippled
+@export var crippled_accuracy: int
+# A4, A5, A6, A8
+@export var round_cap: int
+@export var range_step_rounds: int
+@export var escort_classes: Array[StringName] = []  # hull classes that screen (A6) and are not capital ships (A10)
+@export var screen_escort_share: int  # screening while escorts are at least this share of enemy hulls
+@export var screen_weight: int  # capital ships' target weight while screened
+@export var target_top: int  # pick among the top N candidates
+@export var pd_intercept: int
+@export var ecm_missile_penalty: int  # per ECM suite (A7)
+@export var sensor_net_accuracy: int  # system owner (A13)
+# A10
+@export var morale_start: int
+@export var morale_out_of_supply: int
+@export var morale_recent_defeat: int
+@export var morale_loss_mult: int
+@export var morale_capital_lost: int
+@export var outnumbered_ratio: int  # by cost, permille (2000 = 2:1)
+@export var morale_outnumbered: int
+@export var retreat_morale: int
+@export var retreat_roll_mult: int
+@export var disengage_rounds: int
+@export var disengage_incoming_accuracy: int
+@export var pursuit_rounds: int
+# A11
+@export var boarding_min: int
+@export var boarding_max: int
+@export var boarding_fail_loss: int
+@export var capture_salvage_mult: int
+# A12
+@export var decisive_enemy_loss: int
+@export var decisive_own_loss: int
+@export var victory_min_loss: int
+@export var pyrrhic_own_loss: int
+@export var draw_band: int
+@export var salvage: int  # tech fragments = destroyed enemy cost x this / 1000
+@export var xp_per_round: int
+@export var xp_per_kill: int
+# A13 veterancy, B12 / A13 supply
+@export var veterancy_xp: Dictionary = {}  # tier -> XP needed
+@export var veterancy_accuracy: Dictionary = {}  # tier -> permille
+@export var veterancy_morale_resist: Dictionary = {}  # tier -> permille
+@export var out_of_supply_accuracy: int
+@export var attrition_after_days: int
+@export var attrition_per_day: int  # permille of hull_max
+# Crew and ammunition placeholders (owner, 2026-10-01; A2 has none)
+@export var crew_by_size: Dictionary = {}  # hull size -> crew
+@export var ammo_per_weapon: int  # ammo_max per ammo-using weapon
+# Who pirates fly (B9 raiders, D9 bases)
+@export var pirate_raider_design: StringName
+@export var pirate_base_design: StringName
+
+const _INTS: Array[String] = ["hit_min", "hit_max", "variance_min", "variance_max", "shield_regen", "armor_k",
+	"ablation_divisor", "crippled_hull", "crippled_accuracy", "round_cap", "range_step_rounds", "screen_escort_share",
+	"screen_weight", "target_top", "pd_intercept", "ecm_missile_penalty", "sensor_net_accuracy", "morale_start",
+	"morale_out_of_supply", "morale_recent_defeat", "morale_loss_mult", "morale_capital_lost", "outnumbered_ratio",
+	"morale_outnumbered", "retreat_morale", "retreat_roll_mult", "disengage_rounds", "disengage_incoming_accuracy",
+	"pursuit_rounds", "boarding_min", "boarding_max", "boarding_fail_loss", "capture_salvage_mult",
+	"decisive_enemy_loss", "decisive_own_loss", "victory_min_loss", "pyrrhic_own_loss", "draw_band", "salvage",
+	"xp_per_round", "xp_per_kill", "out_of_supply_accuracy", "attrition_after_days", "attrition_per_day",
+	"ammo_per_weapon"]
+
+
+func category() -> String:
+	return "combat_rules"
+
+
+func schema() -> Dictionary:
+	var s := {}
+	for field in _INTS:
+		s[field] = {"type": "int"}
+	s["escort_classes"] = {"type": "name_list"}
+	s["veterancy_xp"] = {"type": "int_map", "keys": VETERANCY, "min": 0}
+	s["veterancy_accuracy"] = {"type": "int_map", "keys": VETERANCY}
+	s["veterancy_morale_resist"] = {"type": "int_map", "keys": VETERANCY}
+	s["crew_by_size"] = {"type": "int_map", "keys": SIZES, "min": 0}
+	s["pirate_raider_design"] = {"type": "id", "ref": "design"}
+	s["pirate_base_design"] = {"type": "id", "ref": "design"}
+	return s
+
+
+func validate(_db: DefDatabase) -> Array[String]:
+	var errors: Array[String] = []
+	if hit_min > hit_max or variance_min >= variance_max or armor_k <= 0 or ablation_divisor <= 0:
+		errors.append("hit_min <= hit_max, variance_min < variance_max, armor_k > 0 and ablation_divisor > 0")
+	return errors

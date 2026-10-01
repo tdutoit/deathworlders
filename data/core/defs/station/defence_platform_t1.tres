@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="StationDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_xxh66"]
+[ext_resource type="Script" path="res://sim/defs/station_def.gd" id="2_n7nix"]
+
+[resource]
+script = ExtResource("2_n7nix")
+function = &"defence"
+cost = {
+&"core:resource/alloys": 150,
+&"core:resource/components": 30
+}
+build_days = 90
+upkeep = {
+&"core:resource/credits": 2
+}
+design = &"core:design/defence_platform"
+security = 10
+id = &"core:station/defence_platform_t1"
+name_key = "STATION_DEFENCE_PLATFORM_T1"

@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ComponentDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_55dcm"]
+[ext_resource type="Script" path="res://sim/defs/component_def.gd" id="2_bi5l0"]
+
+[resource]
+script = ExtResource("2_bi5l0")
+slot_type = &"weapon"
+slot_size = &"L"
+family = &"core:weapon_family/missile"
+damage = 400
+shots = 1
+accuracy = Array[int]([850, 600, 100])
+penetration = 50
+ammo_per_shot = 1
+cost = {
+&"core:resource/alloys": 60,
+&"core:resource/components": 30
+}
+id = &"core:component/torpedo_l"
+name_key = "COMP_TORPEDO_L"
+tags = Array[StringName]([&"ignores_screening"])

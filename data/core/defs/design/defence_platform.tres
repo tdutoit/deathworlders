@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DesignDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_q1gil"]
+[ext_resource type="Script" path="res://sim/defs/design_def.gd" id="2_utjm8"]
+
+[resource]
+script = ExtResource("2_utjm8")
+hull = &"core:hull/defence_platform"
+components = Array[StringName]([&"core:component/railgun_m", &"core:component/railgun_m", &"core:component/armor_plate", &"core:component/shield_gen", &""])
+id = &"core:design/defence_platform"
+name_key = "DESIGN_DEFENCE_PLATFORM"

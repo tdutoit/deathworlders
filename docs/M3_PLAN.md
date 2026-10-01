@@ -6,6 +6,13 @@ into an ordered build plan. Builds on M2 (docs/M2_PLAN.md); same rules (CLAUDE.m
 
 **Change log**
 - 2026-10-01: plan created. Scope decisions below agreed with the project owner.
+- 2026-10-01 (WP1): combat content as data (Sub-spec A and C change logs). Open questions 2 (fighters),
+  3 (assault ship, marines) and 5 (platform, pirate stats) settled with the owner. Component costs are
+  placeholders inside B10's module ranges (S weapons 10 alloys / 5-8 components, M 30-40 / 10-20,
+  L 60 / 25-30; defence modules 10-20 / 5-20); the Defensive Platform's upkeep is 2 credits (like other
+  tier-1 military stations). Standard designs are kinetic-led for every species until the M4 species pass.
+  Non-human hulls use the human model for that class (Vess'kar's corvette has its own); the classes without a
+  model yet get one in WP11.
 
 ---
 

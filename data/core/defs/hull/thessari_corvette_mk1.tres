@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_1i176"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_087nr"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_ntyvu"]
+
+[sub_resource type="Resource" id="Resource_xrrs6"]
+script = ExtResource("3_ntyvu")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_5k6d6"]
+script = ExtResource("3_ntyvu")
+hardpoint = &"HP_W_S_02"
+
+[sub_resource type="Resource" id="Resource_1tv0f"]
+script = ExtResource("3_ntyvu")
+slot_type = 1
+hardpoint = &"HP_D_S_01"
+
+[resource]
+script = ExtResource("2_087nr")
+species = &"core:species/thessari"
+hull_class = &"corvette"
+hull = 300
+armor = 26
+shield = 60
+evasion = 300
+speed = 7
+slots = Array[ExtResource("3_ntyvu")]([SubResource("Resource_xrrs6"), SubResource("Resource_5k6d6"), SubResource("Resource_1tv0f")])
+cost = {
+&"core:resource/alloys": 60,
+&"core:resource/components": 10
+}
+build_days = 45
+model = "assets/models/ships/human_corvette_mk1.glb"
+credit_upkeep_milli = 1000
+id = &"core:hull/thessari_corvette_mk1"
+name_key = "HULL_THESSARI_CORVETTE_MK1"

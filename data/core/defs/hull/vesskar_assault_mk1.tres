@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_16rlq"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_02rrd"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_th3om"]
+
+[sub_resource type="Resource" id="Resource_b1fte"]
+script = ExtResource("3_th3om")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_7wwvo"]
+script = ExtResource("3_th3om")
+slot_type = 1
+slot_size = 1
+hardpoint = &"HP_D_M_01"
+
+[sub_resource type="Resource" id="Resource_utbwa"]
+script = ExtResource("3_th3om")
+slot_type = 2
+hardpoint = &"HP_U_S_01"
+
+[sub_resource type="Resource" id="Resource_obmk1"]
+script = ExtResource("3_th3om")
+slot_type = 2
+hardpoint = &"HP_U_S_02"
+
+[resource]
+script = ExtResource("2_02rrd")
+species = &"core:species/vesskar"
+hull_class = &"assault"
+hull = 525
+armor = 40
+shield = 210
+evasion = 150
+speed = 7
+slots = Array[ExtResource("3_th3om")]([SubResource("Resource_b1fte"), SubResource("Resource_7wwvo"), SubResource("Resource_utbwa"), SubResource("Resource_obmk1")])
+cost = {
+&"core:resource/alloys": 140,
+&"core:resource/components": 30
+}
+build_days = 75
+size = &"M"
+credit_upkeep_milli = 2000
+id = &"core:hull/vesskar_assault_mk1"
+name_key = "HULL_VESSKAR_ASSAULT_MK1"

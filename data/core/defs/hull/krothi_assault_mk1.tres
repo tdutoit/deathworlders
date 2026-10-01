@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_sjbrj"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_yw41y"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_bidtg"]
+
+[sub_resource type="Resource" id="Resource_vuty8"]
+script = ExtResource("3_bidtg")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_fg5lb"]
+script = ExtResource("3_bidtg")
+slot_type = 1
+slot_size = 1
+hardpoint = &"HP_D_M_01"
+
+[sub_resource type="Resource" id="Resource_ix3je"]
+script = ExtResource("3_bidtg")
+slot_type = 2
+hardpoint = &"HP_U_S_01"
+
+[sub_resource type="Resource" id="Resource_67nbg"]
+script = ExtResource("3_bidtg")
+slot_type = 2
+hardpoint = &"HP_U_S_02"
+
+[resource]
+script = ExtResource("2_yw41y")
+species = &"core:species/krothi"
+hull_class = &"assault"
+hull = 560
+armor = 40
+shield = 150
+evasion = 150
+speed = 7
+slots = Array[ExtResource("3_bidtg")]([SubResource("Resource_vuty8"), SubResource("Resource_fg5lb"), SubResource("Resource_ix3je"), SubResource("Resource_67nbg")])
+cost = {
+&"core:resource/alloys": 91,
+&"core:resource/components": 19
+}
+build_days = 75
+size = &"M"
+credit_upkeep_milli = 2000
+id = &"core:hull/krothi_assault_mk1"
+name_key = "HULL_KROTHI_ASSAULT_MK1"

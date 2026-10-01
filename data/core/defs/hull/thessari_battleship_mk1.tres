@@ -1,0 +1,80 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_0r8p3"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_2jpyw"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_sns8s"]
+
+[sub_resource type="Resource" id="Resource_5auxm"]
+script = ExtResource("3_sns8s")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_qfoi8"]
+script = ExtResource("3_sns8s")
+hardpoint = &"HP_W_S_02"
+
+[sub_resource type="Resource" id="Resource_552u6"]
+script = ExtResource("3_sns8s")
+slot_size = 1
+hardpoint = &"HP_W_M_01"
+
+[sub_resource type="Resource" id="Resource_oq1u7"]
+script = ExtResource("3_sns8s")
+slot_size = 1
+hardpoint = &"HP_W_M_02"
+
+[sub_resource type="Resource" id="Resource_ffj1r"]
+script = ExtResource("3_sns8s")
+slot_size = 2
+hardpoint = &"HP_W_L_01"
+
+[sub_resource type="Resource" id="Resource_27vsk"]
+script = ExtResource("3_sns8s")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_01"
+
+[sub_resource type="Resource" id="Resource_fq82d"]
+script = ExtResource("3_sns8s")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_02"
+
+[sub_resource type="Resource" id="Resource_bv707"]
+script = ExtResource("3_sns8s")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_03"
+
+[sub_resource type="Resource" id="Resource_4tmcm"]
+script = ExtResource("3_sns8s")
+slot_type = 2
+slot_size = 1
+hardpoint = &"HP_U_M_01"
+
+[sub_resource type="Resource" id="Resource_ssdhp"]
+script = ExtResource("3_sns8s")
+slot_type = 3
+slot_size = 2
+hardpoint = &"HP_C_L_01"
+
+[resource]
+script = ExtResource("2_2jpyw")
+species = &"core:species/thessari"
+hull_class = &"battleship"
+hull = 4000
+armor = 195
+shield = 800
+evasion = 20
+speed = 3
+slots = Array[ExtResource("3_sns8s")]([SubResource("Resource_5auxm"), SubResource("Resource_qfoi8"), SubResource("Resource_552u6"), SubResource("Resource_oq1u7"), SubResource("Resource_ffj1r"), SubResource("Resource_27vsk"), SubResource("Resource_fq82d"), SubResource("Resource_bv707"), SubResource("Resource_4tmcm"), SubResource("Resource_ssdhp")])
+cost = {
+&"core:resource/alloys": 700,
+&"core:resource/components": 180,
+&"core:resource/exotics": 20
+}
+build_days = 270
+size = &"XL"
+shipyard_size = &"L"
+credit_upkeep_milli = 10000
+id = &"core:hull/thessari_battleship_mk1"
+name_key = "HULL_THESSARI_BATTLESHIP_MK1"

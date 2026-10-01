@@ -5,9 +5,10 @@ extends Resource
 ## Each subclass declares its category and a field schema. The schema drives JSON conversion,
 ## patch ops, reference checks and content hashing, so a new Def type only needs fields + schema.
 ## Field types: int, bool, string, name (free StringName), enum, color ("#rrggbb"), id (reference),
-## id_list, name_list, string_list (plain Strings), int_map (Dictionary of StringName -> int), modifiers,
-## slots (hull SlotDefs).
-## Options: required, min, max, ref (category for id/id_list), key_ref (category for int_map keys),
+## id_list, name_list, string_list (plain Strings), int_list, int_map (Dictionary of StringName -> int),
+## modifiers, slots (hull SlotDefs).
+## Options: required, min, max (also per int_list item), size (int_list length), ref (category for
+## id/id_list), allow_empty (id_list: "" entries allowed), key_ref (category for int_map keys),
 ## keys (allowed int_map keys), values (allowed enum values).
 
 @export var id: StringName  # "core:hull/human_cruiser_mk1"

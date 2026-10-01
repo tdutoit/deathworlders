@@ -1,0 +1,44 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_vk300"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_byetf"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_uixrb"]
+
+[sub_resource type="Resource" id="Resource_x1nw4"]
+script = ExtResource("3_uixrb")
+slot_size = 1
+hardpoint = &"HP_W_M_01"
+
+[sub_resource type="Resource" id="Resource_yu67d"]
+script = ExtResource("3_uixrb")
+slot_size = 1
+hardpoint = &"HP_W_M_02"
+
+[sub_resource type="Resource" id="Resource_bs0tb"]
+script = ExtResource("3_uixrb")
+slot_type = 1
+slot_size = 1
+hardpoint = &"HP_D_M_01"
+
+[sub_resource type="Resource" id="Resource_0y6ae"]
+script = ExtResource("3_uixrb")
+slot_type = 1
+slot_size = 1
+hardpoint = &"HP_D_M_02"
+
+[sub_resource type="Resource" id="Resource_6olsd"]
+script = ExtResource("3_uixrb")
+slot_type = 2
+hardpoint = &"HP_U_S_01"
+
+[resource]
+script = ExtResource("2_byetf")
+role = &"platform"
+hull_class = &"defence_platform"
+hull = 1200
+armor = 100
+shield = 300
+slots = Array[ExtResource("3_uixrb")]([SubResource("Resource_x1nw4"), SubResource("Resource_yu67d"), SubResource("Resource_bs0tb"), SubResource("Resource_0y6ae"), SubResource("Resource_6olsd")])
+size = &"L"
+id = &"core:hull/defence_platform"
+name_key = "HULL_DEFENCE_PLATFORM"

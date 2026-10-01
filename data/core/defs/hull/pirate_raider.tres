@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_82gg3"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_56q82"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_vlc5v"]
+
+[sub_resource type="Resource" id="Resource_8fgld"]
+script = ExtResource("3_vlc5v")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_apkjx"]
+script = ExtResource("3_vlc5v")
+hardpoint = &"HP_W_S_02"
+
+[sub_resource type="Resource" id="Resource_8jo5t"]
+script = ExtResource("3_vlc5v")
+slot_type = 1
+hardpoint = &"HP_D_S_01"
+
+[resource]
+script = ExtResource("2_56q82")
+role = &"raider"
+hull_class = &"pirate_raider"
+hull = 300
+armor = 20
+shield = 60
+evasion = 300
+speed = 8
+slots = Array[ExtResource("3_vlc5v")]([SubResource("Resource_8fgld"), SubResource("Resource_apkjx"), SubResource("Resource_8jo5t")])
+id = &"core:hull/pirate_raider"
+name_key = "HULL_PIRATE_RAIDER"

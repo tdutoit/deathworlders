@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="WeaponFamilyDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_6wdp2"]
+[ext_resource type="Script" path="res://sim/defs/weapon_family_def.gd" id="2_e71e3"]
+
+[resource]
+script = ExtResource("2_e71e3")
+shield_mult = 700
+armor_eff = 500
+id = &"core:weapon_family/energy"
+name_key = "FAMILY_ENERGY"

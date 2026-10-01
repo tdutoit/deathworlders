@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DesignDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_7yi0v"]
+[ext_resource type="Script" path="res://sim/defs/design_def.gd" id="2_t5qpn"]
+
+[resource]
+script = ExtResource("2_t5qpn")
+hull = &"core:hull/ohlan_destroyer_mk1"
+components = Array[StringName]([&"core:component/autocannon_s", &"core:component/autocannon_s", &"core:component/missile_pod_m", &"core:component/armor_plate", &""])
+id = &"core:design/ohlan_destroyer_standard"
+name_key = "DESIGN_DESTROYER_STANDARD"

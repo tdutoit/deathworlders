@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_o84xv"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_2qh5q"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_h83qn"]
+
+[sub_resource type="Resource" id="Resource_j5vmu"]
+script = ExtResource("3_h83qn")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_kdqqs"]
+script = ExtResource("3_h83qn")
+slot_type = 1
+hardpoint = &"HP_D_S_01"
+
+[sub_resource type="Resource" id="Resource_wt1ky"]
+script = ExtResource("3_h83qn")
+slot_type = 1
+hardpoint = &"HP_D_S_02"
+
+[sub_resource type="Resource" id="Resource_t6ehy"]
+script = ExtResource("3_h83qn")
+slot_type = 2
+hardpoint = &"HP_U_S_01"
+
+[resource]
+script = ExtResource("2_2qh5q")
+species = &"core:species/ohlan"
+hull_class = &"frigate"
+hull = 450
+armor = 30
+shield = 100
+evasion = 300
+speed = 7
+slots = Array[ExtResource("3_h83qn")]([SubResource("Resource_j5vmu"), SubResource("Resource_kdqqs"), SubResource("Resource_wt1ky"), SubResource("Resource_t6ehy")])
+cost = {
+&"core:resource/alloys": 90,
+&"core:resource/components": 15
+}
+build_days = 60
+credit_upkeep_milli = 1500
+id = &"core:hull/ohlan_frigate_mk1"
+name_key = "HULL_OHLAN_FRIGATE_MK1"

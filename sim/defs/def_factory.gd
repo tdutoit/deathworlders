@@ -23,6 +23,10 @@ static var SCRIPTS := {  # class refs are not constant expressions
 	"start": StartDef,
 	"economy_rules": EconomyRulesDef,
 	"planet_size": PlanetSizeDef,
+	"weapon_family": WeaponFamilyDef,
+	"component": ComponentDef,
+	"design": DesignDef,
+	"combat_rules": CombatRulesDef,
 }
 
 const META_FIELDS: Array[String] = ["op", "category", "id"]
@@ -96,7 +100,11 @@ static func convert_value(v: Variant, spec: Dictionary, own_mod: String, where: 
 					if not item is String:
 						errors.append("%s: list items must be strings" % where)
 						return null
-					var s: Variant = _ref(item, own_mod, where, errors) if spec["type"] == "id_list" else StringName(item)
+					var s: Variant
+					if spec["type"] == "id_list":
+						s = StringName() if item == "" and spec.get("allow_empty", false) else _ref(item, own_mod, where, errors)
+					else:
+						s = StringName(item)
 					if s == null:
 						return null
 					out.append(s)
@@ -112,6 +120,11 @@ static func convert_value(v: Variant, spec: Dictionary, own_mod: String, where: 
 					if key == null:
 						return null
 					out[key] = v[k]
+				return out
+		"int_list":
+			if v is Array and v.all(func(item: Variant) -> bool: return item is int):
+				var out: Array[int] = []
+				out.assign(v)
 				return out
 		"string_list":
 			if v is Array and v.all(func(item: Variant) -> bool: return item is String):
@@ -349,7 +362,14 @@ static func _check_field(v: Variant, spec: Dictionary, db: DefDatabase, declared
 				errors.append("%s needs at least one entry" % field)
 		"id_list":
 			for item: StringName in v:
+				if item == &"" and spec.get("allow_empty", false):
+					continue  # an empty entry (e.g. an empty design slot)
 				_check_ref(item, spec["ref"], db, field, errors)
+		"int_list":
+			if spec.has("size") and (v as Array).size() != spec["size"]:
+				errors.append("%s needs exactly %d values, got %d" % [field, spec["size"], (v as Array).size()])
+			for i in (v as Array).size():
+				_check_range(v[i], spec, "%s[%d]" % [field, i], errors)
 		"int_map":
 			for k: Variant in v:
 				if spec.has("key_ref"):

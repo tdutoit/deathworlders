@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ComponentDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_spvvk"]
+[ext_resource type="Script" path="res://sim/defs/component_def.gd" id="2_bmsdc"]
+
+[sub_resource type="Resource" id="Resource_gjkd6"]
+script = ExtResource("1_spvvk")
+key = &"ship.pd"
+value = 4
+scope = 5
+
+[resource]
+script = ExtResource("2_bmsdc")
+slot_type = &"defence"
+cost = {
+&"core:resource/alloys": 15,
+&"core:resource/components": 15
+}
+id = &"core:component/point_defence"
+name_key = "COMP_POINT_DEFENCE"
+modifiers = Array[ExtResource("1_spvvk")]([SubResource("Resource_gjkd6")])

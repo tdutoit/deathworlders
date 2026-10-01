@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ComponentDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_65p6d"]
+[ext_resource type="Script" path="res://sim/defs/component_def.gd" id="2_px5rw"]
+
+[resource]
+script = ExtResource("2_px5rw")
+slot_type = &"weapon"
+slot_size = &"L"
+family = &"core:weapon_family/kinetic"
+damage = 300
+shots = 1
+accuracy = Array[int]([550, 750, 700])
+penetration = 60
+cost = {
+&"core:resource/alloys": 60,
+&"core:resource/components": 25
+}
+id = &"core:component/mass_driver_l"
+name_key = "COMP_MASS_DRIVER_L"

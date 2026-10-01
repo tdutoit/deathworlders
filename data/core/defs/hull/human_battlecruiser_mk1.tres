@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_yurp7"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_gqvtc"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_et78y"]
+
+[sub_resource type="Resource" id="Resource_veoq2"]
+script = ExtResource("3_et78y")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_226a2"]
+script = ExtResource("3_et78y")
+slot_size = 1
+hardpoint = &"HP_W_M_01"
+
+[sub_resource type="Resource" id="Resource_jvibr"]
+script = ExtResource("3_et78y")
+slot_size = 1
+hardpoint = &"HP_W_M_02"
+
+[sub_resource type="Resource" id="Resource_mrx0i"]
+script = ExtResource("3_et78y")
+slot_size = 2
+hardpoint = &"HP_W_L_01"
+
+[sub_resource type="Resource" id="Resource_7vlbc"]
+script = ExtResource("3_et78y")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_01"
+
+[sub_resource type="Resource" id="Resource_jakkh"]
+script = ExtResource("3_et78y")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_02"
+
+[sub_resource type="Resource" id="Resource_12tdn"]
+script = ExtResource("3_et78y")
+slot_type = 2
+slot_size = 1
+hardpoint = &"HP_U_M_01"
+
+[sub_resource type="Resource" id="Resource_h1fye"]
+script = ExtResource("3_et78y")
+slot_type = 3
+slot_size = 2
+hardpoint = &"HP_C_L_01"
+
+[resource]
+script = ExtResource("2_gqvtc")
+species = &"core:species/human"
+hull_class = &"battlecruiser"
+hull = 2200
+armor = 80
+shield = 350
+evasion = 60
+speed = 6
+slots = Array[ExtResource("3_et78y")]([SubResource("Resource_veoq2"), SubResource("Resource_226a2"), SubResource("Resource_jvibr"), SubResource("Resource_mrx0i"), SubResource("Resource_7vlbc"), SubResource("Resource_jakkh"), SubResource("Resource_12tdn"), SubResource("Resource_h1fye")])
+cost = {
+&"core:resource/alloys": 420,
+&"core:resource/components": 100,
+&"core:resource/rare_earths": 20
+}
+build_days = 180
+size = &"L"
+shipyard_size = &"M"
+credit_upkeep_milli = 6000
+id = &"core:hull/human_battlecruiser_mk1"
+name_key = "HULL_HUMAN_BATTLECRUISER_MK1"

@@ -1,0 +1,80 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_xy3q6"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_mn6r2"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_qu6b3"]
+
+[sub_resource type="Resource" id="Resource_auqvt"]
+script = ExtResource("3_qu6b3")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_fmebe"]
+script = ExtResource("3_qu6b3")
+hardpoint = &"HP_W_S_02"
+
+[sub_resource type="Resource" id="Resource_uw17n"]
+script = ExtResource("3_qu6b3")
+slot_size = 1
+hardpoint = &"HP_W_M_01"
+
+[sub_resource type="Resource" id="Resource_ghp34"]
+script = ExtResource("3_qu6b3")
+slot_size = 1
+hardpoint = &"HP_W_M_02"
+
+[sub_resource type="Resource" id="Resource_t0f8i"]
+script = ExtResource("3_qu6b3")
+slot_size = 2
+hardpoint = &"HP_W_L_01"
+
+[sub_resource type="Resource" id="Resource_ueutn"]
+script = ExtResource("3_qu6b3")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_01"
+
+[sub_resource type="Resource" id="Resource_lhmc7"]
+script = ExtResource("3_qu6b3")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_02"
+
+[sub_resource type="Resource" id="Resource_gusp7"]
+script = ExtResource("3_qu6b3")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_03"
+
+[sub_resource type="Resource" id="Resource_wma1l"]
+script = ExtResource("3_qu6b3")
+slot_type = 2
+slot_size = 1
+hardpoint = &"HP_U_M_01"
+
+[sub_resource type="Resource" id="Resource_nmbm6"]
+script = ExtResource("3_qu6b3")
+slot_type = 3
+slot_size = 2
+hardpoint = &"HP_C_L_01"
+
+[resource]
+script = ExtResource("2_mn6r2")
+species = &"core:species/krothi"
+hull_class = &"battleship"
+hull = 3200
+armor = 150
+shield = 800
+evasion = 20
+speed = 4
+slots = Array[ExtResource("3_qu6b3")]([SubResource("Resource_auqvt"), SubResource("Resource_fmebe"), SubResource("Resource_uw17n"), SubResource("Resource_ghp34"), SubResource("Resource_t0f8i"), SubResource("Resource_ueutn"), SubResource("Resource_lhmc7"), SubResource("Resource_gusp7"), SubResource("Resource_wma1l"), SubResource("Resource_nmbm6")])
+cost = {
+&"core:resource/alloys": 455,
+&"core:resource/components": 117,
+&"core:resource/exotics": 13
+}
+build_days = 270
+size = &"XL"
+shipyard_size = &"L"
+credit_upkeep_milli = 10000
+id = &"core:hull/krothi_battleship_mk1"
+name_key = "HULL_KROTHI_BATTLESHIP_MK1"
