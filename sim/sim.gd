@@ -28,6 +28,8 @@ static func execute(state: MatchState, commands: Array[Command]) -> Array[Comman
 ## One hour: movement, then the clock moves on. Returns DAY / MONTH flags for boundaries reached.
 static func advance(state: MatchState) -> int:
 	Movement.tick(state)
+	if state.defs != null:
+		Freight.tick(state)
 	state.tick += 1
 	var flags := 0
 	if Calendar.is_day_start(state.tick):

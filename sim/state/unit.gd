@@ -12,16 +12,32 @@ var system_id: int
 var path: Array[int] = []
 var progress: int  # milli-lane-units (1 lane unit = 1000)
 var speed: int  # milli-lane-units per hour tick
+# Freight (M2 WP5): where it is inside its system, what it's doing and what it carries.
+var body: int = StateIO.NONE  # planet ID it is at (when not on a lane)
+var route: int = StateIO.NONE  # assigned Route ID
+var phase := ""  # "", "to_source", "loading", "to_dest", "unloading", "home"
+var wait_hours := 0  # loading/unloading or in-system travel still to go
+var impulse_to: int = StateIO.NONE  # body it is flying to inside the system
+var cargo := {}  # resource ID -> milli-units aboard
 
 
 func is_moving() -> bool:
 	return not path.is_empty()
 
 
+func cargo_milli() -> int:
+	var n := 0
+	for res: String in cargo:
+		n += cargo[res]
+	return n
+
+
 func to_dict() -> Dictionary:
 	return {
 		"id": id, "owner": owner, "kind": kind, "system_id": system_id, "path": path.duplicate(),
 		"progress": progress, "speed": speed, "hull_id": hull_id, "home": home,
+		"body": body, "route": route, "phase": phase, "wait_hours": wait_hours, "impulse_to": impulse_to,
+		"cargo": cargo.duplicate(),
 	}
 
 
@@ -36,4 +52,10 @@ static func from_dict(d: Dictionary) -> Unit:
 	u.speed = int(d["speed"])
 	u.hull_id = String(d.get("hull_id", ""))
 	u.home = int(d.get("home", StateIO.NONE))
+	u.body = int(d.get("body", StateIO.NONE))
+	u.route = int(d.get("route", StateIO.NONE))
+	u.phase = String(d.get("phase", ""))
+	u.wait_hours = int(d.get("wait_hours", 0))
+	u.impulse_to = int(d.get("impulse_to", StateIO.NONE))
+	u.cargo = StateIO.int_map(d.get("cargo", {}))
 	return u

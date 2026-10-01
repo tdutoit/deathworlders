@@ -33,6 +33,12 @@ into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.m
   colonies with planet.freighter_berths); without one they're idle. Rebasing is an assignment change (the
   freighter flies there on its next job). Placeholder `core:hull/scout` (30 alloys, 30 days, 12 lane units/day);
   B19's starting ships: 3 Light Freighters, a Scout and a Colony Ship. Fuel upkeep is WP9's.
+- 2026-10-01 (WP5): colonies and stations are "holders" in one ID space. In-system travel (B7) is 1 day to a
+  body's own orbit or moon, otherwise 2 + (orbit-radius gap / 20) days, clamped 2-8. This matches Sol's
+  Earth-Mars 3 and Earth-Belt 4 but gives Earth-Jupiter 6 instead of B7's 8 (the sim has no orbital
+  angles). Freighters arriving by lane are placed at their target body (no extra impulse leg). Manual routes
+  take whatever the source has (reserves apply to auto-logistics, WP6); cargo that doesn't fit stays aboard;
+  an empty source means a day's wait and retry. Routes get their own `logistics` checksum part.
 
 ---
 

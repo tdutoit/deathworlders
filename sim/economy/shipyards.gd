@@ -68,12 +68,12 @@ static func _launch(state: MatchState, s: Station, b: Construction) -> bool:
 			b.days_done = b.total_days  # finished, waiting for a pop
 			return false
 		_take_pops(src, hull.pop_cost, state.defs)
-	spawn(state, s.owner, b.def_id, s.system_id)
+	spawn(state, s.owner, b.def_id, s.system_id, s.planet_id)
 	return true
 
 
-## A new ship unit at a system; freighters get a berth at a hub there if one is free.
-static func spawn(state: MatchState, owner: int, hull_id: String, system_id: int) -> Unit:
+## A new ship unit at a system (at `at_body`, or its first body); freighters get a berth at a hub there.
+static func spawn(state: MatchState, owner: int, hull_id: String, system_id: int, at_body: int = StateIO.NONE) -> Unit:
 	var hull: HullDef = state.defs.get_def(StringName(hull_id))
 	var u := Unit.new()
 	u.id = state.alloc_id()
@@ -82,6 +82,7 @@ static func spawn(state: MatchState, owner: int, hull_id: String, system_id: int
 	u.hull_id = hull_id
 	u.system_id = system_id
 	u.speed = FixedMath.floor_div(hull.lane_speed * Movement.MILLI, Calendar.HOURS_PER_DAY)
+	u.body = at_body if at_body != StateIO.NONE else state.galaxy.system(system_id).planet_ids[0]
 	state.units.put(u.id, u)
 	if hull.role == &"freighter":
 		u.home = free_berth(state, owner, system_id)
