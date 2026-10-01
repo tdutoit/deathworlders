@@ -65,6 +65,12 @@ into an ordered build plan. Builds on M2 (docs/M2_PLAN.md); same rules (CLAUDE.m
   diplomacy; the AI never declares war). War is a mutual pair in `MatchState.wars`. Making peace ends battles
   between the two on their next round as a truce (both results "truce", no salvage). The UI control comes
   with WP12.
+- 2026-10-01 (WP8): a pirate base is its spawn timer (`MatchState.pirate_bases`, as in M2) plus an immobile
+  armed `pirate_base` unit (owner pirates, the pirate base design, hunting the empire its founder hunted).
+  Warships fight it like any combatant; when the system's last base unit is destroyed the base is gone and
+  sends no more raiders. Raiders fly the pirate raider design, fight fleets they meet and are stopped by
+  hostile warships (interdiction). Base systems count as raided for freighter route safety. Open question 5
+  settled in WP1.
 
 ---
 

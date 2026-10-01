@@ -185,3 +185,57 @@ func test_no_job_into_a_raided_system() -> void:
 	AutoLogistics.day_tick(s)
 	for u: Unit in s.units.values():
 		assert_true(u.job.is_empty() or int(u.job["dest"]) != pid, "nobody is sent into the raider")
+
+
+func _warship(s: MatchState, cls: String, system: int) -> Unit:
+	var d: DesignDef = _db.get_def(StringName("core:design/human_%s_standard" % cls))
+	var u := Shipyards.spawn(s, _human(s).id, String(d.hull), system)
+	u.components.assign(Array(d.components).map(func(c: StringName) -> String: return String(c)))
+	Fleets.commission(s, u)
+	return u
+
+
+func test_base_is_an_armed_unit() -> void:
+	var s := _match()
+	var sys := _own_at(s, 3)
+	var base := Pirates.found_base(s, sys, _human(s).id)
+	assert_true(s.pirate_bases.has(sys))
+	assert_eq(base.kind, "pirate_base")
+	assert_eq(base.owner, Pirates.PIRATES)
+	assert_eq(base.hp, 1200, "pirate base design (owner placeholder)")
+	assert_true(Pirates.raided_systems(s, _human(s).id).has(sys), "freighters avoid base systems")
+
+
+func test_warships_destroy_a_base() -> void:
+	var s := _match()
+	var sys := _own_at(s, 3)
+	Pirates.found_base(s, sys, _human(s).id)
+	for i in 4:
+		_warship(s, "cruiser", sys)
+	for h in 120:
+		s.clear_scratch()
+		Battles.tick(s)
+	assert_false(s.pirate_bases.has(sys), "the base is gone (M3: warships clear bases)")
+	assert_eq(s.units.values().filter(func(u: Unit) -> bool: return u.kind == "pirate_base").size(), 0)
+	assert_eq(s.reports.size(), 1)
+
+
+func test_raiders_are_stopped_by_warships() -> void:
+	var s := _match()
+	var home := _home_sys(s)
+	var next := _own_at(s, 1)
+	_warship(s, "cruiser", next)
+	var raider := Pirates.spawn_raider(s, home, _human(s).id)
+	var beyond := -1  # a system past `next`, so the raider's route runs through the guarded system
+	for lid in s.galaxy.system(next).lane_ids:
+		var other := s.galaxy.lane(lid).other_end(next)
+		if other != home and beyond < 0:
+			beyond = other
+	raider.path = [next, beyond] as Array[int]
+	for h in 24 * 10:
+		s.clear_scratch()
+		Movement.tick(s)
+		if raider.system_id == next:
+			break
+	assert_eq(raider.system_id, next)
+	assert_false(raider.is_moving(), "interdicted")

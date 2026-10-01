@@ -532,6 +532,8 @@ static func _destroy(state: MatchState, id: int) -> void:
 	if u != null:
 		Fleets.remove_ship(state, u)
 		state.units.erase(id)
+		if u.kind == "pirate_base":
+			Pirates.base_destroyed(state, u.system_id)  # warships can clear bases (M3)
 	else:
 		state.stations.erase(id)
 

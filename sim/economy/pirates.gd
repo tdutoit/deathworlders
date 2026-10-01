@@ -48,7 +48,7 @@ static func raided_systems(state: MatchState, eid: int) -> Dictionary:
 		var out := {}
 		for uid: int in state.units.ordered():
 			var u: Unit = state.units.get_or(uid)
-			if u.kind == "raider" and u.target_owner == eid:
+			if (u.kind == "raider" or u.kind == "pirate_base") and u.target_owner == eid:
 				out[u.system_id] = true
 				for s in u.path:
 					out[s] = true
@@ -81,7 +81,7 @@ static func month_tick(state: MatchState) -> void:
 				state.units.erase(uid)
 				continue
 		if not state.pirate_bases.has(u.system_id) and rng.range(0, 1000) < r.pirate_base_chance_permille:
-			state.pirate_bases[u.system_id] = r.pirate_base_spawn_months
+			found_base(state, u.system_id, u.target_owner)
 			u.months_left = 0  # guards its base from now on
 		elif not u.is_moving() and not Battles.in_battle(state, u.id):
 			_hunt(state, u, reach, traffic)
@@ -106,6 +106,36 @@ static func month_tick(state: MatchState) -> void:
 			if sec < r.pirate_threshold and rng.range(0, 1000) < (r.pirate_threshold - sec) * r.pirate_chance_per_point_permille:
 				spawn_raider(state, sys_id, eid)
 				hunting += 1
+
+
+## A pirate base (D9): the spawn timer, plus (M3) an immobile armed base unit that warships can destroy.
+static func found_base(state: MatchState, system_id: int, target: int) -> Unit:
+	state.pirate_bases[system_id] = Economy.rules(state.defs).pirate_base_spawn_months
+	var cr := state.defs.get_def(CombatRulesDef.ID) as CombatRulesDef
+	var design := state.defs.get_def(cr.pirate_base_design) as DesignDef if cr != null else null
+	if design == null:
+		return null
+	var u := Unit.new()
+	u.id = state.alloc_id()
+	u.owner = PIRATES
+	u.kind = "pirate_base"
+	u.system_id = system_id
+	u.body = state.galaxy.system(system_id).planet_ids[0] if not state.galaxy.system(system_id).planet_ids.is_empty() else StateIO.NONE
+	u.target_owner = target
+	u.hull_id = String(design.hull)
+	u.components.assign(Array(design.components).map(func(c: StringName) -> String: return String(c)))
+	Fleets.arm(state, u)
+	state.units.put(u.id, u)
+	return u
+
+
+## Called when a base unit is destroyed: the base is gone once no base unit is left in its system.
+static func base_destroyed(state: MatchState, system_id: int) -> void:
+	for uid: int in state.units.ordered():
+		var u: Unit = state.units.get_or(uid)
+		if u.kind == "pirate_base" and u.system_id == system_id:
+			return
+	state.pirate_bases.erase(system_id)
 
 
 static func spawn_raider(state: MatchState, system_id: int, target: int) -> Unit:
