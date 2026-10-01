@@ -5,6 +5,21 @@
 **Change log**
 - 2026-10-01 (M1 WP3) B1: `ResourceDef.base_value` is stored in milli-credits (Fuel 1.5 = 1500, Food 1 = 1000);
   Research and Influence have base value 0. `stockpile_default_cap` is in whole units (B5: 500), 0 = uncapped.
+- 2026-10-01 (M2 planning, agreed with the owner):
+  - B4/B6: a Logistics-focus planet gives **+4** freighter berths (B4's "+2" corrected to match B6).
+  - B10: shipyard size and tier are one upgrade path: T1 = S, 1 dock; T2 = M, 2 docks; T3 = L, 3 docks
+    (upgrade cost ×2 / ×4 the base row).
+  - B13: station upkeep (credits/month): Outpost and Mining stations 1; Logistics, Shipyard and Supply Depot
+    T1 2, T2 4, T3 6.
+  - Deposits: an extraction building needs a matching deposit on the planet (Mine: Ore, RE Mine: Rare Earths),
+    and the deposit's richness (1–3) is how many of that building the planet can hold. Farms need no deposit.
+  - B3: the Miner's "4 Ore (or 1 Rare Earth on RE deposit)" becomes two buildings: **Mine** (Miner, 4 Ore) and
+    **RE Mine** (RE Miner, 1 Rare Earth, needs a Rare Earth deposit). Mining stations split the same way by
+    location (belt ore / RE belt / moon or barren / gas giant refinery, B11).
+  - B2: the capital building adds **+2** building slots (was +1), so B19's ten Earth buildings fit.
+  - B19: Earth's starting stockpile adds **100 Rare Earths** (the Fabricator's input had no source).
+  - B4: focus effects other than job output (growth, stockpile cap, berths, build speed) also apply at 50% for
+    the Secondary focus.
 
 ---
 
@@ -49,14 +64,15 @@ Base values are used by trade, AI valuation, salvage and battle scoring.
 | Huge | 10 | 36 | 4 |
 
 - Effective housing = `base * habitability / 1000` (species-specific; humans ≥ 600‰ on Deathworld/Arctic/Desert with Deathworlder trait).
-- Capital building adds +1 slot and +8 housing.
+- Capital building adds +2 slots and +8 housing.
 
 ## B3. Jobs (per pop, per month, before modifiers)
 
 | Job | Building (jobs) | Output | Input |
 |---|---|---|---|
 | Farmer | Farm (3) | 6 Food | — |
-| Miner | Mine (3) | 4 Ore (or 1 Rare Earth on RE deposit) | — |
+| Miner | Mine (3, needs Ore deposit) | 4 Ore | — |
+| RE Miner | RE Mine (3, needs Rare Earth deposit) | 1 Rare Earth | — |
 | Worker | Foundry (3) | 3 Alloys | 6 Ore |
 | Engineer | Fabricator (2) | 2 Components | 1 Alloy, 1 Rare Earth |
 | Munitions Worker | Munitions Plant (2) | 8 Munitions | 2 Ore |
@@ -79,7 +95,7 @@ Base values are used by trade, AI valuation, salvage and battle scoring.
 | Focus | Boosted jobs / effects |
 |---|---|
 | Industrial | Worker, Engineer, Munitions; +10% build speed on local shipyards |
-| Logistics | Dockworker; +2 extra freighter berths; stockpile cap +50% |
+| Logistics | Dockworker; +4 extra freighter berths; stockpile cap +50% |
 | Farming | Farmer; pop growth +20% |
 | Economy | Clerk; trade income +25% |
 | Research | Researcher |
@@ -294,7 +310,7 @@ Jobs: 6 Farmers, 2 Miners, 6 Workers, 2 Engineers, 1 Munitions, 4 Researchers, 3
 **Orbitals:** Luna Shipyard S (T1), Earth Logistics Station T1 with 3 Light Freighters, 3 belt Mining Stations, 1 Listening Post at Neptune.
 **Uncolonised targets:** Mars (Medium, Desert), Venus (Toxic), Titan (Small, Arctic).
 **Starting fleet:** 3 Corvettes, 1 Destroyer, 1 Scout, 1 Colony Ship.
-**Starting stockpile (Earth):** 400 Alloys, 100 Components, 300 Food, 200 Ore, 200 Munitions, 200 Fuel, 500 Credits.
+**Starting stockpile (Earth):** 400 Alloys, 100 Components, 100 Rare Earths, 300 Food, 200 Ore, 200 Munitions, 200 Fuel, 500 Credits.
 
 **Calculated monthly flow (Earth + belt):**
 
