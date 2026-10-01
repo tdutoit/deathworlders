@@ -49,7 +49,7 @@ static func month_tick(state: MatchState) -> void:
 		c.add_flow(c.produced, "core:resource/credits", taxes)
 		for i in c.buildings.size():
 			var b: BuildingDef = db.get_def(StringName(c.buildings[i]))
-			for res: StringName in IdMap.sort_keys(b.upkeep.keys()):
+			for res: StringName in _sorted(b.upkeep):
 				if _is_global(db, String(res)):
 					upkeep_due[c.owner] = upkeep_due.get(c.owner, 0) + FixedMath.mul_permille(b.upkeep[res] * MILLI, 1000 + effects[0])
 				else:
@@ -101,12 +101,11 @@ static func _produce(state: MatchState, c: Colony, db: DefDatabase, day: int, or
 		if n <= 0:
 			continue
 		var job: JobDef = db.get_def(StringName(job_id))
-		var short_name := job_id.get_slice("/", 1)
 		# Inputs come from the local stockpile; a shortage scales the whole job down (B3).
 		var needs := {}
 		var ratio := MILLI
-		for res: StringName in IdMap.sort_keys(job.inputs.keys()):
-			var per_pop := maxi(0, int(job.inputs[res]) + mods.add("job.input.%s.%s" % [short_name, String(res).get_slice("/", 1)]))
+		for res: StringName in _sorted(job.inputs):
+			var per_pop := maxi(0, int(job.inputs[res]) + mods.add(_key("job.input.", job_id, res)))
 			var need := share(per_pop * n * MILLI, day)
 			needs[String(res)] = need
 			if need > 0:
@@ -122,7 +121,7 @@ static func _produce(state: MatchState, c: Colony, db: DefDatabase, day: int, or
 					used += sp.take(res, want - used)
 			c.add_flow(c.consumed, res, used)
 		var out_permille := output_permille(c, job_id, db, mods)
-		for res: StringName in IdMap.sort_keys(job.outputs.keys()):
+		for res: StringName in _sorted(job.outputs):
 			var total := FixedMath.mul_permille(int(job.outputs[res]) * n * MILLI, out_permille)
 			_deliver(state, c, e, db, mods, String(res), FixedMath.floor_div(share(total, day) * ratio, MILLI))
 	for i in c.buildings.size():
@@ -138,6 +137,29 @@ static func _produce(state: MatchState, c: Colony, db: DefDatabase, day: int, or
 	c.add_flow(c.consumed, food, eaten)
 	if eaten < hunger:
 		c.starving = true
+
+
+# Content is frozen for a match, so these per-Def derived values are cached (runtime only, never state).
+static var _sorted_cache := {}
+static var _key_cache := {}
+
+
+## IdMap.sort_keys of a Def's resource dictionary, cached by the dictionary itself.
+static func _sorted(d: Dictionary) -> Array:
+	if not _sorted_cache.has(d):
+		_sorted_cache[d] = IdMap.sort_keys(d.keys())
+	return _sorted_cache[d]
+
+
+## Modifier key "<prefix><job short name>[.<resource short name>]", cached.
+static func _key(prefix: String, job_id: String, res: String) -> String:
+	var k := prefix + job_id + "|" + res
+	if not _key_cache.has(k):
+		var key := prefix + job_id.get_slice("/", 1)
+		if res != "":
+			key += "." + res.get_slice("/", 1)
+		_key_cache[k] = key
+	return _key_cache[k]
 
 
 ## floor(T*(d+1)/30) - floor(T*d/30): day d's part of a monthly total T.
@@ -169,20 +191,16 @@ static func output_permille(c: Colony, job_id: String, db: DefDatabase, mods: Pl
 	var r := rules(db)
 	var p := 1000
 	var boosted := false
-	if c.primary_focus != "":
-		var f: FocusDef = db.get_def(StringName(c.primary_focus))
-		if StringName(job_id) in f.boosted_jobs:
-			p += f.bonus_permille
-			boosted = true
-	if c.secondary_focus != "":
-		var f: FocusDef = db.get_def(StringName(c.secondary_focus))
-		if StringName(job_id) in f.boosted_jobs:
-			p += FixedMath.mul_permille(f.bonus_permille, r.secondary_focus_permille)
-			boosted = true
-	var syn := PlanetMods.synergy(c, db)
-	if syn != null and boosted:
-		p += syn.bonus_permille
-	p += mods.permille("job.output." + job_id.get_slice("/", 1))
+	var job := StringName(job_id)
+	if mods.primary != null and job in mods.primary.boosted_jobs:
+		p += mods.primary.bonus_permille
+		boosted = true
+	if mods.secondary != null and job in mods.secondary.boosted_jobs:
+		p += FixedMath.mul_permille(mods.secondary.bonus_permille, r.secondary_focus_permille)
+		boosted = true
+	if mods.syn != null and boosted:
+		p += mods.syn.bonus_permille
+	p += mods.permille(_key("job.output.", job_id, ""))
 	if c.stability < r.low_stability_threshold:
 		p += r.low_stability_output_permille
 	if c.retool_days > 0 and boosted:
@@ -218,10 +236,10 @@ static func used_slots(c: Colony, db: DefDatabase) -> int:
 
 
 ## Effective housing = (size housing + modifiers) * the owner species' habitability / 1000 (B2).
-static func housing(state: MatchState, c: Colony, planet: Planet, db: DefDatabase) -> int:
+static func housing(state: MatchState, c: Colony, planet: Planet, db: DefDatabase, mods: PlanetMods = null) -> int:
 	var species: SpeciesDef = db.get_def(StringName(state.empire(c.owner).species))
 	var hab: int = species.habitability.get(StringName(planet.planet_type), 0)
-	var base := PlanetMods.of(c, db).resolve("planet.housing", size_def(planet, db).housing)
+	var base := (mods if mods != null else PlanetMods.of(c, db)).resolve("planet.housing", size_def(planet, db).housing)
 	return FixedMath.mul_permille(base, hab)
 
 
@@ -280,11 +298,11 @@ static func _month_colony(state: MatchState, c: Colony, db: DefDatabase, r: Econ
 	else:
 		c.starving_months = 0
 		if surplus:
-			var free := maxi(0, housing(state, c, planet, db) - c.total_pops())
+			var free := maxi(0, housing(state, c, planet, db, mods) - c.total_pops())
 			var points := r.growth_base + r.growth_per_free_housing * free
 			c.growth += FixedMath.mul_permille(points, 1000 + mods.permille("planet.growth") + Colonisation.young_growth_permille(state, c))
 			if c.growth >= r.growth_points_per_pop:
-				if c.total_pops() < housing(state, c, planet, db):
+				if c.total_pops() < housing(state, c, planet, db, mods):
 					var species := state.empire(c.owner).species
 					c.pops[species] = c.pops.get(species, 0) + 1
 					c.growth -= r.growth_points_per_pop

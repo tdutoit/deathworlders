@@ -5,9 +5,22 @@ extends RefCounted
 ## Built once per colony per tick: get(key) -> [add, permille].
 
 var _sums := {}  # key -> [add, permille]
+var primary: FocusDef  # resolved once here so per-job lookups (Economy.output_permille) don't repeat them
+var secondary: FocusDef
+var syn: SynergyDef
 
 
 static func of(c: Colony, db: DefDatabase) -> PlanetMods:
+	# Memoised on the colony: the sums depend only on these inputs (and on the frozen content).
+	var key := [c.buildings, c.offline_building, c.primary_focus, c.secondary_focus, c.jobs, db]
+	if not c.mods_cache.is_empty() and c.mods_cache[0] == key:
+		return c.mods_cache[1]
+	var m := _build(c, db)
+	c.mods_cache = [[c.buildings.duplicate(), c.offline_building, c.primary_focus, c.secondary_focus, c.jobs.duplicate(), db], m]
+	return m
+
+
+static func _build(c: Colony, db: DefDatabase) -> PlanetMods:
 	var m := PlanetMods.new()
 	var rules: EconomyRulesDef = db.get_def(EconomyRulesDef.ID)
 	for i in c.buildings.size():
@@ -16,12 +29,14 @@ static func of(c: Colony, db: DefDatabase) -> PlanetMods:
 	for job: String in IdMap.sort_keys(c.jobs.keys()):
 		m._add_all((db.get_def(StringName(job)) as Def).modifiers, c.jobs[job], 1000)
 	if c.primary_focus != "":
-		m._add_all((db.get_def(StringName(c.primary_focus)) as Def).modifiers, 1, 1000)
+		m.primary = db.get_def(StringName(c.primary_focus))
+		m._add_all(m.primary.modifiers, 1, 1000)
 	if c.secondary_focus != "":
-		m._add_all((db.get_def(StringName(c.secondary_focus)) as Def).modifiers, 1, rules.secondary_focus_permille)
-	var syn := synergy(c, db)
-	if syn != null:
-		m._add_all(syn.modifiers, 1, 1000)
+		m.secondary = db.get_def(StringName(c.secondary_focus))
+		m._add_all(m.secondary.modifiers, 1, rules.secondary_focus_permille)
+	m.syn = synergy(c, db)
+	if m.syn != null:
+		m._add_all(m.syn.modifiers, 1, 1000)
 	return m
 
 

@@ -28,6 +28,8 @@ var produced := {}  # resource ID -> milli-units this month (globals included)
 var consumed := {}
 var last_produced := {}  # last full month, for the UI and growth
 var last_consumed := {}
+## Runtime only (never saved or hashed): PlanetMods.of's last result and the inputs it was built from.
+var mods_cache: Array = []
 
 
 func total_pops() -> int:

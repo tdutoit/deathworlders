@@ -14,12 +14,25 @@ static func demands(state: MatchState, eid: int) -> Array:
 	var out := []
 	var r := Economy.rules(state.defs)
 	var core := core_sector(state, eid)
+	var cols: Array[Colony] = []  # the empire's colonies and operational stations, gathered once
+	for pid: int in state.colonies.ordered():
+		var c: Colony = state.colonies.get_or(pid)
+		if c.owner == eid:
+			cols.append(c)
+	var stations: Array[Station] = []
+	for sid: int in state.stations.ordered():
+		var st: Station = state.stations.get_or(sid)
+		if st.owner == eid and st.operational:
+			stations.append(st)
 	for sid: int in state.sectors.ordered():
 		var sec: Sector = state.sectors.get_or(sid)
 		if sec.owner != eid:
 			continue
-		_colony_needs(state, sec, r, out)
-		_hub_collection(state, sec, r, out)
+		var in_sector := {}
+		for sys_id in sec.systems:
+			in_sector[sys_id] = true
+		_colony_needs(state, sec, r, out, cols, in_sector)
+		_hub_collection(state, sec, r, out, stations, in_sector)
 		if core != null and sec.id != core.id:
 			_exports(state, sec, core, r, out)
 	return out
@@ -33,10 +46,11 @@ static func core_sector(state: MatchState, eid: int) -> Sector:
 	return null
 
 
-static func _colony_needs(state: MatchState, sec: Sector, r: EconomyRulesDef, out: Array) -> void:
-	for pid: int in state.colonies.ordered():
-		var c: Colony = state.colonies.get_or(pid)
-		if c.owner != sec.owner or c.autonomy == "manual" or not state.galaxy.planet(pid).system_id in sec.systems:
+static func _colony_needs(state: MatchState, sec: Sector, r: EconomyRulesDef, out: Array, cols: Array[Colony],
+		in_sector: Dictionary) -> void:
+	for c in cols:
+		var pid := c.id
+		if c.autonomy == "manual" or not in_sector.has(state.galaxy.planet(pid).system_id):
 			continue
 		var need := {}  # resource -> milli per month
 		for job: String in IdMap.sort_keys(c.jobs.keys()):
@@ -51,11 +65,11 @@ static func _colony_needs(state: MatchState, sec: Sector, r: EconomyRulesDef, ou
 			out.append({"holder": pid, "resource": FOOD, "target": eat * r.food_buffer_months, "priority": 3 if urgent else 2, "sector": sec.id})
 
 
-static func _hub_collection(state: MatchState, sec: Sector, r: EconomyRulesDef, out: Array) -> void:
+static func _hub_collection(state: MatchState, sec: Sector, r: EconomyRulesDef, out: Array, stations: Array[Station],
+		in_sector: Dictionary) -> void:
 	var made := {}  # resource -> station IDs producing it in the sector
-	for sid: int in state.stations.ordered():
-		var s: Station = state.stations.get_or(sid)
-		if s.owner != sec.owner or not s.operational or not s.system_id in sec.systems or s.id == sec.hub:
+	for s in stations:
+		if not in_sector.has(s.system_id) or s.id == sec.hub:
 			continue
 		for res: StringName in (state.defs.get_def(StringName(s.def_id)) as StationDef).outputs:
 			if not made.has(String(res)):

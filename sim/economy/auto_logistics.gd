@@ -112,6 +112,10 @@ static func _assign(state: MatchState, eid: int) -> void:
 		min_cap = mini(min_cap, Freight.capacity_milli(state, u))
 	var trip_permille := Economy.rules(state.defs).min_trip_permille
 	for d: Dictionary in open:
+		# A non-build deficit under every freighter's minimum load can't pass the load test from any source:
+		# skip the source search (same outcome as the per-source test below, which it bounds).
+		if not d.get("build", false) and int(d["deficit"]) < mini(FixedMath.mul_permille(min_cap, trip_permille), int(d["target"]) / 2):
+			continue
 		while d["deficit"] > 0 and not idle.is_empty():
 			var assigned := false
 			for src in _sources(state, holders, d, promised, hops, base, raided):
@@ -203,24 +207,33 @@ static func _sources(state: MatchState, holders: Array[int], d: Dictionary, prom
 		in_sector = base[sec_key]
 	var cand_key := "cand:" + String(d["resource"])  # holders with any surplus before promises, once per pass
 	if not base.has(cand_key):
-		var cand: Array[int] = []
+		var cand := []  # [holder, "holder:res" key, system, body, stock minus reserve]
 		for h in holders:
 			# No stock means no surplus whatever the reserve (>= 0): skip the cap lookup.
-			if Holders.stockpile(state, h).milli(d["resource"]) > 0 and _surplus(state, h, d["resource"], {}, base) > 0:
-				cand.append(h)
+			if Holders.stockpile(state, h).milli(d["resource"]) > 0:
+				var free := _surplus(state, h, d["resource"], {}, base)
+				if free > 0:
+					cand.append([h, "%d:%s" % [h, d["resource"]], _sys_of(state, base, h), _body_of(state, base, h), free])
 		base[cand_key] = cand
-	for h: int in base[cand_key]:
-		if h == d["holder"] or _surplus(state, h, d["resource"], promised, base) <= 0:
+	var dest_hops := {}
+	for entry: Array in base[cand_key]:
+		var h: int = entry[0]
+		if h == d["holder"] or int(entry[4]) - int(promised.get(entry[1], 0)) <= 0:
 			continue
 		if d.has("sources") and not h in d["sources"]:
 			continue
-		var sys := _sys_of(state, base, h)
+		var sys: int = entry[2]
 		if limited and not in_sector.has(sys):
 			continue
 		if raided.has(sys):  # own holders only: the empire's raided set
 			continue
-		var dist := Holders.impulse_days(state, _body_of(state, base, h), dest_body) if sys == dest_sys \
-				else 1000 + int(_hops_from(state, dest_sys, hops).get(sys, FAR))
+		var dist: int
+		if sys == dest_sys:
+			dist = Holders.impulse_days(state, entry[3], dest_body)
+		else:
+			if dest_hops.is_empty():
+				dest_hops = _hops_from(state, dest_sys, hops)
+			dist = 1000 + int(dest_hops.get(sys, FAR))
 		scored.append([dist, h])
 	scored.sort_custom(func(a: Array, b: Array) -> bool: return a[0] < b[0] or (a[0] == b[0] and a[1] < b[1]))
 	var out: Array[int] = []

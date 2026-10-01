@@ -166,8 +166,9 @@ static func _colonise(state: MatchState, eid: int) -> void:
 		var target := best_colony_target(state, eid, u.system_id)
 		if target != StateIO.NONE and _do(state, eid, CmdColonise.TYPE, {"unit": u.id, "planet": target}):
 			busy = true
-	if busy or best_colony_target(state, eid, capital_sys) == StateIO.NONE:
+	if busy:
 		return
+	# Cheap gates first; the target search (the costly part) only when a ship would really be queued.
 	var small := 0
 	var owned := 0
 	for pid: int in state.colonies.ordered():
@@ -184,6 +185,8 @@ static func _colonise(state: MatchState, eid: int) -> void:
 		var y: Station = state.stations.get_or(sid)
 		if y.owner == eid and not y.ship_queue.is_empty() and y.ship_queue.any(func(q: Construction) -> bool: return q.def_id == "core:hull/colony_ship"):
 			return  # one is being built
+	if best_colony_target(state, eid, capital_sys) == StateIO.NONE:
+		return
 	for sid: int in state.stations.ordered():
 		var y: Station = state.stations.get_or(sid)
 		if y.owner == eid and _do(state, eid, CmdQueueShip.TYPE, {"station": y.id, "hull": "core:hull/colony_ship"}):
