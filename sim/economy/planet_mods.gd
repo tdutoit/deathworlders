@@ -8,6 +8,7 @@ var _sums := {}  # key -> [add, permille]
 var primary: FocusDef  # resolved once here so per-job lookups (Economy.output_permille) don't repeat them
 var secondary: FocusDef
 var syn: SynergyDef
+var caps := {}  # resource ID -> stockpile cap (milli), filled by Economy.cap_milli
 
 
 static func of(c: Colony, db: DefDatabase) -> PlanetMods:

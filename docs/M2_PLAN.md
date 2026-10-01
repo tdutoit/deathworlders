@@ -106,6 +106,14 @@ into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.m
   in the tactical scope. `MatchState.clear_scratch()` at the start of `Sim.execute` / `Sim.advance`: the UI
   calls sim helpers that cache in the per-tick scratch, and a cache filled between ticks (before the
   tick's movement) must never reach the sim. Dev flags for screenshots: `--months`, `--screen`, `--tab`.
+- 2026-10-01 (performance pass): Huge, 8 AIs, year 15, worst hour 291 -> 41 ms (DoD: month tick < 50 ms).
+  Same-results changes: IdMap.ordered() for sim loops (the custom iterator cost three script calls per
+  element); runtime-only caches (lane hops for the match, planet modifiers memoised on the colony with its
+  caps, raider-free regions until the raided set changes, per-pass logistics lookups); cheaper governor,
+  pirate, supply and sector-demand passes. One timing change: only settlement (Economy month tick, sector
+  membership) stays on the month boundary; fuel supply, pirates, governors and the AI autopilot run 1, 2,
+  3 and 4 hours after it (`Sim._month_phase`), so no single hour carries all monthly work. The first month
+  keeps its old cadence (phases start after the first settlement).
 
 ---
 

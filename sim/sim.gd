@@ -7,6 +7,7 @@ extends RefCounted
 
 const DAY := 1  # advance() flags
 const MONTH := 2
+const MONTH_PHASES := 4  # hours after the month boundary that carry monthly work (_month_phase)
 
 
 ## Validates and applies commands in order. Applied ones go to state.command_log; rejected ones
@@ -42,6 +43,8 @@ static func advance(state: MatchState) -> int:
 	if Calendar.is_month_start(state.tick):
 		flags |= MONTH
 		_month_tick(state)
+	elif state.tick > Calendar.HOURS_PER_MONTH and state.tick % Calendar.HOURS_PER_MONTH <= MONTH_PHASES:
+		_month_phase(state, state.tick % Calendar.HOURS_PER_MONTH)
 	return flags
 
 
@@ -63,16 +66,28 @@ static func _day_tick(state: MatchState) -> void:
 	AutoLogistics.day_tick(state)
 
 
-## Settlement: growth, stability, taxes and upkeep (M2).
+## Settlement at the month boundary: growth, stability, taxes and upkeep, then sector membership (M2).
 static func _month_tick(state: MatchState) -> void:
 	if state.defs == null:
 		return
 	Economy.month_tick(state)
-	Supply.month_tick(state)
-	Pirates.month_tick(state)
 	Sectors.update_membership(state)
-	Governor.month_tick(state)
-	Autopilot.month_tick(state)
+
+
+## The rest of the monthly work runs in the hours after the boundary, one system per hour, so no single hour
+## carries it all (M2 perf pass): 1 fuel supply, 2 pirates, 3 governors, 4 AI autopilot.
+static func _month_phase(state: MatchState, hour: int) -> void:
+	if state.defs == null:
+		return
+	match hour:
+		1:
+			Supply.month_tick(state)
+		2:
+			Pirates.month_tick(state)
+		3:
+			Governor.month_tick(state)
+		4:
+			Autopilot.month_tick(state)
 
 
 ## Rebuilds a match from its seed and settings plus a command log (main spec 18.4 debug replay).

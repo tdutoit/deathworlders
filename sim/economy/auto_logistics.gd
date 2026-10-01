@@ -207,13 +207,33 @@ static func _sources(state: MatchState, holders: Array[int], d: Dictionary, prom
 		in_sector = base[sec_key]
 	var cand_key := "cand:" + String(d["resource"])  # holders with any surplus before promises, once per pass
 	if not base.has(cand_key):
+		if not base.has("hinfo"):  # [holder, stockpile, system, body, colony, its mods, station], once per pass
+			var info := []
+			for h in holders:
+				var c := state.colony(h)
+				info.append([h, Holders.stockpile(state, h), _sys_of(state, base, h), _body_of(state, base, h), c,
+					PlanetMods.of(c, state.defs) if c != null else null, state.station(h)])
+			base["hinfo"] = info
 		var cand := []  # [holder, "holder:res" key, system, body, stock minus reserve]
-		for h in holders:
-			# No stock means no surplus whatever the reserve (>= 0): skip the cap lookup.
-			if Holders.stockpile(state, h).milli(d["resource"]) > 0:
-				var free := _surplus(state, h, d["resource"], {}, base)
-				if free > 0:
-					cand.append([h, "%d:%s" % [h, d["resource"]], _sys_of(state, base, h), _body_of(state, base, h), free])
+		var res: String = d["resource"]
+		var reserve_permille := Economy.rules(state.defs).reserve_default_permille
+		for hi: Array in base["hinfo"]:
+			var stock := (hi[1] as Stockpile).milli(res)
+			if stock <= 0:
+				continue  # no stock means no surplus whatever the reserve (>= 0)
+			# Same value as _surplus / reserve_milli, without their per-call lookups.
+			var key := "%d:%s" % [hi[0], res]
+			var reserve: int
+			if state.reserves.has(key):
+				reserve = int(state.reserves[key]) * Stockpile.MILLI
+			else:
+				var cap := Economy.cap_milli(hi[4], state.defs, hi[5], res) if hi[4] != null \
+						else (StationOps.cap_milli(state, hi[6], res) if hi[6] != null else 0)
+				reserve = FixedMath.mul_permille(cap, reserve_permille) if cap > 0 else 0
+			var free := stock - reserve
+			base[key] = free
+			if free > 0:
+				cand.append([hi[0], key, hi[2], hi[3], free])
 		base[cand_key] = cand
 	var dest_hops := {}
 	for entry: Array in base[cand_key]:

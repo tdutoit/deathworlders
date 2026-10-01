@@ -210,10 +210,14 @@ static func output_permille(c: Colony, job_id: String, db: DefDatabase, mods: Pl
 
 ## Stockpile cap for a physical resource in milli-units; 0 = uncapped (B5).
 static func cap_milli(c: Colony, db: DefDatabase, mods: PlanetMods, res: String) -> int:
+	if mods.caps.has(res):
+		return mods.caps[res]  # memoised with the colony's modifiers
 	var def := db.get_def(StringName(res)) as ResourceDef
-	if def == null or def.stockpile_default_cap <= 0:
-		return 0
-	return mods.resolve("planet.stockpile_cap", def.stockpile_default_cap) * MILLI
+	var cap := 0
+	if def != null and def.stockpile_default_cap > 0:
+		cap = mods.resolve("planet.stockpile_cap", def.stockpile_default_cap) * MILLI
+	mods.caps[res] = cap
+	return cap
 
 
 # --- planet capacity ---
