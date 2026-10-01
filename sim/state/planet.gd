@@ -4,6 +4,7 @@ extends RefCounted
 
 var id: int
 var system_id: int
+var parent_id: int = StateIO.NONE  # planet this one orbits (moons); NONE = orbits the star
 var name: String
 var planet_type: String  # planet_type Def ID
 var size: String  # "tiny" .. "huge"
@@ -16,8 +17,8 @@ var orbital_slots: int
 
 func to_dict() -> Dictionary:
 	return {
-		"id": id, "system_id": system_id, "name": name, "planet_type": planet_type, "size": size,
-		"orbit_index": orbit_index, "orbit_radius": orbit_radius, "deposits": deposits.duplicate(),
+		"id": id, "system_id": system_id, "parent_id": parent_id, "name": name,
+		"planet_type": planet_type, "size": size, "orbit_index": orbit_index, "orbit_radius": orbit_radius, "deposits": deposits.duplicate(),
 		"owner": owner, "orbital_slots": orbital_slots,
 	}
 
@@ -26,6 +27,7 @@ static func from_dict(d: Dictionary) -> Planet:
 	var p := Planet.new()
 	p.id = int(d["id"])
 	p.system_id = int(d["system_id"])
+	p.parent_id = int(d["parent_id"])
 	p.name = String(d["name"])
 	p.planet_type = String(d["planet_type"])
 	p.size = String(d["size"])

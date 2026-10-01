@@ -7,6 +7,7 @@ extends Def
 # galaxy_size
 @export var target_systems: int
 @export var cluster_count: int
+@export var capital_min_jumps: int  # minimum lane jumps between capitals (WP7)
 # pace (Sub-spec B0): scales costs and build times
 @export var pace_permille: int
 
@@ -21,6 +22,7 @@ func schema() -> Dictionary:
 		"sort_order": {"type": "int"},
 		"target_systems": {"type": "int", "min": 0},
 		"cluster_count": {"type": "int", "min": 0},
+		"capital_min_jumps": {"type": "int", "min": 0},
 		"pace_permille": {"type": "int", "min": 0},
 	}
 

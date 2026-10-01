@@ -18,5 +18,9 @@ zone_weights = {
 &"inner": 30,
 &"outer": 30
 }
+deposit_chances = {
+&"core:resource/ore": 600,
+&"core:resource/rare_earths": 200
+}
 id = &"core:planet_type/barren"
 name_key = "PLANET_BARREN"

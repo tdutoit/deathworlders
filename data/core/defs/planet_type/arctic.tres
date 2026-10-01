@@ -18,5 +18,9 @@ zone_weights = {
 &"inner": 0,
 &"outer": 25
 }
+deposit_chances = {
+&"core:resource/ore": 300,
+&"core:resource/rare_earths": 150
+}
 id = &"core:planet_type/arctic"
 name_key = "PLANET_ARCTIC"

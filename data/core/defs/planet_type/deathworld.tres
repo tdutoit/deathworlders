@@ -18,5 +18,10 @@ zone_weights = {
 &"inner": 0,
 &"outer": 0
 }
+deposit_chances = {
+&"core:resource/exotics": 100,
+&"core:resource/food": 400,
+&"core:resource/ore": 400
+}
 id = &"core:planet_type/deathworld"
 name_key = "PLANET_DEATHWORLD"

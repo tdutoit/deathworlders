@@ -9,6 +9,7 @@ const ZONES: Array[String] = ["inner", "habitable", "outer"]
 @export var orbital_only: bool  # gas giants: stations only, no surface colony
 @export var size_weights: Dictionary = {}  # size -> weight
 @export var zone_weights: Dictionary = {}  # orbit zone -> weight
+@export var deposit_chances: Dictionary = {}  # resource ID -> permille chance of a deposit (M1 placeholder)
 
 
 func category() -> String:
@@ -21,6 +22,7 @@ func schema() -> Dictionary:
 		"orbital_only": {"type": "bool"},
 		"size_weights": {"type": "int_map", "keys": SIZES, "min": 0},
 		"zone_weights": {"type": "int_map", "keys": ZONES, "min": 0},
+		"deposit_chances": {"type": "int_map", "key_ref": "resource", "min": 0, "max": 1000},
 	}
 
 

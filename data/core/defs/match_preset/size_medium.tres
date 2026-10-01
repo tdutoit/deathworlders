@@ -9,5 +9,6 @@ kind = &"galaxy_size"
 sort_order = 2
 target_systems = 120
 cluster_count = 12
+capital_min_jumps = 5
 id = &"core:match_preset/size_medium"
 name_key = "PRESET_SIZE_MEDIUM"

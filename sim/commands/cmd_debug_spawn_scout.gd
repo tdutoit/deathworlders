@@ -3,7 +3,7 @@ extends Command
 ## core:cmd/debug_spawn_scout {"system": id}: spawns a scout owned by the issuing player (debug/M1).
 
 const TYPE := &"core:cmd/debug_spawn_scout"
-const SCOUT_SPEED := 4  # lane units per hour; becomes hull data once ships exist
+const SCOUT_SPEED := 500  # milli-lane-units/hour: ~2.5 days per 30-unit lane; hull data later
 
 
 func validate(state: MatchState) -> bool:

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="NameListDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_0hwqb"]
+[ext_resource type="Script" path="res://sim/defs/name_list_def.gd" id="2_tjon4"]
+
+[resource]
+script = ExtResource("2_tjon4")
+starts = Array[String](["Ar", "Bel", "Cor", "Dra", "El", "Fen", "Gal", "Hal", "Ir", "Jor", "Kal", "Lor", "Mar", "Nor", "Or", "Pra", "Quel", "Ros", "Sar", "Tal", "Ul", "Var", "Wex", "Xan", "Yor", "Zel", "Ash", "Brin", "Cass", "Dov"])
+middles = Array[String](["a", "e", "i", "o", "an", "en", "ar", "or", "il", "ys"])
+ends = Array[String](["ad", "ak", "an", "ar", "as", "ek", "el", "en", "eth", "ia", "ik", "in", "ion", "is", "ix", "on", "or", "os", "um", "us", "yn", "ara", "ova", "esh", "ith", "una", "ax", "ost", "ire", "ane"])
+cluster_suffixes = Array[String](["Reach", "Expanse", "Cluster", "Drift", "Marches", "Verge", "Deep", "Span", "Belt", "Hollow"])
+id = &"core:name_list/stars"
+name_key = "NAMES_STARS"

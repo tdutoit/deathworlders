@@ -18,5 +18,9 @@ zone_weights = {
 &"inner": 0,
 &"outer": 0
 }
+deposit_chances = {
+&"core:resource/food": 600,
+&"core:resource/ore": 300
+}
 id = &"core:planet_type/terran"
 name_key = "PLANET_TERRAN"

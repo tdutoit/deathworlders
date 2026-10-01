@@ -5,7 +5,7 @@ extends RefCounted
 var id: int
 var a: int  # system ID (a < b)
 var b: int
-var length: int  # lane units
+var length: int  # lane units (B7: 20-40 inside a cluster); movement uses length * 1000
 
 
 func other_end(system_id: int) -> int:

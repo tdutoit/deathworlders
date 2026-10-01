@@ -9,5 +9,6 @@ kind = &"galaxy_size"
 sort_order = 3
 target_systems = 200
 cluster_count = 20
+capital_min_jumps = 6
 id = &"core:match_preset/size_large"
 name_key = "PRESET_SIZE_LARGE"

@@ -1,7 +1,8 @@
 extends GutTest
 # M1 WP6: commands, local lockstep schedule, movement and replay.
 
-## Line of 4 systems plus a shortcut: 1-2 (10), 2-3 (10), 3-4 (10), 1-3 (25). Empire 5 owns nothing.
+## Line of 4 systems plus a shortcut: 1-2, 2-3, 3-4 (1 lane unit each), 1-3 (3). Empire 9.
+## Scouts move 500 milli-lane-units per hour, so each short lane takes 2 hours.
 static func build_line() -> MatchState:
 	var s := MatchState.create(MatchSettings.new(), 99)
 	for i in 4:
@@ -10,7 +11,7 @@ static func build_line() -> MatchState:
 		sys.name = "S%d" % sys.id
 		sys.star_type = "core:star_type/yellow"
 		s.galaxy.systems.put(sys.id, sys)
-	for pair: Array in [[1, 2, 10], [2, 3, 10], [3, 4, 10], [1, 3, 25]]:
+	for pair: Array in [[1, 2, 1], [2, 3, 1], [3, 4, 1], [1, 3, 3]]:
 		var l := Hyperlane.new()
 		l.id = s.alloc_id()  # 5..8
 		l.a = pair[0]
@@ -37,7 +38,7 @@ func _run(s: MatchState, schedule: CommandSchedule, ticks: int) -> void:
 
 func test_pathfinder_prefers_shorter_total_length() -> void:
 	var g := build_line().galaxy
-	assert_eq(Pathfinder.route(g, 1, 3), [2, 3] as Array[int], "20 via 2 beats 25 direct")
+	assert_eq(Pathfinder.route(g, 1, 3), [2, 3] as Array[int], "2 via system 2 beats 3 direct")
 	assert_eq(Pathfinder.route(g, 1, 4), [2, 3, 4] as Array[int])
 	assert_eq(Pathfinder.route(g, 4, 1), [3, 2, 1] as Array[int])
 	assert_eq(Pathfinder.route(g, 2, 2), [] as Array[int])
@@ -74,10 +75,10 @@ func test_spawn_and_move_scout() -> void:
 	assert_false(scout.is_moving())
 	_run(s, sched, 1)  # applied, then the first hour of movement
 	assert_eq(scout.path, [2, 3, 4] as Array[int])
-	assert_eq(scout.progress, 4)
-	_run(s, sched, 2)  # 12 >= 10: arrives at 2, 2 units into the next lane
+	assert_eq(scout.progress, 500)
+	_run(s, sched, 2)  # 1500 >= 1000: arrives at 2, 500 into the next lane
 	assert_eq(scout.system_id, 2)
-	assert_eq(scout.progress, 2)
+	assert_eq(scout.progress, 500)
 	_run(s, sched, 10)
 	assert_eq(scout.system_id, 4)
 	assert_false(scout.is_moving())

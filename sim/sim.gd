@@ -54,6 +54,15 @@ static func _month_tick(_state: MatchState) -> void:
 	pass
 
 
+## Rebuilds a match from its seed and settings plus a command log (main spec 18.4 debug replay).
+static func replay(seed_value: int, settings: MatchSettings, db: DefDatabase, command_log: Array,
+		until_tick: int) -> MatchState:
+	var errors: Array[String] = []
+	var start := GalaxyGenerator.new_match(settings, seed_value, db, errors)
+	assert(start != null, "Sim.replay: " + ", ".join(errors))
+	return replay_from(start.to_dict(), command_log, until_tick)
+
+
 ## Rebuilds a match from a starting snapshot plus a command log, running until_tick hour ticks.
 ## Log entries are applied at their tick, in log order, exactly as the live run applied them.
 static func replay_from(initial: Dictionary, command_log: Array, until_tick: int) -> MatchState:

@@ -11,6 +11,7 @@ static var SCRIPTS := {  # class refs are not constant expressions
 	"species": SpeciesDef,
 	"match_preset": MatchPresetDef,
 	"modifier_key": ModifierKeyDef,
+	"name_list": NameListDef,
 }
 
 const META_FIELDS: Array[String] = ["op", "category", "id"]
@@ -100,6 +101,11 @@ static func convert_value(v: Variant, spec: Dictionary, own_mod: String, where: 
 					if key == null:
 						return null
 					out[key] = v[k]
+				return out
+		"string_list":
+			if v is Array and v.all(func(item: Variant) -> bool: return item is String):
+				var out: Array[String] = []
+				out.assign(v)
 				return out
 		"modifiers":
 			if v is Array:
@@ -199,7 +205,7 @@ static func apply_patch(def: Def, patch: Dictionary, own_mod: String, errors: Ar
 static func _patch_add(def: Def, field: String, spec: Dictionary, arg: Variant, own_mod: String,
 		where: String, errors: Array[String]) -> void:
 	var t: String = spec["type"]
-	if not t in ["id_list", "name_list", "modifiers", "int_map"]:
+	if not t in ["id_list", "name_list", "string_list", "modifiers", "int_map"]:
 		errors.append("%s: 'add' works on lists and maps, not %s" % [where, t])
 		return
 	var items: Variant = convert_value(arg, spec, own_mod, where, errors)
@@ -231,7 +237,7 @@ static func _patch_remove(def: Def, field: String, spec: Dictionary, arg: Varian
 			current = keep
 		def.set(field, current)
 		return
-	if not t in ["id_list", "name_list", "int_map"]:
+	if not t in ["id_list", "name_list", "string_list", "int_map"]:
 		errors.append("%s: 'remove' works on lists and maps, not %s" % [where, t])
 		return
 	var keyed := t == "id_list" or (t == "int_map" and spec.has("key_ref"))
@@ -240,7 +246,7 @@ static func _patch_remove(def: Def, field: String, spec: Dictionary, arg: Varian
 		if not item is String:
 			errors.append("%s: 'remove' items must be strings" % where)
 			return
-		var key: Variant = _ref(item, own_mod, where, errors) if keyed else StringName(item)
+		var key: Variant = _ref(item, own_mod, where, errors) if keyed else (item if t == "string_list" else StringName(item))
 		if key == null:
 			return
 		current.erase(key)
@@ -302,6 +308,9 @@ static func _check_field(v: Variant, spec: Dictionary, db: DefDatabase, declared
 					errors.append("%s is required" % field)
 			else:
 				_check_ref(v, spec["ref"], db, field, errors)
+		"string_list", "name_list":
+			if required and (v as Array).is_empty():
+				errors.append("%s needs at least one entry" % field)
 		"id_list":
 			for item: StringName in v:
 				_check_ref(item, spec["ref"], db, field, errors)

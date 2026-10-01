@@ -29,7 +29,7 @@ func test_core_loads_cleanly() -> void:
 func test_core_counts() -> void:
 	var db := _load().db
 	assert_eq(db.ids("resource").size(), 11)
-	assert_eq(db.ids("planet_type").size(), 8)
+	assert_eq(db.ids("planet_type").size(), 9)
 	assert_eq(db.ids("star_type").size(), 6)
 	assert_eq(db.ids("species").size(), 5)
 	assert_eq(db.ids("match_preset").size(), 7)

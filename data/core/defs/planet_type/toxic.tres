@@ -18,5 +18,9 @@ zone_weights = {
 &"inner": 25,
 &"outer": 5
 }
+deposit_chances = {
+&"core:resource/exotics": 50,
+&"core:resource/rare_earths": 300
+}
 id = &"core:planet_type/toxic"
 name_key = "PLANET_TOXIC"

@@ -18,5 +18,9 @@ zone_weights = {
 &"inner": 0,
 &"outer": 5
 }
+deposit_chances = {
+&"core:resource/food": 500,
+&"core:resource/rare_earths": 100
+}
 id = &"core:planet_type/ocean"
 name_key = "PLANET_OCEAN"

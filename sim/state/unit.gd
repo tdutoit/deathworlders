@@ -1,15 +1,15 @@
 class_name Unit
 extends RefCounted
 ## A mobile unit; M1 only has scouts. While moving, path holds the systems still to visit and
-## progress counts lane units travelled on the current lane (system_id -> path[0]).
+## progress counts milli-lane-units travelled on the current lane (system_id -> path[0]).
 
 var id: int
 var owner: int
 var kind: String  # "scout"
 var system_id: int
 var path: Array[int] = []
-var progress: int
-var speed: int  # lane units per hour tick
+var progress: int  # milli-lane-units (1 lane unit = 1000)
+var speed: int  # milli-lane-units per hour tick
 
 
 func is_moving() -> bool:

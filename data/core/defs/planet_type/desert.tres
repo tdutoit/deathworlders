@@ -18,5 +18,9 @@ zone_weights = {
 &"inner": 20,
 &"outer": 0
 }
+deposit_chances = {
+&"core:resource/ore": 400,
+&"core:resource/rare_earths": 200
+}
 id = &"core:planet_type/desert"
 name_key = "PLANET_DESERT"

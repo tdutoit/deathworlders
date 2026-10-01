@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="PlanetTypeDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_ij8ll"]
+[ext_resource type="Script" path="res://sim/defs/planet_type_def.gd" id="2_i271j"]
+
+[resource]
+script = ExtResource("2_i271j")
+color = "#8f8a7a"
+orbital_only = true
+size_weights = {
+&"huge": 0,
+&"large": 0,
+&"medium": 1,
+&"small": 0,
+&"tiny": 0
+}
+zone_weights = {
+&"habitable": 5,
+&"inner": 10,
+&"outer": 15
+}
+deposit_chances = {
+&"core:resource/exotics": 30,
+&"core:resource/ore": 900,
+&"core:resource/rare_earths": 300
+}
+id = &"core:planet_type/asteroid_belt"
+name_key = "PLANET_ASTEROID_BELT"

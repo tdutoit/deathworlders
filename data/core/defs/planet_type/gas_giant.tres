@@ -19,5 +19,8 @@ zone_weights = {
 &"inner": 0,
 &"outer": 40
 }
+deposit_chances = {
+&"core:resource/fuel": 800
+}
 id = &"core:planet_type/gas_giant"
 name_key = "PLANET_GAS_GIANT"

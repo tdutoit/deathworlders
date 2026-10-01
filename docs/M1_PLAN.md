@@ -34,6 +34,20 @@
   shortest by total lane length (ties: lower system ID). The command log is not part of the checksum.
   `Sim.replay_from(snapshot, log, until_tick)` replays from a snapshot; `replay(seed, settings, ...)`
   follows in WP7 once a match can be generated from a seed.
+- 2026-10-01 (WP7): unit movement uses milli-lane-units (`progress`, `speed`; lane `length` stays in
+  lane units, B7 20-40). Scouts: 500/hour, ~2.5 days per 30-unit lane.
+- 2026-10-01 (WP7): positions are lane units. Systems >= 22 apart in a cluster; in-cluster lanes = minimum
+  spanning tree + relative-neighbourhood graph, degree capped at 5 (tree edges kept, so always connected).
+  Corridors = cluster spanning tree + 25% extra edges from each cluster's 3 nearest; they currently run
+  ~55-200 lane units (tuning item). Circular galaxy mask (no spiral arms yet).
+- 2026-10-01 (WP7): capital spacing comes from `MatchPresetDef.capital_min_jumps` (4/5/6/7 by size),
+  placed by farthest-point selection. After 20 rerolls (`seed + attempt`) the rule relaxes by one jump
+  (never needed in 500 seeds x 4 sizes, `tools/galaxy_stress.gd`). Unit tests use fewer seeds for speed.
+- 2026-10-01 (WP7): new `asteroid_belt` planet type and `PlanetTypeDef.deposit_chances` (deposit richness
+  1-3, placeholder until M2). `Planet.parent_id` for moons. Sol (8 planets, belt, Luna, Titan) is
+  `sim/galaxy/sol_template.gd` for M1. Names come from a `name_list` Def (syllables) in
+  `data/core/defs/name_list/`, not `data/core/names/`. Standard homeworlds convert the planet orbiting
+  closest to radius 90 into a large planet of the species' `home_planet_type`.
 - 2026-10-01 (WP3): game version lives in `application/config/version` (0.1.0); core has a `mod.json` like any mod.
 
 ---
