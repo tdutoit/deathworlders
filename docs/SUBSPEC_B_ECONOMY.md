@@ -55,6 +55,17 @@
     target; the misses are alloys just under 60 (50-55) and colony counts of 4 or 11. Freighters 5-19 at
     0-63% utilisation: the AI buys one only above 95% use, and the economy doesn't need more at these
     sizes, so B20's 20-40 freighters is never reached (open question for the owner).
+- 2026-10-01 (M2 WP14, balance pass part 3):
+  - B17 "requires local food surplus", **provisional reading, owner to confirm**: a surplus is more food made
+    than eaten this month **or** `food_buffer_months` (3) of what the colony eats on hand. With the strict
+    reading, a colony that moved its farmers into Foundry/Mine jobs stopped growing for good (one sat at 5/10
+    pops with 450 food stored).
+  - Autopilot: only colonises a system within freight range of one of its hubs (colonies outside every
+    hub's range waited 10+ years for a Farm that could never arrive, at full young-colony upkeep).
+  - Harness (5 seeds): 2 of 20 empires meet every B20 target; 14 of 20 meet all but the freighter count.
+    Freighters 7-21 at 0-100% use (mostly 25-70%). B19 puts a Light Freighter at ~300 units/month; a year-15
+    small-map economy moves ~500/month, so 20-40 freighters would mostly sit idle. Proposed: B20's freighter
+    band applies to Medium+ maps, or becomes "freighters >= 80% busy is a shortage" (owner to decide).
 
 ---
 

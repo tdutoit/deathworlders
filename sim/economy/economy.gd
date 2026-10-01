@@ -267,7 +267,11 @@ static func assign_jobs(c: Colony, db: DefDatabase) -> void:
 static func _month_colony(state: MatchState, c: Colony, db: DefDatabase, r: EconomyRulesDef, reach_stability: int = 0) -> void:
 	var planet := state.galaxy.planet(c.id)
 	var food := "core:resource/food"
-	var surplus: bool = not c.starving and c.produced.get(food, 0) > c.consumed.get(food, 0)
+	# B17 "local food surplus" (WP14 reading): more made than eaten this month, or food_buffer_months of what the
+	# colony eats on hand (imported food counts; an industrial colony living off its stock still grows).
+	var eaten := int(c.consumed.get(food, 0))
+	var surplus: bool = not c.starving and (int(c.produced.get(food, 0)) > eaten
+			or (eaten > 0 and c.stockpile.milli(food) >= eaten * r.food_buffer_months))
 	var mods := PlanetMods.of(c, db)
 	if c.starving:
 		c.starving_months += 1

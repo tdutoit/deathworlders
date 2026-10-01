@@ -83,12 +83,22 @@ static func best_colony_target(state: MatchState, eid: int, from_system: int) ->
 		var hab := int(species.habitability.get(StringName(p.planet_type), 0))
 		if ptype.orbital_only or hab < 500 or int(hops[p.system_id]) > OUTPOST_RANGE:
 			continue
+		if not _served(state, eid, p.system_id):
+			continue  # no own hub's freighters reach it: its Farm would never arrive
 		var size: PlanetSizeDef = state.defs.get_def(PlanetSizeDef.id_for(p.size))
 		var score := hab + size.housing * 20 + _deposit_score(p) - int(hops[p.system_id]) * 300 - (200 if owner == StateIO.NONE else 0)
 		if score > best_score or (score == best_score and pid < best):
 			best = pid
 			best_score = score
 	return best
+
+
+## True when some own hub with berths has the system within its freight range (B8).
+static func _served(state: MatchState, eid: int, system_id: int) -> bool:
+	for h in AutoLogistics._own_holders(state, eid):
+		if Shipyards.berths(state, h) > 0 and 				int(AutoLogistics._hops_from(state, Holders.system(state, h), {}).get(system_id, Sectors.FAR)) <= AutoLogistics.hub_range(state, h):
+			return true
+	return false
 
 
 ## Lanes from the nearest own system (or `extra`) to every system within OUTPOST_RANGE.

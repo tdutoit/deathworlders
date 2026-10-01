@@ -169,3 +169,20 @@ func test_job_inputs_come_from_orbiting_stations() -> void:
 	_run_days(s, 1)
 	assert_gt(int(c.produced.get(ALLOYS, 0)), 0, "Workers ran on the station's ore (orbital transfer)")
 	assert_lt(hub.stockpile.milli(ORE), 100000, "the ore came out of the station")
+
+
+func test_growth_on_stored_food() -> void:
+	var s := _match()
+	var c := _earth(s)
+	c.autonomy = "manual"
+	c.job_caps["core:job/farmer"] = 0  # nobody farms: no production surplus
+	Economy.assign_jobs(c, _db)
+	c.stockpile.add(FOOD, 500000, 500000)
+	c.growth = 0
+	_run_days(s, 30)
+	assert_false(c.starving)
+	assert_gt(c.growth, 0, "3+ months of food on hand counts as a local surplus (B17, WP14 reading)")
+	c.stockpile.take(FOOD, c.stockpile.milli(FOOD) - 30000)  # about one month left
+	var before := c.growth
+	_run_days(s, 30)
+	assert_eq(c.growth, before, "without a buffer or production there is no growth")
