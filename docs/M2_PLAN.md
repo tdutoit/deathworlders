@@ -1,0 +1,219 @@
+# DEATHWORLDERS — M2 Build Plan: Economy & Logistics
+
+*Version 0.1 (2026-10-01). Turns main spec 4–6, 13, 19 (M2), Sub-spec B and the M2 parts of Sub-specs D and F
+into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.md), same tooling.*
+
+**Change log**
+- 2026-10-01: plan created. Scope decisions below agreed with the project owner.
+
+---
+
+## Goal of M2
+
+A match where every empire runs a physical economy:
+- planets with **pops, jobs, buildings, dual focus, stability and growth**; local **stockpiles** in milli-units,
+- **stations** (outposts, mining, logistics hubs, shipyards, supply depots) built from delivered materials,
+- **freighters** that physically carry goods along lanes, by **manual routes** and **auto-logistics** (demand targets),
+- **sectors** with directives, templates and two-tier logistics, run by a built-in default governor,
+- **colonisation** (colony ships, outposts with influence claim costs, colony stages),
+- **credits, research and influence** accruing globally; upkeep and deficits,
+- **fuel supply** for moving units, **pirates** raiding convoys on low-security frontiers,
+- the same automation running every non-manual planet and every AI slot,
+- the M2 UI from Sub-spec F20: planet panel, sector screen, logistics manager, stockpile view, colonise screen, alerts,
+- and a headless **economy harness** checking the B20 balance targets, with the determinism harness still green.
+
+No warships, combat, diplomacy, tech tree or species signature mechanics yet.
+
+## Scope decisions (2026-10-01)
+
+| Question | Decision |
+|---|---|
+| Sectors without leaders | **Sectors, no leaders.** Hubs, directives, templates, two-tier logistics, Sector screen. Each sector runs on a built-in **default governor** (no leader, no −100‰ penalty) until leaders exist. |
+| What shipyards build | **Civilian ships only:** freighters (Light, Heavy) and colony ships. Warship hulls come with M3. |
+| Who drives non-player empires | **Shared automation** (D10 operational layer + a simple expansion rule) for every non-manual planet and every AI slot. The M4 AI builds on it. |
+| Pulled forward into M2 | **Influence & claims** (B16, D9), **research accrual** (B14, points only, no tree), **pirates & raiding** (B9, D9; pirates only), **fleet supply** (B12 fuel for the units that exist). |
+
+## Not in M2 (deferred)
+
+Warships, fleets, combat, escorts, patrols (M3) · leaders and governor traits · tech tree and research spending (M5) ·
+trade stations and deals (B15) · species job traits and signature mechanics (M4) · migration and refugees ·
+Core buildings (D8) and planet character traits (D11) · fog of war (D12) · warp/jump travel · ground forces.
+Pirate bases can't be destroyed until M3 brings warships.
+
+---
+
+## D1. Work Packages (in build order)
+
+Size: **S** ≈ one focused session, **M** ≈ 2–3 sessions, **L** ≈ 4+ sessions.
+
+### WP1: Economy Defs & Core Data · L
+**Spec:** B1–B6, B10–B11, D3–D4, C3
+
+- New Def types: `JobDef`, `BuildingDef`, `FocusDef`, `SynergyDef`, `StationDef` (tiers), `DirectiveDef`,
+  `TemplateDef` (ordered build list + job mix per focus pair and size).
+- `HullDef` gains civilian roles: freighter (capacity, speed in lane units/day, berth use) and colony ship.
+- Core data: all B3 jobs/buildings, B4 foci + 5 synergies, M2 stations (Outpost, Mining, Logistics T1–T3,
+  Shipyard S/M/L, Supply Depot), Light/Heavy freighter, colony ship, 7 directives, templates for every focus pair.
+- **Pace scaling** helper (B0): costs and build times × pace permille.
+- Validation for the new references (jobs ↔ buildings ↔ foci ↔ templates).
+
+**Acceptance:** core loads with zero errors; every B-table number is in data, not code.
+
+### WP2: Colonies, Pops & Planet Economy · L
+**Spec:** B0, B2–B5, B13–B18, main spec 13
+
+- `Colony` state on owned planets: pops (species, count), job assignment, buildings, focus primary/secondary,
+  retooling timer, stability, growth points, stage.
+- `Stockpile` (milli-units, per-resource caps, overflow lost) on planets and stations.
+- Day tick: job output (inputs drawn locally; short input scales output proportionally), construction draw.
+  Month tick: food consumption, growth (B17), stability (B18 subset: food, unemployment, retooling, deficit,
+  reach), taxes and upkeep, influence and research accrual into the **empire treasury**.
+- Auto job assignment (D4: food first if starving, then focus jobs, then others).
+- Starting economies: Sol per B19; standard homeworlds get an equivalent opening.
+
+**Tests:** B19 monthly flow reproduced within ±1 unit; proportional input shortage; starvation path; growth.
+
+### WP3: Construction & Stations · M
+**Spec:** B10–B11, main spec 5
+
+- Planet building queue and station construction/upgrade in orbital slots; materials drawn **daily** from the
+  local stockpile; construction pauses (never fails) when dry.
+- Mining stations produce into their own stockpile (B11 by location, Mining focus +250‰).
+- Commands: `queue_building`, `queue_station`, `upgrade_station`, `cancel_construction`, `set_focus`.
+
+**Tests:** a build pauses and resumes with deliveries; pace multiplier scales cost and time.
+
+### WP4: Shipyards & Civilian Ships · M
+**Spec:** B6, B10
+
+- Shipyard docks (T1 1 / T2 2 / T3 3), size limits, one build per dock, daily consumption.
+- Freighters and colony ships as units with upkeep (credits + fuel); freighters bound to a hub **berth**
+  (B6 berths; freighters without a berth sit idle).
+- Commands: `queue_ship`, `rebase_freighter`.
+
+### WP5: Freighters & Manual Routes · L
+**Spec:** B6–B8 (manual), main spec 6.3
+
+- In-system positions for stockpiles (planet / station orbit) and impulse travel days (B7); lane travel at the
+  freighter's lane units/day; load/unload 1 day each.
+- Manual routes (source → destination, resource, amount per trip, priority) with freighters looping.
+- Throughput formula (B7) as a shared helper for the UI.
+- Commands: `create_route`, `edit_route`, `delete_route`, `assign_freighters`.
+
+**Tests:** a Belt → Earth route moves ~300 ore/month with one Light freighter (B19).
+
+### WP6: Auto-Logistics & Demand Targets · M
+**Spec:** B8, D5
+
+- Demand targets and reserves (default 20% of cap); the B8 assignment algorithm each day tick, exactly as
+  specified (sort keys and tie-breaks), with hub range by tier.
+- Commands: `set_demand_target`, `set_reserve`.
+
+**Tests:** half the needed freighters → ~70% efficiency, not collapse (B20).
+
+### WP7: Sectors, Directives & Templates · L
+**Spec:** D2–D5, D9 (reach)
+
+- Sector hubs (Logistics Station T2+ or Logistics-focus planet), membership by lanes, sector cap, the capital's
+  Core Sector; **reach** per system with its upkeep/stability penalties.
+- Default governor: picks templates by directive and focus pair, queues buildings, sets focus at Developed.
+  Planet autonomy Automated / Assisted / Manual (Automated by default, D1).
+- Two-tier logistics: local freight by auto-logistics inside a sector; trunk routes, export quotas (default
+  50%) and import requests between sectors.
+- Colony stages Outpost → Colony → Developed → Core (D2).
+- Commands: `create_sector`, `set_directive`, `set_autonomy`, `pin_template`, `set_export_quota`,
+  `approve_import`.
+
+### WP8: Colonisation & Claims · M
+**Spec:** B10 colony ship, B16, B17, D2, D9
+
+- Colony ship takes 1 pop; `colonise` command; new colony upkeep 5 credits + food until its Farm completes;
+  +100% growth for 5 years.
+- Outposts claim systems; influence claim cost `25 × (1000 + owned_systems × 60) / 1000`.
+- Payback estimate helper for the colonise screen (D9).
+
+### WP9: Fuel & Supply · S
+**Spec:** B6 upkeep, B12
+
+- Fuel drawn monthly by freighters (B6) and moving units (B12 sizes) from the nearest stockpile in supply range
+  (owned planet 1 lane; Supply Depot 2/3/4).
+- Out of fuel: the unit moves at half speed until resupplied (M2 rule; M3 adds attrition for warships).
+
+### WP10: Security & Pirates · M
+**Spec:** B9, D9
+
+- System security (D9 formula, M2 terms: base, platforms/posts once built, reach penalty).
+- Monthly pirate roll on the `events` stream; pirate raiders (a non-playable pirate faction) hunt lanes with
+  freight traffic; detection roll per freighter passage (B9); unescorted freighters destroyed or captured.
+- Pirate bases spawn and persist (destroyable from M3). Losses go to a per-empire log.
+
+### WP11: Autopilot (Shared Automation) · M
+**Spec:** D1, D10
+
+- Every AI slot and every Automated planet runs the default governor, auto-logistics and a simple expansion
+  rule (outposts and colonies by habitability, deposits and reach; freighters when utilisation > 95%).
+- All decisions inside the sim on the `ai` stream, monthly; same Commands as the player.
+
+### WP12: Economy UI · L
+**Spec:** F4, F6–F9, F12, F20
+
+- Top bar: credits, research, influence (with monthly net).
+- Planet panel (F4), Sector screen (F6), Logistics Manager (F7: trunk routes, demand targets, hubs &
+  freighters, losses), Stockpile view (F9 table), Colonise screen (F8), Alerts panel (F12 + the D6 alerts that
+  exist in M2, each with a one-click Command fix).
+- Map: freighter diamonds on lanes, station markers in the tactical scope.
+- Keyboard-only navigation and loc keys as in M1.
+
+### WP13: Economy Harness · M
+**Spec:** B20
+
+- `tools/economy_harness.gd`: autopilot empires for 50 in-game years across seeds; resource curves, freighter
+  utilisation, time to milestones (first colony, colony count, freighters, alloys/month) vs the B20 targets.
+- Determinism harness extended with `economy` and `logistics` checksum parts.
+
+### WP14: Balance Pass · S–M
+**Spec:** B20, B21
+
+- Tune data (not code) until the harness meets B20 across seeds; record changes in Sub-spec B's change log.
+
+---
+
+## D2. Dependency Order
+
+| WP | Needs |
+|---|---|
+| WP2 | WP1 |
+| WP3 | WP2 |
+| WP4 | WP3 |
+| WP5 | WP4 |
+| WP6 | WP5 |
+| WP7 | WP6 |
+| WP8 | WP4 (colony ships), WP3 (outposts) |
+| WP9 | WP5 |
+| WP10 | WP5 |
+| WP11 | WP7, WP8 |
+| WP13 | WP9, WP10, WP11 |
+| WP14 | WP13 |
+
+WP12 (UI) grows alongside: planet panel with WP2–3, logistics manager and stockpile view with WP5–6, sector
+screen with WP7, colonise screen with WP8, alerts last.
+
+## D3. M2 Definition of Done
+
+- [ ] All WP acceptance criteria met.
+- [ ] `tools/run_tests.sh` green; determinism harness green (20 seeds × 4 sizes, with economy checksums).
+- [ ] Economy harness meets the B20 targets on at least 18 of 20 seeds.
+- [ ] Huge galaxy, 8 autopilot empires, year 15: 8× speed holds ≥ 60 fps; a month tick under 50 ms headless.
+- [ ] No B-table numbers in code (data only); content validation green.
+- [ ] Sim lint green; every player-facing string uses a loc key; all M2 screens keyboard-navigable.
+- [ ] Spec change logs updated with every decision made during the build.
+
+## D4. Risks & Mitigations
+
+| Risk | Mitigation |
+|---|---|
+| Daily tick cost with hundreds of colonies and freighters | Profile from WP2; cache job/modifier sums with dirty flags (C4); iterate IdMaps once per tick |
+| Auto-logistics oscillation (freighters chasing each other) | Count in-transit cargo in deficits (B8); reserves; harness tracks wasted trips |
+| Rounding drift in milli-unit stockpiles | Floor everywhere, per B0; tests compare monthly totals to B19 |
+| Scope creep into combat | Pirates only; no escorts or battles in M2 |
+| UI volume (six screens) | Build screens with the WP they display, not all at the end |

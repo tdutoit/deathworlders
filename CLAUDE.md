@@ -3,7 +3,7 @@
 ## What this is
 HFY 4X space strategy game in Godot 4.7.2 (GDScript). Specs live in /docs:
 - GAME_DESIGN_SPEC.md (main), SUBSPEC_A_COMBAT.md, SUBSPEC_B_ECONOMY.md, SUBSPEC_C_DATA_MODAPI.md,
-  SUBSPEC_D_SCALE.md, SUBSPEC_E_DIPLOMACY.md, SUBSPEC_F_UI.md, M1_PLAN.md (current milestone).
+  SUBSPEC_D_SCALE.md, SUBSPEC_E_DIPLOMACY.md, SUBSPEC_F_UI.md, M1_PLAN.md (done), M2_PLAN.md (current milestone).
 - Read the relevant spec section before starting a task. Pinned versions: docs/ENGINE_VERSION.md.
 
 ## Hard rules (sim/)
