@@ -13,6 +13,14 @@ into an ordered build plan. Builds on M2 (docs/M2_PLAN.md); same rules (CLAUDE.m
   tier-1 military stations). Standard designs are kinetic-led for every species until the M4 species pass.
   Non-human hulls use the human model for that class (Vess'kar's corvette has its own); the classes without a
   model yet get one in WP11.
+- 2026-10-01 (WP2): designs are match-state entities (`ShipDesign`, int ID, owner, name, hull, components;
+  `military` checksum part). Every empire starts with a copy of its species' standard designs (named by
+  loc key). `core:cmd/save_design` (new or replace own) and `core:cmd/delete_design`; `core:cmd/queue_ship`
+  takes `design` for warships. A queued ship keeps a copy of the design's components (and the design ID), so
+  editing or deleting a design never changes queued or built ships; cost = hull + components, build days =
+  the hull's. Shipyard size gates the hull (B10). Stats: `ShipStats.of` (module modifiers summed per A0).
+  Sharing (`io/`): `DesignCode` (C5 JSON, `base64(deflate(json))`; import reports missing mods and rejects
+  other-species hulls) and `DesignLibrary` (`user://designs/*.json`, across matches).
 
 ---
 

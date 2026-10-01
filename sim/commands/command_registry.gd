@@ -28,6 +28,8 @@ static var _types := {  # class refs are not constant expressions
 	CmdSetExportQuota.TYPE: CmdSetExportQuota,
 	CmdApproveImport.TYPE: CmdApproveImport,
 	CmdColonise.TYPE: CmdColonise,
+	CmdSaveDesign.TYPE: CmdSaveDesign,
+	CmdDeleteDesign.TYPE: CmdDeleteDesign,
 }
 
 

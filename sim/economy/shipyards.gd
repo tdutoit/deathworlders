@@ -25,13 +25,53 @@ static func check_ship(state: MatchState, empire_id: int, station_id: int, hull_
 	return ""
 
 
+## "" if this empire may build one of its designs at that shipyard (M3), else the reason. Shipyard size
+## gates the hull (B10: S up to destroyers, M up to battlecruisers and carriers, L all).
+static func check_design_ship(state: MatchState, empire_id: int, station_id: int, design_id: int) -> String:
+	var s := state.station(station_id)
+	if s == null or s.owner != empire_id:
+		return "station %d is not yours" % station_id
+	var def: StationDef = state.defs.get_def(StringName(s.def_id))
+	if not s.operational or def.function != &"shipyard":
+		return "not an operational shipyard"
+	var d := Designs.owned(state, empire_id, design_id)
+	if d == null:
+		return "design %d is not yours" % design_id
+	var hull := state.defs.get_def(StringName(d.hull)) as HullDef
+	if hull == null:
+		return "unknown hull %s" % d.hull
+	if HullDef.YARD_SIZES.find(String(def.shipyard_size)) < HullDef.YARD_SIZES.find(String(hull.shipyard_size)):
+		return "a %s hull needs a size %s shipyard" % [hull.hull_class, hull.shipyard_size]
+	return ""
+
+
+## Queues a ship of one of the empire's designs (rules already checked). The construction keeps a copy of
+## the design's components, so later edits don't change it.
+static func queue_design(state: MatchState, s: Station, design_id: int) -> void:
+	var d: ShipDesign = state.designs.get_or(design_id)
+	var hull: HullDef = state.defs.get_def(StringName(d.hull))
+	var cost := {}
+	var whole := ShipStats.cost(state.defs, d.hull, d.components)
+	for res: String in whole:
+		cost[StringName(res)] = whole[res]
+	var b := BuildRules.new_construction(state, "ship", d.hull, cost, hull.build_days)
+	b.design = design_id
+	b.components = d.components.duplicate()
+	_apply_build_speed(state, s, b)
+	s.ship_queue.append(b)
+
+
 ## Queues a ship (rules already checked). Local shipyard build speed shortens the build (B4).
 static func queue_ship(state: MatchState, s: Station, hull_id: String) -> void:
 	var hull: HullDef = state.defs.get_def(StringName(hull_id))
 	var b := BuildRules.new_construction(state, "ship", hull_id, hull.cost, hull.build_days)
+	_apply_build_speed(state, s, b)
+	s.ship_queue.append(b)
+
+
+static func _apply_build_speed(state: MatchState, s: Station, b: Construction) -> void:
 	var speed := build_speed_permille(state, s)
 	b.total_days = maxi(1, FixedMath.floor_div(b.total_days * 1000 + 999 + speed, 1000 + speed))  # ceil
-	s.ship_queue.append(b)
 
 
 ## shipyard.build_speed from the own colony the shipyard orbits (Industrial focus: +100 permille).
@@ -68,7 +108,9 @@ static func _launch(state: MatchState, s: Station, b: Construction) -> bool:
 			b.days_done = b.total_days  # finished, waiting for a pop
 			return false
 		_take_pops(src, hull.pop_cost, state.defs)
-	spawn(state, s.owner, b.def_id, s.system_id, s.planet_id)
+	var u := spawn(state, s.owner, b.def_id, s.system_id, s.planet_id)
+	u.design = b.design
+	u.components = b.components.duplicate()
 	return true
 
 

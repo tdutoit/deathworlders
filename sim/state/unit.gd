@@ -25,6 +25,8 @@ var out_of_fuel := false  # last fuel draw failed: half speed until resupplied (
 var raid_checked: int = StateIO.NONE  # freighters: last system a raider passage roll was made in (B9)
 var target_owner: int = StateIO.NONE  # raiders: the empire they hunt
 var months_left := 0  # raiders: months before leaving (0 = stays, e.g. a base's guard)
+var design := 0  # warships: the design it was built from (may since be edited or deleted)
+var components: Array[String] = []  # warships: its components, in hull slot order ("" = empty)
 
 
 func is_moving() -> bool:
@@ -44,7 +46,7 @@ func to_dict() -> Dictionary:
 		"progress": progress, "speed": speed, "hull_id": hull_id, "home": home,
 		"body": body, "route": route, "phase": phase, "wait_hours": wait_hours, "impulse_to": impulse_to,
 		"cargo": cargo.duplicate(), "job": job.duplicate(), "target_planet": target_planet, "out_of_fuel": out_of_fuel, "raid_checked": raid_checked,
-		"target_owner": target_owner, "months_left": months_left,
+		"target_owner": target_owner, "months_left": months_left, "design": design, "components": components.duplicate(),
 	}
 
 
@@ -70,6 +72,8 @@ static func from_dict(d: Dictionary) -> Unit:
 	u.raid_checked = int(d.get("raid_checked", StateIO.NONE))
 	u.target_owner = int(d.get("target_owner", StateIO.NONE))
 	u.months_left = int(d.get("months_left", 0))
+	u.design = int(d.get("design", 0))
+	u.components.assign(d.get("components", []))
 	u.job = {}
 	var j: Dictionary = d.get("job", {})
 	if not j.is_empty():

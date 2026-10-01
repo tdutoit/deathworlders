@@ -10,6 +10,8 @@ var cost := {}  # resource ID -> milli-units in total (pace already applied)
 var total_days := 1  # pace already applied
 var days_done := 0
 var stalled_days := 0  # consecutive days without materials (for alerts, D6)
+var design := 0  # ships built from a design (M3): its ID, for the record
+var components: Array[String] = []  # ... and a copy of its components at queue time
 
 
 ## Materials needed on day `days_done`: each resource's share of the total.
@@ -39,7 +41,7 @@ func is_done() -> bool:
 
 func to_dict() -> Dictionary:
 	return {"kind": kind, "def_id": def_id, "cost": cost.duplicate(), "total_days": total_days,
-		"days_done": days_done, "stalled_days": stalled_days}
+		"days_done": days_done, "stalled_days": stalled_days, "design": design, "components": components.duplicate()}
 
 
 static func from_dict(d: Dictionary) -> Construction:
@@ -50,4 +52,6 @@ static func from_dict(d: Dictionary) -> Construction:
 	c.total_days = int(d["total_days"])
 	c.days_done = int(d["days_done"])
 	c.stalled_days = int(d["stalled_days"])
+	c.design = int(d.get("design", 0))
+	c.components.assign(d.get("components", []))
 	return c
