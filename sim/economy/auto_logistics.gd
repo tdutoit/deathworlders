@@ -105,21 +105,27 @@ static func _assign(state: MatchState, eid: int) -> void:
 		return a["holder"] < b["holder"])
 	var holders := _own_holders(state, eid)
 	var hops := {}  # system -> {system: lanes}, filled on demand
+	var cut := {}  # "from>to" -> blocked by raiders (B8 route safety), filled on demand
 	for d: Dictionary in open:
 		while d["deficit"] > 0 and not idle.is_empty():
 			var assigned := false
 			for src in _sources(state, holders, d, promised, hops):
+				var leg := "%d>%d" % [Holders.system(state, src), Holders.system(state, d["holder"])]
+				if not cut.has(leg):
+					cut[leg] = Freight.blocked(state, eid, Holders.system(state, src), Holders.system(state, d["holder"]))
+				if cut[leg]:
+					continue
 				var f := _pick_freighter(state, idle, src, d["holder"], hops)
 				if f == null:
 					continue
 				var load := mini(mini(Freight.capacity_milli(state, f), d["deficit"]), _surplus(state, src, d["resource"], promised))
 				# Not worth a trip yet (the deficit keeps growing): under min_trip of capacity and under half the target.
-				# Critical demands too, or daily consumption sends a freighter per day. Builds are exempt: their target
-				# shrinks with the stock, so a small last load would never grow.
+				# Critical demands too, or daily consumption sends a freighter per day. Builds may send a small load
+				# that covers all they still lack (their target shrinks with the stock, so it would never grow).
 				var min_load := mini(FixedMath.mul_permille(Freight.capacity_milli(state, f), Economy.rules(state.defs).min_trip_permille),
 						int(d["target"]) / 2)
-				if load < min_load and not d.get("build", false):
-					continue
+				if load < min_load and not (d.get("build", false) and load == d["deficit"]):
+					continue  # builds: small loads only to finish the site; otherwise pool the surplus
 				f.job = {"source": src, "dest": d["holder"], "resource": d["resource"], "amount": load}
 				f.phase = "to_source"
 				idle.erase(f)

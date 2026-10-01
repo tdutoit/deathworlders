@@ -127,3 +127,61 @@ func test_raiders_move_toward_freight() -> void:
 	Shipyards.spawn(s, _human(s).id, "core:hull/freighter_light", b)
 	Pirates._hunt(s, u, {})
 	assert_eq(u.path, [b] as Array[int])
+
+
+## B8 route safety: a loaded auto job whose destination is cut off by a raider takes its cargo back home.
+func test_blocked_delivery_returns_cargo_to_source() -> void:
+	var s := _match()
+	var eid := _human(s).id
+	var earth := s.colony(_human(s).capital_planet)
+	var far := _own_at(s, 1)
+	var pid: int = s.galaxy.system(far).planet_ids[0]
+	var site := Colony.new()
+	site.id = pid
+	site.owner = eid
+	s.colonies.put(pid, site)
+	Pirates.spawn_raider(s, far, eid)
+	assert_true(Freight.blocked(s, eid, _home_sys(s), far), "the raider sits in the target system")
+	assert_false(Freight.blocked(s, eid, _home_sys(s), _home_sys(s)))
+	var f: Unit = s.units.values().filter(func(u: Unit) -> bool: return u.kind == "freighter" and u.owner == eid)[0]
+	var before := earth.stockpile.milli("core:resource/alloys")
+	f.cargo = {"core:resource/alloys": 5000}
+	f.job = {"source": earth.id, "dest": pid, "resource": "core:resource/alloys", "amount": 5000}
+	f.phase = "to_dest"
+	f.system_id = _home_sys(s)
+	f.body = earth.id
+	f.path = []
+	f.wait_hours = 0
+	for h in 72:
+		s.clear_scratch()
+		Freight.tick(s)
+	assert_eq(f.cargo_milli(), 0, "unloaded")
+	assert_true(f.job.is_empty(), "job given back")
+	assert_eq(earth.stockpile.milli("core:resource/alloys"), mini(before + 5000, Holders.cap_milli(s, earth.id, "core:resource/alloys")),
+		"the alloys went back to their source")
+	assert_eq(f.system_id, _home_sys(s), "never flew into the raider")
+
+
+func test_no_job_into_a_raided_system() -> void:
+	var s := _match()
+	var eid := _human(s).id
+	var far := _own_at(s, 1)
+	var pid: int = s.galaxy.system(far).planet_ids[0]
+	var site := Colony.new()
+	site.id = pid
+	site.owner = eid
+	s.colonies.put(pid, site)
+	s.sectors.clear()
+	Pirates.spawn_raider(s, far, eid)
+	var d := Demand.new()
+	d.id = s.alloc_id()
+	d.owner = eid
+	d.holder = pid
+	d.resource = "core:resource/alloys"
+	d.target = 50
+	d.priority = 3
+	s.demands.put(d.id, d)
+	s.clear_scratch()
+	AutoLogistics.day_tick(s)
+	for u: Unit in s.units.values():
+		assert_true(u.job.is_empty() or int(u.job["dest"]) != pid, "nobody is sent into the raider")

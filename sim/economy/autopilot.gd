@@ -18,6 +18,9 @@ const MIN_SHIPYARDS := 2
 const CORE_DIRECTIVE := "core:directive/industrial_core"
 const CREDIT_DIRECTIVE := "core:directive/research"  # Research + Economy: Labs and Exchanges
 const CREDIT_NET_LOW := 5000  # milli-credits a month
+const CREDIT_LOW := 300000  # milli-credits: below this (with a low net) the Core Sector runs on Research
+const SMALL_COLONY_POPS := 3
+const MAX_SMALL_COLONIES := 2  # no new colony ship while this many colonies are still under SMALL_COLONY_POPS
 const CREDIT_CUSHION := 100000  # milli-credits kept before taking on new upkeep
 
 
@@ -130,6 +133,13 @@ static func _colonise(state: MatchState, eid: int) -> void:
 			busy = true
 	if busy or best_colony_target(state, eid, capital_sys) == StateIO.NONE:
 		return
+	var small := 0
+	for pid: int in state.colonies:
+		var c: Colony = state.colonies.get_or(pid)
+		if c.owner == eid and c.total_pops() < SMALL_COLONY_POPS:
+			small += 1
+	if small >= MAX_SMALL_COLONIES:
+		return  # let the young colonies grow first (each costs upkeep and freight until its Farm)
 	for sid: int in state.stations:
 		var y: Station = state.stations.get_or(sid)
 		if y.owner == eid and not y.ship_queue.is_empty() and y.ship_queue.any(func(q: Construction) -> bool: return q.def_id == "core:hull/colony_ship"):
@@ -290,6 +300,8 @@ static func _shipyards(state: MatchState, eid: int) -> void:
 
 static func _directive(state: MatchState, eid: int) -> void:
 	var core := SectorLogistics.core_sector(state, eid)
-	var want := CREDIT_DIRECTIVE if state.empire(eid).credit_net < CREDIT_NET_LOW else CORE_DIRECTIVE
+	var e := state.empire(eid)
+	var poor := e.credit_net < CREDIT_NET_LOW and int(e.treasury.get("core:resource/credits", 0)) < CREDIT_LOW
+	var want := CREDIT_DIRECTIVE if poor else CORE_DIRECTIVE
 	if core != null and core.directive != want:
 		_do(state, eid, CmdSetDirective.TYPE, {"sector": core.id, "directive": want})

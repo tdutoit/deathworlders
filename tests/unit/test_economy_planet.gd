@@ -154,3 +154,18 @@ func test_economy_is_in_the_checksum() -> void:
 	_earth(s).stockpile.add(FOOD, 1)
 	assert_ne(s.checksum()["economy"], before["economy"])
 	assert_eq(MatchState.from_dict(s.to_dict()).checksum(), s.checksum(), "colonies round-trip")
+
+
+func test_job_inputs_come_from_orbiting_stations() -> void:
+	var s := _match()
+	var c := _earth(s)
+	var hub: Station = null
+	for st in BuildRules.stations_at(s, c.id):
+		if st.operational and st.owner == c.owner:
+			hub = st
+	assert_not_null(hub, "the capital starts with a station in orbit")
+	c.stockpile.take(ORE, c.stockpile.milli(ORE))
+	hub.stockpile.add(ORE, 100000)
+	_run_days(s, 1)
+	assert_gt(int(c.produced.get(ALLOYS, 0)), 0, "Workers ran on the station's ore (orbital transfer)")
+	assert_lt(hub.stockpile.milli(ORE), 100000, "the ore came out of the station")

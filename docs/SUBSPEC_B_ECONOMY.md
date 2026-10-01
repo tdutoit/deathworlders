@@ -40,6 +40,21 @@
   - Autopilot (AI only): expands (colonies, stations, ships) only with a positive monthly credit net, no
     deficit and 100 credits in hand; keeps 2 shipyards; upgrades or adds a logistics hub when no berth is
     free; runs the Core Sector on Industrial Core (Research while the credit net is under 5).
+- 2026-10-01 (M2 WP14, balance pass part 2):
+  - B3: job **inputs** come from the colony's stockpile, then from its owner's operational stations orbiting
+    the same body (orbital transfer, as for construction): the Core hub over the capital feeds its Foundries.
+    Before, 2,000-3,000 ore sat in stations while the capital's Foundries ran dry.
+  - B8 route safety: no auto job on a leg that can't avoid raided systems; a loaded freighter whose
+    destination gets cut off takes its cargo back to the source (it used to wait forever with it aboard, and
+    20-30 freighters piled onto one cut-off site). Build demands now send a load under the minimum trip only
+    when it finishes the site (the capital's thin surplus was split into 0.9-alloy trips to ten sites).
+  - Autopilot: Research directive only when the credit net is low **and** the treasury is under 300; no new
+    colony ship while 2 colonies are still under 3 pops.
+  - Harness (5 seeds x 15 years, small, 4 AIs = 20 empires): alloys/month 50-147 (was 5-27), colonies 4-11,
+    shipyards 2 everywhere, first colony by month 2-11. Ignoring freighters, 7 of 20 empires meet every B20
+    target; the misses are alloys just under 60 (50-55) and colony counts of 4 or 11. Freighters 5-19 at
+    0-63% utilisation: the AI buys one only above 95% use, and the economy doesn't need more at these
+    sizes, so B20's 20-40 freighters is never reached (open question for the owner).
 
 ---
 

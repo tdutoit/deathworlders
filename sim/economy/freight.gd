@@ -43,6 +43,16 @@ static func _decide(state: MatchState, u: Unit) -> void:
 		u.phase = "home"  # its route was deleted or unassigned on the way
 	if u.phase == "" or (u.phase == "home" and not p.is_empty()):
 		u.phase = "to_source" if not p.is_empty() else ("home" if u.home != StateIO.NONE else "")
+	if p.get("auto", false) and u.phase in ["to_source", "to_dest"] and blocked(state, u.owner, u.system_id, 			Holders.system(state, p["source"] if u.phase == "to_source" else p["dest"])):
+		# B8 route safety: no way around the raiders. Give the job back; cargo goes back to its source.
+		if u.phase == "to_dest" and u.cargo_milli() > 0 and int(u.job["dest"]) != int(u.job["source"]):
+			u.job["dest"] = u.job["source"]
+			return  # heads back next hour
+		elif u.phase == "to_source" or u.cargo_milli() == 0:
+			u.job = {}
+			u.phase = "home"
+		else:
+			return  # its own source is cut off too: hold position until a raider moves
 	match u.phase:
 		"to_source":
 			if _travel(state, u, p["source"]):
@@ -55,6 +65,23 @@ static func _decide(state: MatchState, u: Unit) -> void:
 		"home":
 			if u.home == StateIO.NONE or _travel(state, u, u.home):
 				u.phase = ""
+
+
+## True when an empire's freighter can't get from one system to another without entering a system where a
+## raider hunting that empire sits (the target itself included).
+static func blocked(state: MatchState, eid: int, from_system: int, to_system: int) -> bool:
+	if from_system == to_system:
+		return false
+	var raided := Pirates.raided_systems(state, eid)
+	if raided.is_empty():
+		return false  # the common case: no pathfinding
+	if raided.has(to_system):
+		return true
+	var scratch := state.scratch()  # many freighters share legs within a tick
+	var key := "blocked:%d:%d:%d" % [eid, from_system, to_system]
+	if not scratch.has(key):
+		scratch[key] = Pathfinder.route(state.galaxy, from_system, to_system, raided).is_empty()
+	return scratch[key]
 
 
 ## Moves the freighter toward a holder. Returns true once it is at the holder's body.

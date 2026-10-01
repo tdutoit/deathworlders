@@ -17,9 +17,17 @@ static func rules(db: DefDatabase) -> EconomyRulesDef:
 static func day_tick(state: MatchState, day: int) -> void:
 	var db := state.defs
 	var order := job_order(db)
+	var orbits := {}  # planet id -> [Stockpile] of its owner's operational stations there, by station ID
+	for sid: int in state.stations:
+		var s: Station = state.stations.get_or(sid)
+		var c := state.colony(s.planet_id)
+		if s.operational and c != null and c.owner == s.owner:
+			if not orbits.has(s.planet_id):
+				orbits[s.planet_id] = []
+			orbits[s.planet_id].append(s.stockpile)
 	for pid: int in state.colonies:
 		var c: Colony = state.colonies.get_or(pid)
-		_produce(state, c, db, day, order)
+		_produce(state, c, db, day, order, orbits.get(pid, []))
 		if c.retool_days > 0:
 			c.retool_days -= 1
 
@@ -83,7 +91,9 @@ static func job_order(db: DefDatabase) -> Array:
 	return jobs.map(func(j: JobDef) -> String: return String(j.id))
 
 
-static func _produce(state: MatchState, c: Colony, db: DefDatabase, day: int, order: Array) -> void:
+## Job inputs come from the colony's stockpile, then (orbital transfer, like construction in B10) from its
+## owner's stations orbiting it, in station ID order: a hub over the capital feeds its Foundries directly.
+static func _produce(state: MatchState, c: Colony, db: DefDatabase, day: int, order: Array, orbit: Array = []) -> void:
 	var mods := PlanetMods.of(c, db)
 	var e := state.empire(c.owner)
 	for job_id: String in order:
@@ -100,9 +110,16 @@ static func _produce(state: MatchState, c: Colony, db: DefDatabase, day: int, or
 			var need := share(per_pop * n * MILLI, day)
 			needs[String(res)] = need
 			if need > 0:
-				ratio = mini(ratio, FixedMath.floor_div(c.stockpile.milli(String(res)) * MILLI, need))
+				var have := c.stockpile.milli(String(res))
+				for sp: Stockpile in orbit:
+					have += sp.milli(String(res))
+				ratio = mini(ratio, FixedMath.floor_div(have * MILLI, need))
 		for res: String in needs:
-			var used := c.stockpile.take(res, FixedMath.floor_div(needs[res] * ratio, MILLI))
+			var want := FixedMath.floor_div(needs[res] * ratio, MILLI)
+			var used := c.stockpile.take(res, want)
+			for sp: Stockpile in orbit:
+				if used < want:
+					used += sp.take(res, want - used)
 			c.add_flow(c.consumed, res, used)
 		var out_permille := output_permille(c, job_id, db, mods)
 		for res: StringName in IdMap.sort_keys(job.outputs.keys()):
