@@ -18,6 +18,8 @@ static var _types := {  # class refs are not constant expressions
 	CmdEditRoute.TYPE: CmdEditRoute,
 	CmdDeleteRoute.TYPE: CmdDeleteRoute,
 	CmdAssignFreighter.TYPE: CmdAssignFreighter,
+	CmdSetDemandTarget.TYPE: CmdSetDemandTarget,
+	CmdSetReserve.TYPE: CmdSetReserve,
 }
 
 

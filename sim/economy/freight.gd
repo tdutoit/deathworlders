@@ -23,21 +23,33 @@ static func tick(state: MatchState) -> void:
 			_decide(state, u)
 
 
+## What the freighter is working for: its manual route, or its one-shot auto job, or {} when free.
+## {source, dest, resource, amount (milli), auto (bool)}
+static func plan(state: MatchState, u: Unit) -> Dictionary:
+	if u.route != StateIO.NONE:
+		var r: Route = state.routes.get_or(u.route)
+		if r != null:
+			return {"source": r.source, "dest": r.dest, "resource": r.resource, "amount": r.amount * Stockpile.MILLI, "auto": false}
+	if not u.job.is_empty():
+		return {"source": u.job["source"], "dest": u.job["dest"], "resource": u.job["resource"], "amount": u.job["amount"], "auto": true}
+	return {}
+
+
 static func _decide(state: MatchState, u: Unit) -> void:
-	var r: Route = state.routes.get_or(u.route) if u.route != StateIO.NONE else null
-	if r == null and u.phase == "" and (u.home == StateIO.NONE or u.body == Holders.body(state, u.home)):
+	var p := plan(state, u)
+	if p.is_empty() and u.phase == "" and (u.home == StateIO.NONE or u.body == Holders.body(state, u.home)):
 		return  # idle at home
-	if r == null and u.phase in ["to_source", "to_dest"]:
+	if p.is_empty() and u.phase in ["to_source", "to_dest"]:
 		u.phase = "home"  # its route was deleted or unassigned on the way
-	if u.phase == "" or (u.phase == "home" and r != null):
-		u.phase = "to_source" if r != null else ("home" if u.home != StateIO.NONE else "")
+	if u.phase == "" or (u.phase == "home" and not p.is_empty()):
+		u.phase = "to_source" if not p.is_empty() else ("home" if u.home != StateIO.NONE else "")
 	match u.phase:
 		"to_source":
-			if _travel(state, u, r.source):
+			if _travel(state, u, p["source"]):
 				u.phase = "loading"
 				u.wait_hours = DAY
 		"to_dest":
-			if _travel(state, u, r.dest):
+			if _travel(state, u, p["dest"]):
 				u.phase = "unloading"
 				u.wait_hours = DAY
 		"home":
@@ -74,19 +86,26 @@ static func _wait_done(state: MatchState, u: Unit) -> void:
 		u.impulse_to = StateIO.NONE
 		_decide(state, u)
 		return
-	var r: Route = state.routes.get_or(u.route) if u.route != StateIO.NONE else null
+	var p := plan(state, u)
 	match u.phase:
 		"loading":
-			if r == null:
+			if p.is_empty():
 				u.phase = "home"
-			elif _load(state, u, r) > 0 or u.cargo_milli() > 0:
+			elif _load(state, u, p) > 0 or u.cargo_milli() > 0:
 				u.phase = "to_dest"
+			elif p["auto"]:
+				u.job = {}  # the surplus is gone: give the job back, tomorrow's assignment finds another
+				u.phase = "home"
 			else:
-				u.wait_hours = DAY  # nothing to load yet: try again tomorrow
+				u.wait_hours = DAY  # manual route: nothing to load yet, try again tomorrow
 				return
 		"unloading":
-			_unload(state, u, r.dest if r != null else u.home)
-			u.phase = "to_source" if r != null else "home"
+			_unload(state, u, p["dest"] if not p.is_empty() else u.home)
+			if not p.is_empty() and p["auto"]:
+				u.job = {}
+				u.phase = "home"
+			else:
+				u.phase = "to_source" if not p.is_empty() else "home"
 	_decide(state, u)
 
 
@@ -95,14 +114,16 @@ static func capacity_milli(state: MatchState, u: Unit) -> int:
 	return hull.cargo_capacity * Stockpile.MILLI if hull else 0
 
 
-static func _load(state: MatchState, u: Unit, r: Route) -> int:
-	var src := Holders.stockpile(state, r.source)
+static func _load(state: MatchState, u: Unit, p: Dictionary) -> int:
+	var src := Holders.stockpile(state, p["source"])
 	if src == null:
 		return 0
-	var want := mini(r.amount * Stockpile.MILLI, capacity_milli(state, u) - u.cargo_milli())
-	var got := src.take(r.resource, maxi(0, want))
+	var want := mini(int(p["amount"]), capacity_milli(state, u) - u.cargo_milli())
+	if p["auto"]:  # auto-logistics never dips into the source's reserve (B8)
+		want = mini(want, src.milli(p["resource"]) - AutoLogistics.reserve_milli(state, p["source"], p["resource"]))
+	var got := src.take(p["resource"], maxi(0, want))
 	if got > 0:
-		u.cargo[r.resource] = u.cargo.get(r.resource, 0) + got
+		u.cargo[p["resource"]] = u.cargo.get(p["resource"], 0) + got
 	return got
 
 

@@ -16,6 +16,8 @@ var units := IdMap.new()  # id -> Unit
 var colonies := IdMap.new()  # planet id -> Colony (M2)
 var stations := IdMap.new()  # id -> Station (M2)
 var routes := IdMap.new()  # id -> Route (M2)
+var demands := IdMap.new()  # id -> Demand (M2, B8)
+var reserves := {}  # "holder:resource" -> whole units auto-logistics leaves alone (B8; default 20% of cap)
 var next_id := 1
 var paused := true  # matches start paused
 var speed := 1  # 1, 2, 4 or 8 (CmdSetSpeed)
@@ -75,6 +77,8 @@ func to_dict() -> Dictionary:
 		"colonies": StateIO.map_to_array(colonies),
 		"stations": StateIO.map_to_array(stations),
 		"routes": StateIO.map_to_array(routes),
+		"demands": StateIO.map_to_array(demands),
+		"reserves": reserves.duplicate(),
 		"next_id": next_id,
 		"paused": paused,
 		"speed": speed,
@@ -98,6 +102,8 @@ static func from_dict(d: Dictionary) -> MatchState:
 	s.colonies = StateIO.array_to_map(d.get("colonies", []), Colony.from_dict)
 	s.stations = StateIO.array_to_map(d.get("stations", []), Station.from_dict)
 	s.routes = StateIO.array_to_map(d.get("routes", []), Route.from_dict)
+	s.demands = StateIO.array_to_map(d.get("demands", []), Demand.from_dict)
+	s.reserves = StateIO.int_map(d.get("reserves", {}))
 	s.next_id = int(d["next_id"])
 	s.paused = d["paused"] == true
 	s.speed = int(d["speed"])
@@ -117,7 +123,7 @@ func checksum() -> Dictionary:
 		"empires": DetHash.hash_value(d["empires"]),
 		"units": DetHash.hash_value(d["units"]),
 		"economy": DetHash.hash_value([d["colonies"], d["stations"]]),
-		"logistics": DetHash.hash_value(d["routes"]),
+		"logistics": DetHash.hash_value([d["routes"], d["demands"], d["reserves"]]),
 		"rng": DetHash.hash_value(d["rng_streams"]),
 	}
 	parts["total"] = DetHash.hash_value(parts)

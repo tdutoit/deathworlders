@@ -19,6 +19,7 @@ var phase := ""  # "", "to_source", "loading", "to_dest", "unloading", "home"
 var wait_hours := 0  # loading/unloading or in-system travel still to go
 var impulse_to: int = StateIO.NONE  # body it is flying to inside the system
 var cargo := {}  # resource ID -> milli-units aboard
+var job := {}  # one-shot auto-logistics trip {source, dest, resource, amount (milli)}; empty when none
 
 
 func is_moving() -> bool:
@@ -37,7 +38,7 @@ func to_dict() -> Dictionary:
 		"id": id, "owner": owner, "kind": kind, "system_id": system_id, "path": path.duplicate(),
 		"progress": progress, "speed": speed, "hull_id": hull_id, "home": home,
 		"body": body, "route": route, "phase": phase, "wait_hours": wait_hours, "impulse_to": impulse_to,
-		"cargo": cargo.duplicate(),
+		"cargo": cargo.duplicate(), "job": job.duplicate(),
 	}
 
 
@@ -58,4 +59,8 @@ static func from_dict(d: Dictionary) -> Unit:
 	u.wait_hours = int(d.get("wait_hours", 0))
 	u.impulse_to = int(d.get("impulse_to", StateIO.NONE))
 	u.cargo = StateIO.int_map(d.get("cargo", {}))
+	u.job = {}
+	var j: Dictionary = d.get("job", {})
+	if not j.is_empty():
+		u.job = {"source": int(j["source"]), "dest": int(j["dest"]), "resource": String(j["resource"]), "amount": int(j["amount"])}
 	return u

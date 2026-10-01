@@ -26,6 +26,8 @@ const ID := &"core:economy_rules/default"
 @export var low_stability_output_permille: int
 @export var strike_threshold: int
 @export var revolt_threshold: int
+@export var reserve_default_permille: int  # B8: stockpiles keep 20% of cap from auto-logistics
+@export var colony_hub_range: int  # lanes a Logistics-focus planet's freighters serve (B8 gives station tiers only)
 
 
 func category() -> String:
@@ -38,6 +40,7 @@ func schema() -> Dictionary:
 			"growth_base", "growth_per_free_housing", "growth_points_per_pop", "starvation_pop_loss_months",
 			"stability_base", "stability_food_surplus", "stability_starvation", "stability_garrison_each",
 			"stability_garrison_max", "stability_retooling", "stability_unemployed_each", "stability_deficit_each_month",
-			"low_stability_threshold", "low_stability_output_permille", "strike_threshold", "revolt_threshold"]:
+			"low_stability_threshold", "low_stability_output_permille", "strike_threshold", "revolt_threshold",
+			"reserve_default_permille", "colony_hub_range"]:
 		s[field] = {"type": "int"}
 	return s

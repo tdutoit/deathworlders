@@ -39,6 +39,12 @@ into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.m
   angles). Freighters arriving by lane are placed at their target body (no extra impulse leg). Manual routes
   take whatever the source has (reserves apply to auto-logistics, WP6); cargo that doesn't fit stays aboard;
   an empty source means a day's wait and retry. Routes get their own `logistics` checksum part.
+- 2026-10-01 (WP6): auto-logistics follows B8's order exactly. Every active build (colony queue head, station
+  build, shipyard docks) is an implicit Normal-priority demand for its remaining materials, so construction
+  sites feed themselves. Auto trips are one-shot jobs (freighter goes home after unloading). Source distance:
+  in-system impulse days, otherwise 1000 + lanes; freighter distance: lanes x 100 + impulse days. The default
+  reserve (200 permille of cap) and the colony-hub range (3 lanes; B8 only gives station tiers) are
+  `economy_rules` data. B20's "half the freighters -> ~70% efficiency" is checked by the WP13 harness.
 
 ---
 
