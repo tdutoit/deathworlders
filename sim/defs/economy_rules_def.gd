@@ -46,6 +46,10 @@ const ID := &"core:economy_rules/default"
 @export var reach_stability_1: int
 @export var reach_stability_2: int
 @export var reach_stability_3: int
+# Sector logistics (D5): what the default governor keeps stocked
+@export var input_buffer_months: int  # job inputs kept at each colony
+@export var food_buffer_months: int  # food kept at each colony
+@export var hub_collect_permille: int  # share of the hub's cap it gathers of the sector's mining output
 
 
 func category() -> String:
@@ -62,6 +66,7 @@ func schema() -> Dictionary:
 			"reserve_default_permille", "colony_hub_range", "sector_cap", "core_sector_range",
 			"export_quota_default_permille", "developed_pops", "developed_years", "core_pops", "core_stability",
 			"core_hub_lanes", "reach_1", "reach_2", "reach_3", "reach_upkeep_1", "reach_upkeep_2", "reach_upkeep_3",
-			"reach_stability_1", "reach_stability_2", "reach_stability_3"]:
+			"reach_stability_1", "reach_stability_2", "reach_stability_3", "input_buffer_months",
+			"food_buffer_months", "hub_collect_permille"]:
 		s[field] = {"type": "int"}
 	return s

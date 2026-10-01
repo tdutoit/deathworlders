@@ -35,8 +35,9 @@ static func count(state: MatchState, eid: int) -> int:
 	return n
 
 
-static func create(state: MatchState, eid: int, hub: int) -> Sector:
+static func create(state: MatchState, eid: int, hub: int, is_core: bool = false) -> Sector:
 	var sec := Sector.new()
+	sec.core = is_core
 	sec.id = state.alloc_id()
 	sec.owner = eid
 	sec.hub = hub
@@ -49,9 +50,8 @@ static func create(state: MatchState, eid: int, hub: int) -> Sector:
 static func range_of(state: MatchState, sec: Sector) -> int:
 	var r := Economy.rules(state.defs)
 	var s := state.station(sec.hub)
-	if s != null:
-		return (state.defs.get_def(StringName(s.def_id)) as StationDef).sector_range
-	return r.core_sector_range if sec.hub == state.empire(sec.owner).capital_planet else r.colony_hub_range
+	var own := (state.defs.get_def(StringName(s.def_id)) as StationDef).sector_range if s != null else r.colony_hub_range
+	return maxi(own, r.core_sector_range) if sec.core else own
 
 
 static func update_membership(state: MatchState) -> void:

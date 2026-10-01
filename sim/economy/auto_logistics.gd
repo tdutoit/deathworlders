@@ -26,7 +26,8 @@ static func reserve_milli(state: MatchState, holder: int, res: String) -> int:
 	return FixedMath.mul_permille(cap, Economy.rules(state.defs).reserve_default_permille) if cap > 0 else 0
 
 
-## Open demands of an empire: [{holder, resource, target (milli), priority}], explicit and construction.
+## Open demands of an empire: [{holder, resource, target (milli), priority}] from player targets, builds and
+## the sector governors. Optional keys limit the sources: "sector" (sector ID) and/or "sources" (holder IDs).
 static func demands_of(state: MatchState, eid: int) -> Array:
 	var out := []
 	for did: int in state.demands:
@@ -46,6 +47,7 @@ static func demands_of(state: MatchState, eid: int) -> Array:
 		if not s.ship_queue.is_empty() and s.operational:
 			var docks := (state.defs.get_def(StringName(s.def_id)) as StationDef).docks
 			_build_needs(out, s.id, s.ship_queue.slice(0, docks))
+	out.append_array(SectorLogistics.demands(state, eid))
 	return out
 
 
@@ -141,8 +143,13 @@ static func _sources(state: MatchState, holders: Array[int], d: Dictionary, prom
 	var dest_sys := Holders.system(state, d["holder"])
 	var dest_body := Holders.body(state, d["holder"])
 	var scored := []
+	var sector: Sector = state.sectors.get_or(d["sector"]) if d.has("sector") else null
 	for h in holders:
 		if h == d["holder"] or _surplus(state, h, d["resource"], promised) <= 0:
+			continue
+		if d.has("sources") and not h in d["sources"]:
+			continue
+		if sector != null and not Holders.system(state, h) in sector.systems:
 			continue
 		var sys := Holders.system(state, h)
 		var dist := Holders.impulse_days(state, Holders.body(state, h), dest_body) if sys == dest_sys \

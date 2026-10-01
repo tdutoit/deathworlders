@@ -52,7 +52,8 @@ func test_core_sector_at_start() -> void:
 	var s := _match()
 	assert_eq(s.sectors.size(), 1)
 	var core: Sector = s.sectors.values()[0]
-	assert_eq(core.hub, _human(s).capital_planet)
+	assert_true(core.core)
+	assert_eq(s.station(core.hub).def_id, "core:station/logistics_t1", "the capital's logistics station is the hub")
 	assert_has(core.systems, _home_sys(s))
 	assert_eq(Sectors.range_of(s, core), 3)
 
@@ -142,9 +143,10 @@ func test_pinned_template() -> void:
 
 func test_create_sector_rules_and_cap() -> void:
 	var s := _match()
-	var hub: Station = BuildRules.stations_at(s, _human(s).capital_planet)[0]
-	assert_string_contains(_do(s, CmdCreateSector.TYPE, {"hub": hub.id}).error, "T2")
 	var far := _colony_at(s, 4, 3)
+	StartSetup._place_built(s, _human(s).id, far.id, "core:station/logistics_t1")
+	var hub: Station = BuildRules.stations_at(s, far.id)[0]
+	assert_string_contains(_do(s, CmdCreateSector.TYPE, {"hub": hub.id}).error, "T2")
 	far.primary_focus = "core:focus/logistics"
 	assert_eq(_do(s, CmdCreateSector.TYPE, {"hub": far.id}).error, "")
 	assert_eq(s.sectors.size(), 2)

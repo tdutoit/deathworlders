@@ -37,7 +37,13 @@ static func apply(state: MatchState, db: DefDatabase) -> void:
 			var belt := _belt_of(state, planet)
 			for st in start.belt_stations:
 				_place_built(state, e.id, belt.id, String(st))
-		Sectors.create(state, e.id, planet.id)  # the capital anchors the Core Sector (D3)
+		# The capital anchors the Core Sector (D3); its logistics station keeps the sector stockpile (D5).
+		var core_hub := planet.id
+		for st in BuildRules.stations_at(state, planet.id):
+			if (db.get_def(StringName(st.def_id)) as StationDef).function == &"logistics":
+				core_hub = st.id
+				break
+		Sectors.create(state, e.id, core_hub, true)
 		for hull in start.ships:
 			Shipyards.spawn(state, e.id, String(hull), planet.system_id, planet.id)
 

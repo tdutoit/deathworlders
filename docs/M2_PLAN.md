@@ -54,6 +54,13 @@ into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.m
   same functions the commands use. Balanced directive's best fit is a placeholder: ore/RE deposits ->
   Mining/Industrial, habitability >= 800 -> Farming/Research, else Research/Economy. All D2/D3/D9 numbers
   are `economy_rules` data.
+- 2026-10-01 (WP7b): the Core Sector's hub is the capital's Logistics Station when it has one (B19 does), so
+  the sector stockpile isn't the capital's own; a `core` flag gives it the Core range regardless of tier.
+  Governor demands are derived daily, never stored, and only draw on sources inside the sector: each
+  non-Manual colony keeps 2 months of job inputs and 3 months of food (Critical under 1 month); the hub
+  gathers the sector's mining output (only from the producing stations, up to 50% of its cap, Low). Exports:
+  a non-core hub sends its quota (default 50%) of surplus above reserve to the Core hub. Import requests are
+  computed (not stored); approving one places a Critical player demand any source can fill.
 
 ---
 

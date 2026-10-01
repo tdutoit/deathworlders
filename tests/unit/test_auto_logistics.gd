@@ -17,7 +17,9 @@ func _match() -> MatchState:
 	var settings := MatchSettings.new()
 	settings.add_player(0, "core:species/human", "human")
 	var errors: Array[String] = []
-	return GalaxyGenerator.new_match(settings, 3, _db, errors)
+	var s := GalaxyGenerator.new_match(settings, 3, _db, errors)
+	s.sectors.clear()  # these tests check B8 alone; sector governors add their own demands (WP7b)
+	return s
 
 
 func _human(s: MatchState) -> Empire:
