@@ -39,6 +39,8 @@ static var _types := {  # class refs are not constant expressions
 	CmdMoveSquadron.TYPE: CmdMoveSquadron,
 	CmdDeclareWar.TYPE: CmdDeclareWar,
 	CmdMakePeace.TYPE: CmdMakePeace,
+	CmdSetEscort.TYPE: CmdSetEscort,
+	CmdSetPatrol.TYPE: CmdSetPatrol,
 }
 
 

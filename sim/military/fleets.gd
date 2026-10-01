@@ -134,6 +134,68 @@ static func move_speed(state: MatchState, fleet_id: int) -> int:
 	return scratch[key]
 
 
+## Hourly fleet missions (main spec 6.6): patrols cycle through their systems, waiting patrol_wait_hours in
+## each; escorts are moved by the raid rolls (Pirates.tick). Fleets in battle or under way are left alone.
+static func mission_tick(state: MatchState) -> void:
+	var r := rules(state)
+	if r == null:
+		return
+	for fid: int in state.fleets.keys():
+		var f: Fleet = state.fleets.get_or(fid)
+		if f == null or f.mission != "patrol" or f.patrol.is_empty():
+			continue
+		var l := lead(state, f)
+		if l == null or l.is_moving() or Battles.in_battle(state, l.id):
+			continue
+		f.patrol_index = posmod(f.patrol_index, f.patrol.size())
+		if l.system_id == f.patrol[f.patrol_index]:
+			if f.patrol_wait < r.patrol_wait_hours:
+				f.patrol_wait += 1
+				continue
+			f.patrol_index = posmod(f.patrol_index + 1, f.patrol.size())
+			f.patrol_wait = 0
+		var route := Pathfinder.route(state.galaxy, l.system_id, f.patrol[f.patrol_index])
+		_route_keep_mission(state, f, route)
+
+
+## The fleet's escort covers a freighter's hub: escort mission, idle or under way, within hub range.
+static func escort_for(state: MatchState, hub: int) -> Fleet:
+	var scratch := state.scratch()
+	if not scratch.has("escorts"):
+		var m := {}
+		for fid: int in state.fleets.ordered():
+			var f: Fleet = state.fleets.get_or(fid)
+			if f.mission == "escort" and not m.has(f.escort_hub):
+				m[f.escort_hub] = f.id
+		scratch["escorts"] = m
+	var fid: Variant = scratch["escorts"].get(hub)
+	if fid == null:
+		return null
+	var f: Fleet = state.fleets.get_or(fid)
+	var l := lead(state, f) if f != null else null
+	if l == null or Battles.in_battle(state, l.id) or Holders.system(state, hub) == StateIO.NONE:
+		return null
+	var hops := int(AutoLogistics._hops_from(state, Holders.system(state, hub), {}).get(l.system_id, Sectors.FAR))
+	return f if hops <= AutoLogistics.hub_range(state, hub) else null
+
+
+## Sends an escort to where a raid happened (it keeps its mission).
+static func hunt(state: MatchState, f: Fleet, system_id: int) -> void:
+	var l := lead(state, f)
+	if l == null or l.is_moving() or l.system_id == system_id:
+		return
+	_route_keep_mission(state, f, Pathfinder.route(state.galaxy, l.system_id, system_id))
+
+
+static func _route_keep_mission(state: MatchState, f: Fleet, route: Array[int]) -> void:
+	for sid in f.ships():
+		var u: Unit = state.units.get_or(sid)
+		u.path = route.duplicate()
+		if u.path.is_empty():
+			u.progress = 0
+	f.reserve = false
+
+
 ## Gives every ship of the fleet the same route (they share a position, so they stay together).
 static func set_route(state: MatchState, f: Fleet, route: Array[int]) -> void:
 	for sid in f.ships():
@@ -142,6 +204,7 @@ static func set_route(state: MatchState, f: Fleet, route: Array[int]) -> void:
 		if u.path.is_empty():
 			u.progress = 0
 	f.reserve = false  # a fleet that leaves stops collecting new ships
+	f.mission = ""  # a manual move ends any escort or patrol
 
 
 ## A just-launched warship: full combat state from its design, then the system's reserve fleet (or a new one).

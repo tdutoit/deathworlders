@@ -71,6 +71,15 @@ into an ordered build plan. Builds on M2 (docs/M2_PLAN.md); same rules (CLAUDE.m
   sends no more raiders. Raiders fly the pirate raider design, fight fleets they meet and are stopped by
   hostile warships (interdiction). Base systems count as raided for freighter route safety. Open question 5
   settled in WP1.
+- 2026-10-01 (WP9, owner decisions): fleets take a mission (`Fleet.mission`; a manual move ends it).
+  `core:cmd/set_escort {fleet, hub}`: while the escort is within the hub's freight range and not in battle,
+  passage rolls against that hub's freighters succeed at `combat_rules.escort_raid` (250 permille) of the usual
+  chance, and the escort is sent to the raid's system. `core:cmd/set_patrol {fleet, systems}` (max 8): the
+  fleet cycles through the list, staying `patrol_wait_hours` (24) in each; every listed own system gets
+  `patrol_security` (+10, D9) while the patrol is set, and interdiction does the intercepting. Stationary
+  warships of an empire at war make the same B9 passage rolls against its enemy's freighters; detected
+  freighters are destroyed with their cargo (open question 6: lost, not captured). Defensive platforms
+  already fight and add security (WP1/WP5).
 
 ---
 
@@ -269,7 +278,7 @@ Sub-spec A or B has no number or rule for these; the WP proposes a placeholder a
 4. **Formation and stance** (WP3): main spec 7.6 lists them; Sub-spec A has no formulas. Stored now, effects
    later unless the owner wants placeholders.
 5. **Pirate ship stats** (WP8) and **defensive platform stats** (WP1): not in A2.
-6. **Captured freighters** (WP9): lost (B9) or taken by the raider's owner.
+6. **Captured freighters** (WP9): lost (B9) or taken by the raider's owner. *Settled: lost.*
 7. **Battle terrain** (WP5): whether nebulae/asteroid fields exist as system properties in M3.
 
 ## D5. Risks & Mitigations

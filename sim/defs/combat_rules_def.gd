@@ -72,6 +72,10 @@ const VETERANCY: Array[String] = ["green", "regular", "veteran", "elite"]
 @export var repair_docked: int  # permille of hull_max per day at an own shipyard or supply depot
 @export var repair_field: int  # permille of hull_max per day elsewhere in supply range
 @export var repair_hull_per_alloy: int  # hull points one alloy repairs
+# Convoy protection (main spec 6.6; owner decisions 2026-10-01)
+@export var escort_raid: int  # permille of the raid chance against an escorted hub's freighters
+@export var patrol_security: int  # D9 security a patrol adds to each own system on its list
+@export var patrol_wait_hours: int  # hours a patrol stays in each system
 # Naval hierarchy (main spec 7.1): ships auto-group into squadrons of one class, squadrons into task forces
 @export var squadron_max: int
 @export var task_force_squadrons: int
@@ -89,7 +93,7 @@ const _INTS: Array[String] = ["hit_min", "hit_max", "variance_min", "variance_ma
 	"decisive_enemy_loss", "decisive_own_loss", "victory_min_loss", "pyrrhic_own_loss", "draw_band", "salvage",
 	"xp_per_round", "xp_per_kill", "out_of_supply_accuracy", "attrition_after_days", "attrition_per_day",
 	"ammo_per_weapon", "squadron_max", "task_force_squadrons", "fleet_task_forces", "ammo_per_munition",
-	"repair_docked", "repair_field", "repair_hull_per_alloy"]
+	"repair_docked", "repair_field", "repair_hull_per_alloy", "escort_raid", "patrol_security", "patrol_wait_hours"]
 
 
 func category() -> String:

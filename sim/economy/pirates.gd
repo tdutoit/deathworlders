@@ -23,9 +23,28 @@ static func security(state: MatchState, system_id: int, reach: Dictionary = {}, 
 			sec += r.security_per_garrison * PlanetMods.of(c, state.defs).add("planet.garrison")
 	var by_system: Dictionary = station_security if station_security != null else station_security_map(state)
 	sec += int(by_system.get(system_id, 0))
+	sec += int(patrol_security_map(state).get(system_id, 0))
 	if sys.owner != StateIO.NONE and Economy.reach_of(state, reach, sys.owner, system_id) >= r.reach_3:
 		sec = FixedMath.floor_div(sec, 2)
 	return clampi(sec, 0, 100)
+
+
+## {system: security from active patrols of the system's owner} (main spec 6.6; cached per tick).
+static func patrol_security_map(state: MatchState) -> Dictionary:
+	var scratch := state.scratch()
+	if not scratch.has("patrol_security"):
+		var out := {}
+		var cr := state.defs.get_def(CombatRulesDef.ID) as CombatRulesDef
+		if cr != null:
+			for fid: int in state.fleets.ordered():
+				var f: Fleet = state.fleets.get_or(fid)
+				if f.mission != "patrol":
+					continue
+				for sys_id in f.patrol:
+					if state.galaxy.system(sys_id).owner == f.owner and not out.has(sys_id):
+						out[sys_id] = cr.patrol_security
+		scratch["patrol_security"] = out
+	return scratch["patrol_security"]
 
 
 ## {system: security from operational stations owned by the owner of that system}.
@@ -196,21 +215,40 @@ static func _traffic_map(state: MatchState, eid: int) -> Dictionary:
 
 ## Hourly: passage rolls for freighters sharing a system with a raider hunting their owner (B9).
 static func tick(state: MatchState) -> void:
-	var hunted := {}  # "system:owner" -> true
+	var hunted := {}  # "system:owner" -> true: raiders hunting that owner, or (M3) its enemies' warships at war
+	var enemies := {}  # empire -> [empires at war with it]
+	for key: String in state.wars:
+		var a := int(key.get_slice(":", 0))
+		var b := int(key.get_slice(":", 1))
+		enemies[a] = enemies.get(a, []) + [b]
+		enemies[b] = enemies.get(b, []) + [a]
 	for uid: int in state.units.ordered():
 		var u: Unit = state.units.get_or(uid)
-		if u.kind == "raider" and not u.is_moving():
+		if u.is_moving():
+			continue
+		if u.kind == "raider":
 			hunted["%d:%d" % [u.system_id, u.target_owner]] = true
+		elif u.kind == "warship":
+			for other: int in enemies.get(u.owner, []):
+				hunted["%d:%d" % [u.system_id, other]] = true  # fleets at war raid convoys (main spec 6.6)
 	if hunted.is_empty():
 		return
 	var r := Economy.rules(state.defs)
+	var cr := state.defs.get_def(CombatRulesDef.ID) as CombatRulesDef
 	var chance := FixedMath.floor_div(r.raider_sensor * 1000, r.raider_sensor + 50)
 	for uid: int in state.units.keys():
 		var f: Unit = state.units.get_or(uid)
 		if f.kind != "freighter" or f.raid_checked == f.system_id:
 			continue
 		f.raid_checked = f.system_id
-		if hunted.has("%d:%d" % [f.system_id, f.owner]) and state.rng(DetRng.EVENTS).range(0, 1000) < chance:
+		if not hunted.has("%d:%d" % [f.system_id, f.owner]):
+			continue
+		var odds := chance
+		var escort := Fleets.escort_for(state, f.home) if cr != null and f.home != StateIO.NONE else null
+		if escort != null:
+			odds = FixedMath.mul_permille(odds, cr.escort_raid)  # escorted: the raiders must get past the escort
+			Fleets.hunt(state, escort, f.system_id)
+		if state.rng(DetRng.EVENTS).range(0, 1000) < odds:
 			_lose(state, f)
 
 
