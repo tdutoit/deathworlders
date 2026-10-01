@@ -37,6 +37,8 @@ static func apply(state: MatchState, db: DefDatabase) -> void:
 			var belt := _belt_of(state, planet)
 			for st in start.belt_stations:
 				_place_built(state, e.id, belt.id, String(st))
+		for hull in start.ships:
+			Shipyards.spawn(state, e.id, String(hull), planet.system_id)
 
 
 ## A finished station in orbit of a body (start only: no construction).

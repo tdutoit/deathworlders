@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_trf8h"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_337k5"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_324pb"]
+
+[resource]
+script = ExtResource("2_337k5")
+role = &"scout"
+hull_class = &"scout"
+hull = 100
+evasion = 300
+cost = {
+&"core:resource/alloys": 30
+}
+build_days = 30
+lane_speed = 12
+id = &"core:hull/scout"
+name_key = "HULL_SCOUT"

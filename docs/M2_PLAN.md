@@ -26,6 +26,13 @@ into an ordered build plan. Builds on M1 (docs/M1_PLAN.md); same rules (CLAUDE.m
   B19's orbitals: Logistics T1 and Shipyard S at the capital, three belt Mining Stations; a homeworld system
   without an asteroid belt gets one (fair starts). B19's Listening Post waits for M5. Mining focus boosts
   same-system stations +250 permille (B11) at Primary, half at Secondary.
+- 2026-10-01 (WP4): shipyards hold a ship queue; the first `docks` entries build in parallel from the
+  shipyard's own stockpile. `shipyard.build_speed` (Industrial focus) shortens the build, rounded up. A colony
+  ship takes its pop on completion from an own colony in the system (the orbited planet first) and holds the
+  dock until one can spare it. Freighters get a berth at a hub in their system (logistics stations, then
+  colonies with planet.freighter_berths); without one they're idle. Rebasing is an assignment change (the
+  freighter flies there on its next job). Placeholder `core:hull/scout` (30 alloys, 30 days, 12 lane units/day);
+  B19's starting ships: 3 Light Freighters, a Scout and a Colony Ship. Fuel upkeep is WP9's.
 
 ---
 

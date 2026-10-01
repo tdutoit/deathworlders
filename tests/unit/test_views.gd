@@ -99,7 +99,7 @@ func test_right_click_orders_selected_unit() -> void:
 	var state := GameState.state
 	var home := _home()
 	Sim.execute(state, [CommandRegistry.create(CmdDebugSpawnScout.TYPE, CommandQueue.local_player, {"system": home})] as Array[Command])
-	var scout_id: int = state.units.keys()[0]
+	var scout_id: int = state.units.keys()[-1]  # the scout just spawned (start ships come first)
 	var target_id: int = state.galaxy.lane(state.galaxy.system(home).lane_ids[0]).other_end(home)
 	var target := state.galaxy.system(target_id)
 	# Headless viewports are 64 px tall: zoom right in so the scout and the target are far apart on screen.
@@ -124,7 +124,7 @@ func test_units_interpolate_between_ticks() -> void:
 	var state := GameState.state
 	var home := _home()
 	Sim.execute(state, [CommandRegistry.create(CmdDebugSpawnScout.TYPE, CommandQueue.local_player, {"system": home})] as Array[Command])
-	var u: Unit = state.units.values()[0]
+	var u: Unit = state.units.values()[-1]
 	var target: int = state.galaxy.lane(state.galaxy.system(home).lane_ids[0]).other_end(home)
 	Sim.execute(state, [CommandRegistry.create(CmdMoveUnit.TYPE, CommandQueue.local_player, {"unit": u.id, "to": target})] as Array[Command])
 	var a := ViewMath.unit_point(state, u, 0.0)

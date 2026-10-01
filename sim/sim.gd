@@ -53,6 +53,7 @@ static func _day_tick(state: MatchState) -> void:
 	Economy.day_tick(state, day)
 	StationOps.day_tick(state, day)
 	Builder.day_tick(state)
+	Shipyards.day_tick(state)
 
 
 ## Settlement: growth, stability, taxes and upkeep (M2).

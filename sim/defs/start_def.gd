@@ -13,6 +13,7 @@ extends Def
 @export var stage: StringName = &"core"
 @export var capital_stations: Array[StringName] = []  # station IDs placed in the capital's orbit
 @export var belt_stations: Array[StringName] = []  # station IDs placed at the system's asteroid belt
+@export var ships: Array[StringName] = []  # hull IDs of the starting ships, at the capital (B19)
 
 
 func category() -> String:
@@ -31,4 +32,5 @@ func schema() -> Dictionary:
 		"stage": {"type": "enum", "values": ["outpost", "colony", "developed", "core"]},
 		"capital_stations": {"type": "id_list", "ref": "station"},
 		"belt_stations": {"type": "id_list", "ref": "station"},
+		"ships": {"type": "id_list", "ref": "hull"},
 	}

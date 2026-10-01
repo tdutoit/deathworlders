@@ -69,7 +69,7 @@ func test_first_month_flows_match_b19() -> void:
 	assert_eq(_units(p, "core:resource/research"), 55.0, "40 capital + 15 researchers")
 	assert_eq(_units(p, CREDITS), 44.0, "20 capital + 12 clerks + 12 taxes")
 	var e: Empire = s.empires.values()[0]
-	assert_eq(e.treasury[CREDITS], (500 + 44 - 10 - 7) * 1000, "minus 10 building and 7 station upkeep")
+	assert_eq(e.treasury[CREDITS], (500 + 44 - 10 - 7 - 3) * 1000, "minus 10 building, 7 station and 3 freighter upkeep")
 	assert_eq(c.stability, 55, "base 50 + food surplus 5")
 
 

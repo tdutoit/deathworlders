@@ -10,6 +10,7 @@ var system_id: int
 var planet_id: int  # the body it orbits
 var operational := false  # false while the first construction runs
 var build: Construction  # null when idle
+var ship_queue: Array[Construction] = []  # shipyards: the first `docks` entries build in parallel (B10)
 var stockpile := Stockpile.new()
 
 
@@ -17,6 +18,7 @@ func to_dict() -> Dictionary:
 	return {
 		"id": id, "owner": owner, "def_id": def_id, "system_id": system_id, "planet_id": planet_id,
 		"operational": operational, "build": build.to_dict() if build else null, "stockpile": stockpile.to_dict(),
+		"ship_queue": ship_queue.map(func(q: Construction) -> Dictionary: return q.to_dict()),
 	}
 
 
@@ -30,4 +32,6 @@ static func from_dict(d: Dictionary) -> Station:
 	s.operational = d["operational"] == true
 	s.build = Construction.from_dict(d["build"]) if d["build"] is Dictionary else null
 	s.stockpile = Stockpile.from_dict(d["stockpile"])
+	for q: Dictionary in d.get("ship_queue", []):
+		s.ship_queue.append(Construction.from_dict(q))
 	return s
