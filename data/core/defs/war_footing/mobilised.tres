@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="WarFootingDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/war_footing_def.gd" id="1_foot"]
+
+[resource]
+script = ExtResource("1_foot")
+output = {
+&"core:resource/alloys": 200,
+&"core:resource/credits": -300,
+&"core:resource/munitions": 500,
+&"core:resource/research": -200
+}
+stability = -5
+exhaustion_permille = 1000
+monthly_exhaustion = 0
+total_war = false
+order = 1
+id = &"core:war_footing/mobilised"
+name_key = "FOOTING_MOBILISED"

@@ -152,6 +152,7 @@ static func _exhaust_losses(state: MatchState, eid: int, lost: int) -> void:
 static func exhaust(state: MatchState, eid: int, milli: int) -> void:
 	var e := state.empire(eid)
 	var scaled := FixedMath.mul_permille(milli, 1000 + SpeciesTraits.empire_permille(state, eid, "empire.war_exhaustion"))
+	scaled = FixedMath.mul_permille(scaled, WarFooting.exhaustion_factor(state, eid))  # D7 Total War
 	e.war_exhaustion = clampi(e.war_exhaustion + scaled, 0, 100000)
 
 

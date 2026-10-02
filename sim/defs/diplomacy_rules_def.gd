@@ -84,6 +84,10 @@ const EVENTS: Array[String] = ["gift", "fought_together", "rescued", "denied", "
 @export var disarmament_cost: int  # E7
 @export var disarmament_years: int  # E7; cap = half the fleet value at peace (owner)
 @export var peace_days: int  # a player's peace offer waits this long
+# War footing (D7; M4 WP7)
+@export var footing_transition_days: int  # D7
+@export var demob_months: int  # D7
+@export var demob_stability: int  # D7
 # E14 Reputation (every empire; Legend for humans comes with WP9)
 @export var reputation_min: int
 @export var reputation_max: int
@@ -102,7 +106,7 @@ const _INTS: Array[String] = ["influence_value", "deal_target_months", "scarcity
 	"blockade_max", "exhaustion_loss_step", "exhaustion_peace_recovery", "exhaustion_stability_50",
 	"exhaustion_stability_75", "forced_peace_months", "cede_cost_min", "cede_cost_max", "cede_value_per_point",
 	"reparations_cost", "reparations_months", "humiliation_cost", "humiliation_influence", "disarmament_cost",
-	"disarmament_years", "peace_days"]
+	"disarmament_years", "peace_days", "footing_transition_days", "demob_months", "demob_stability"]
 
 
 func category() -> String:

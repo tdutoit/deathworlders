@@ -123,6 +123,7 @@ static func _produce(state: MatchState, c: Colony, db: DefDatabase, day: int, or
 		var out_permille := output_permille(c, job_id, db, mods)
 		for res: StringName in _sorted(job.outputs):
 			var total := FixedMath.mul_permille(int(job.outputs[res]) * n * MILLI, out_permille)
+			total = FixedMath.mul_permille(total, 1000 + WarFooting.output_permille(state, e, String(res)))  # D7
 			_deliver(state, c, e, db, mods, String(res), FixedMath.floor_div(share(total, day) * ratio, MILLI))
 	for i in c.buildings.size():
 		if i == c.offline_building:
@@ -323,6 +324,7 @@ static func _month_colony(state: MatchState, c: Colony, db: DefDatabase, r: Econ
 	stab += reach_stability
 	stab += mods.add("planet.stability")  # species traits (M4), buildings
 	stab += Wars.stability_penalty(state, c.owner)  # E7 war exhaustion
+	stab += WarFooting.stability(state, state.empire(c.owner))  # D7
 	for job: String in IdMap.sort_keys(c.jobs.keys()):
 		stab += (db.get_def(StringName(job)) as JobDef).stability * int(c.jobs[job])
 	c.stability = clampi(stab, 0, 100)

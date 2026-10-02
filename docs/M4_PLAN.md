@@ -98,6 +98,12 @@ rules (CLAUDE.md), same tooling.*
   may demand its casus belli's goals; either side reparations and humiliation. An AI loser accepts when the
   cost is at most the demander's score + half the exhaustion gap; an AI winner accepts terms worth at least
   that. Peace adds "war memory" -50 both ways (-1 a month). `make_peace` stays as the dev white peace.
+- 2026-10-02 (WP7): war footing as `war_footing` Defs (Peace, Mobilised, Total War, D7's table: job output
+  per resource for alloys, munitions, credits and research; stability -5 / -15). `set_war_footing`; a change
+  runs at half effect for 60 days; Total War back to Peace costs -5 stability for 6 months. E7 and D7 read
+  together: at Total War, exhaustion from losses grows x0.5 and +1 a month is added while at war; humans
+  (Stubborn, `empire.total_war_exhaustion` 350) use x0.35 for both. The AI sets Peace at peace, Mobilised at
+  war, Total War against a stronger enemy (placeholder until WP10).
 
 ---
 

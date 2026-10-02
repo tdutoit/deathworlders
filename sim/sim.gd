@@ -98,6 +98,7 @@ static func _month_phase(state: MatchState, hour: int) -> void:
 			Treaties.month_tick(state)  # trust from treaties, notice, tribute, obligations, calls
 			Deals.month_tick(state)  # recurring deal payments
 			Wars.month_tick(state)  # blockades, exhaustion, forced peace
+			WarFooting.month_tick(state)  # Total War exhaustion
 			SignatureMechanics.month_tick(state)
 
 

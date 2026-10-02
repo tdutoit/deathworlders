@@ -19,13 +19,17 @@ var prewar_fleet := 0  # battle value when its current wars began (exhaustion fr
 var exhausted_since := -1  # tick exhaustion reached 100 (forced peace after forced_peace_months)
 var disarm_until := 0  # E7 disarmament: warship value capped at disarm_cap until this tick
 var disarm_cap := 0
+var footing := "core:war_footing/peace"  # D7 war footing Def
+var footing_until := 0  # transition at half effect until this tick
+var demob_until := 0  # demobilisation stability dip until this tick
 
 
 func to_dict() -> Dictionary:
 	return {"id": id, "species": species, "player_slot": player_slot, "capital_planet": capital_planet, "color": color,
 		"treasury": treasury.duplicate(), "deficit_months": deficit_months, "credit_net": credit_net,
 		"losses": losses.duplicate(true), "tech_fragments": tech_fragments, "mechanic": mechanic.duplicate(true), "reputation": reputation, "war_exhaustion": war_exhaustion,
-		"prewar_fleet": prewar_fleet, "exhausted_since": exhausted_since, "disarm_until": disarm_until, "disarm_cap": disarm_cap}
+		"prewar_fleet": prewar_fleet, "exhausted_since": exhausted_since, "disarm_until": disarm_until, "disarm_cap": disarm_cap,
+		"footing": footing, "footing_until": footing_until, "demob_until": demob_until}
 
 
 static func from_dict(d: Dictionary) -> Empire:
@@ -46,6 +50,9 @@ static func from_dict(d: Dictionary) -> Empire:
 	e.exhausted_since = int(d.get("exhausted_since", -1))
 	e.disarm_until = int(d.get("disarm_until", 0))
 	e.disarm_cap = int(d.get("disarm_cap", 0))
+	e.footing = String(d.get("footing", "core:war_footing/peace"))
+	e.footing_until = int(d.get("footing_until", 0))
+	e.demob_until = int(d.get("demob_until", 0))
 	for l: Dictionary in d.get("losses", []):
 		e.losses.append({"tick": int(l["tick"]), "unit": int(l["unit"]), "system": int(l["system"]),
 			"hull": String(l["hull"]), "cargo": StateIO.int_map(l["cargo"]), "hub": int(l.get("hub", StateIO.NONE)),

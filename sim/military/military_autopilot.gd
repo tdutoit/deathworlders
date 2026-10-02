@@ -17,11 +17,29 @@ static func month_tick(state: MatchState, eid: int, may_build: bool) -> void:
 	if r == null:
 		return
 	_merge(state, eid)
+	_footing(state, eid)
 	var idle := _idle_fleets(state, eid)
 	idle = _answer_threats(state, eid, idle, r)
 	_convoys(state, eid, idle, r)
 	if may_build:
 		_build(state, eid, r)
+
+
+## D7 for AI slots (until the strategic AI, WP10): Peace when at peace; at war Mobilised, or Total War when an
+## enemy is stronger.
+static func _footing(state: MatchState, eid: int) -> void:
+	var want := WarFooting.PEACE
+	for wid: int in state.war_info.ordered():
+		var w: War = state.war_info.get_or(wid)
+		if w.attacker != eid and w.defender != eid:
+			continue
+		var enemy := w.defender if w.attacker == eid else w.attacker
+		if Treaties.power(state, enemy) > Treaties.power(state, eid):
+			want = "core:war_footing/total_war"
+			break
+		want = "core:war_footing/mobilised"
+	if state.empire(eid).footing != want:
+		Autopilot._do(state, eid, CmdSetWarFooting.TYPE, {"footing": want})
 
 
 ## Own fleets with no mission that are neither moving nor in battle, by ID.

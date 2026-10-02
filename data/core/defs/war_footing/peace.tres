@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="WarFootingDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/war_footing_def.gd" id="1_foot"]
+
+[resource]
+script = ExtResource("1_foot")
+output = {
+&"core:resource/alloys": 0,
+&"core:resource/credits": 0,
+&"core:resource/munitions": 0,
+&"core:resource/research": 0
+}
+stability = 0
+exhaustion_permille = 1000
+monthly_exhaustion = 0
+total_war = false
+order = 0
+id = &"core:war_footing/peace"
+name_key = "FOOTING_PEACE"
