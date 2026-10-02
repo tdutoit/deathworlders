@@ -6,6 +6,6 @@
 [resource]
 script = ExtResource("2_uaaht")
 hull = &"core:hull/vesskar_frigate_mk1"
-components = Array[StringName]([&"core:component/autocannon_s", &"core:component/point_defence", &"core:component/point_defence", &""])
+components = Array[StringName]([&"core:component/pulse_laser_s", &"core:component/point_defence", &"core:component/point_defence", &""])
 id = &"core:design/vesskar_frigate_standard"
 name_key = "DESIGN_FRIGATE_STANDARD"

@@ -132,7 +132,7 @@ static func _produce(state: MatchState, c: Colony, db: DefDatabase, day: int, or
 			_deliver(state, c, e, db, mods, String(res), share(int(b.outputs[res]) * MILLI, day))
 	# Pops eat daily; running out at any point this month marks the colony as starving (B17).
 	var food := "core:resource/food"
-	var hunger := share(c.total_pops() * rules(db).food_per_pop * MILLI, day)
+	var hunger := share(FixedMath.mul_permille(c.total_pops() * rules(db).food_per_pop * MILLI, 1000 + mods.permille("planet.food_upkeep")), day)
 	var eaten := c.stockpile.take(food, hunger)
 	c.add_flow(c.consumed, food, eaten)
 	if eaten < hunger:
@@ -321,6 +321,7 @@ static func _month_colony(state: MatchState, c: Colony, db: DefDatabase, r: Econ
 	stab += r.stability_unemployed_each * c.unemployed()
 	stab += r.stability_deficit_each_month * state.empire(c.owner).deficit_months
 	stab += reach_stability
+	stab += mods.add("planet.stability")  # species traits (M4), buildings
 	for job: String in IdMap.sort_keys(c.jobs.keys()):
 		stab += (db.get_def(StringName(job)) as JobDef).stability * int(c.jobs[job])
 	c.stability = clampi(stab, 0, 100)

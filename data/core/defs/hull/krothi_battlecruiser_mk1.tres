@@ -58,13 +58,13 @@ evasion = 60
 speed = 6
 slots = Array[ExtResource("3_1stpr")]([SubResource("Resource_74lb2"), SubResource("Resource_kvebe"), SubResource("Resource_qyluw"), SubResource("Resource_l5lc5"), SubResource("Resource_5lbh0"), SubResource("Resource_4n624"), SubResource("Resource_vf2ct"), SubResource("Resource_kiqpx")])
 cost = {
-&"core:resource/alloys": 273,
-&"core:resource/components": 65,
-&"core:resource/rare_earths": 13
+&"core:resource/alloys": 382,
+&"core:resource/components": 91,
+&"core:resource/rare_earths": 18
 }
 build_days = 180
 size = &"L"
 shipyard_size = &"M"
-credit_upkeep_milli = 6000
+credit_upkeep_milli = 5460
 id = &"core:hull/krothi_battlecruiser_mk1"
 name_key = "HULL_KROTHI_BATTLECRUISER_MK1"

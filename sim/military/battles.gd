@@ -57,7 +57,8 @@ static func loadout(state: MatchState, id: int) -> Array:
 
 static func stats(state: MatchState, id: int) -> ShipStats:
 	var l := loadout(state, id)
-	return ShipStats.cached(state.defs, l[0], l[1])
+	var e: Object = entity(state, id)
+	return ShipStats.cached(state.defs, l[0], l[1], SpeciesTraits.species_of(state, int(e.get("owner"))) if e != null else "")
 
 
 ## Battle value in credits (A1 cost): resources at their base value.
@@ -291,6 +292,14 @@ static func _round(state: MatchState, b: Battle) -> bool:
 	var queue := []  # [target, damage, family ID, penetration, shooter, order]
 	var lists := {}  # "side:priority" -> ordered candidate IDs
 	var disengaging := _disengaging(b)
+	var pursuit_acc := [0, 0]  # Persistence Hunters (A10): bonus against disengaging ships
+	for side in 2:
+		pursuit_acc[side] = SpeciesTraits.empire_add(state, b.owners[side], "empire.pursuit_accuracy")
+	var last_stand := {}  # combatants of formations in a Last Stand (A10)
+	for f: Dictionary in b.formations:
+		if int(f.get("last_stand", 0)) > 0:
+			for m: int in f["members"]:
+				last_stand[m] = true
 	for cid in b.active():
 		if disengaging.has(cid):
 			continue
@@ -320,16 +329,17 @@ static func _round(state: MatchState, b: Battle) -> bool:
 						fstats[fk][2] += 1
 						continue
 				var tst := stats(state, target)
-				var hit := int(w.accuracy[b.band]) + w.tracking + bonus - tst.evasion
+				var hit := int(w.accuracy[b.band]) + w.tracking + bonus - tst.evasion + int(st.accuracy.get(w.family, 0))
 				if fam != null and fam.ecm_affected:
-					hit -= r.ecm_missile_penalty * tst.ecm
+					hit -= (r.ecm_missile_penalty + tst.ecm_strength) * tst.ecm
 				if disengaging.has(target):
-					hit += r.disengage_incoming_accuracy
+					hit += r.disengage_incoming_accuracy + int(pursuit_acc[side])
 				hit = clampi(hit, r.hit_min, r.hit_max)
 				if rng.roll_permille() >= hit:
 					continue
 				fstats[fk][1] += 1
 				var dmg := FixedMath.floor_div(w.damage * rng.range(r.variance_min, r.variance_max), 1000)
+				dmg = FixedMath.mul_permille(dmg, 1000 + int(st.damage.get(w.family, 0)) + (r.last_stand_damage if last_stand.has(cid) else 0))
 				queue.append([target, dmg, w.family, w.penetration, cid, queue.size()])
 	# 4. Apply damage in target-ID order (A4 step 4, A9).
 	queue.sort_custom(func(a: Array, c: Array) -> bool: return a[0] < c[0] or (a[0] == c[0] and a[5] < c[5]))
@@ -620,8 +630,17 @@ static func _morale_and_retreat(state: MatchState, b: Battle, rng: DetRng, r: Co
 		loss += r.morale_capital_lost * int(capital_lost.get(f["key"], 0))
 		if side_cost[side] > 0 and side_cost[1 - side] * 1000 >= side_cost[side] * r.outnumbered_ratio:
 			loss += r.morale_outnumbered
-		loss = FixedMath.mul_permille(loss, 1000 - _morale_resist(state, f, r))
+		loss = FixedMath.mul_permille(loss, 1000 - _morale_resist(state, f, r) - SpeciesTraits.empire_add(state, b.owners[side], "empire.morale_resist"))
 		f["morale"] = maxi(0, int(f["morale"]) - loss)
+		var outnumbered: bool = side_cost[side] > 0 and side_cost[1 - side] * 1000 >= side_cost[side] * r.outnumbered_ratio
+		if int(f.get("last_stand", 0)) > 0:
+			f["last_stand"] = int(f["last_stand"]) - 1
+			f["morale"] = maxi(int(f["morale"]), r.last_stand_morale_floor)
+		elif not f.has("last_stand") and outnumbered and int(f["morale"]) < r.last_stand_trigger_morale \
+				and SpeciesTraits.empire_add(state, b.owners[side], "empire.last_stand") > 0:
+			f["last_stand"] = r.last_stand_rounds  # once per battle (A10)
+			f["morale"] = maxi(int(f["morale"]), r.last_stand_morale_floor)
+			b.log["events"].append([b.round, "last_stand", side, f["key"]])
 		if f["key"].begins_with("s:"):
 			continue  # stations can't retreat
 		var hull_now := 0
@@ -629,11 +648,12 @@ static func _morale_and_retreat(state: MatchState, b: Battle, rng: DetRng, r: Co
 			hull_now += int(entity(state, cid).get("hp"))
 		var losses := FixedMath.floor_div((int(f["hull_start"]) - hull_now) * 1000, maxi(1, int(f["hull_start"])))
 		var retreat := int(f["retreat_at"]) > 0 and losses >= int(f["retreat_at"])
-		if not retreat and int(f["morale"]) <= r.retreat_morale:
+		if not retreat and int(f["morale"]) <= r.retreat_morale and int(f.get("last_stand", 0)) <= 0:  # no rout during a Last Stand
 			retreat = rng.roll_permille() < 1000 - int(f["morale"]) * r.retreat_roll_mult
 		if retreat:
 			var pursued := _slowest(state, b, 1 - side) >= _slowest_of(state, f["members"])
-			f["disengage"] = r.disengage_rounds - 1 + (r.pursuit_rounds if pursued else 0)
+			var extra := r.pursuit_rounds + SpeciesTraits.empire_add(state, b.owners[1 - side], "empire.pursuit_rounds")
+			f["disengage"] = r.disengage_rounds - 1 + (extra if pursued else 0)
 			b.log["events"].append([b.round, "retreat", side, f["key"]])
 
 
@@ -645,7 +665,7 @@ static func _slowest_of(state: MatchState, ids: Array) -> int:
 	return maxi(slowest, 0)
 
 
-## Formation morale resistance from its ships' average veterancy (A13); species traits wait for M4.
+## Formation morale resistance from its ships' average veterancy (A13); species traits add on top (A10).
 static func _morale_resist(state: MatchState, f: Dictionary, r: CombatRulesDef) -> int:
 	var members: Array = f["members"]
 	if members.is_empty():
@@ -723,6 +743,7 @@ static func _finish(state: MatchState, b: Battle) -> void:
 		if String(results[side]).ends_with("victory") and b.owners[side] != Pirates.PIRATES:
 			var destroyed := int(b.log["lost_cost"][other]) - int(b.log["captured_cost"][side])
 			salvage[side] = FixedMath.floor_div(destroyed * r.salvage + int(b.log["captured_cost"][side]) * r.salvage * r.capture_salvage_mult, 1000)
+			salvage[side] = FixedMath.mul_permille(salvage[side], 1000 + SpeciesTraits.empire_permille(state, b.owners[side], "empire.salvage"))  # Improvisers
 			var e := state.empire(b.owners[side])
 			e.tech_fragments += salvage[side]
 	# Veterancy for survivors; defeat marks for the loser's fleets; captured ships join the captor's reserve.

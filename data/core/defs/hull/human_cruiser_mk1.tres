@@ -45,21 +45,21 @@ hardpoint = &"HP_C_M_01"
 script = ExtResource("2_fb42a")
 species = &"core:species/human"
 hull_class = &"cruiser"
-hull = 1500
+hull = 1350
 armor = 60
 shield = 200
 evasion = 80
 speed = 5
 slots = Array[ExtResource("3_y5dwu")]([SubResource("Resource_31yuj"), SubResource("Resource_w8h0u"), SubResource("Resource_utcsd"), SubResource("Resource_li3uu"), SubResource("Resource_4frcy"), SubResource("Resource_kk3lu"), SubResource("Resource_3d88a")])
 cost = {
-&"core:resource/alloys": 260,
-&"core:resource/components": 60,
-&"core:resource/rare_earths": 10
+&"core:resource/alloys": 312,
+&"core:resource/components": 72,
+&"core:resource/rare_earths": 12
 }
 build_days = 120
 model = "assets/models/ships/human_cruiser_mk1.glb"
 size = &"M"
 shipyard_size = &"M"
-credit_upkeep_milli = 4000
+credit_upkeep_milli = 4800
 id = &"core:hull/human_cruiser_mk1"
 name_key = "HULL_HUMAN_CRUISER_MK1"

@@ -17,5 +17,24 @@ habitability = {
 }
 home_template = &"standard"
 home_planet_type = &"core:planet_type/terran"
+traits = Array[StringName]([&"core:trait/ohlan_merchant_princes", &"core:trait/ohlan_missile_doctrine"])
+ai_personality = {
+&"aggression": 35,
+&"ambition": 60,
+&"caution": 50,
+&"expansion": 50,
+&"greed": 90,
+&"honour": 50,
+&"xenophilia": 60
+}
+personality_key = "PERSONALITY_OHLAN"
+affinity = {
+&"core:species/human": 5,
+&"core:species/krothi": -5,
+&"core:species/ohlan": 10,
+&"core:species/thessari": 0,
+&"core:species/vesskar": 10
+}
+signature_mechanic = &"contracts"
 id = &"core:species/ohlan"
 name_key = "SPECIES_OHLAN"

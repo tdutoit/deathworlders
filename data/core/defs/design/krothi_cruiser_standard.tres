@@ -6,6 +6,6 @@
 [resource]
 script = ExtResource("2_2w3pa")
 hull = &"core:hull/krothi_cruiser_mk1"
-components = Array[StringName]([&"core:component/autocannon_s", &"core:component/railgun_m", &"core:component/railgun_m", &"core:component/armor_plate", &"core:component/shield_gen", &"", &""])
+components = Array[StringName]([&"core:component/autocannon_s", &"core:component/railgun_m", &"core:component/railgun_m", &"core:component/armor_plate", &"core:component/point_defence", &"", &""])
 id = &"core:design/krothi_cruiser_standard"
 name_key = "DESIGN_CRUISER_STANDARD"

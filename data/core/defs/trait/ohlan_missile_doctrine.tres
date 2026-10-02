@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="TraitDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_b1rbj"]
+[ext_resource type="Script" path="res://sim/defs/trait_def.gd" id="2_rsycd"]
+
+[sub_resource type="Resource" id="Resource_qxuvb"]
+script = ExtResource("1_b1rbj")
+key = &"ship.accuracy.missile"
+value = 100
+scope = 5
+
+[sub_resource type="Resource" id="Resource_vb46u"]
+script = ExtResource("1_b1rbj")
+key = &"ship.ecm_strength"
+value = 50
+scope = 5
+
+[resource]
+script = ExtResource("2_rsycd")
+id = &"core:trait/ohlan_missile_doctrine"
+name_key = "TRAIT_OHLAN_MISSILE_DOCTRINE"
+desc_key = "TRAIT_OHLAN_MISSILE_DOCTRINE_DESC"
+modifiers = Array[ExtResource("1_b1rbj")]([SubResource("Resource_qxuvb"), SubResource("Resource_vb46u")])

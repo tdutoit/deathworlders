@@ -17,5 +17,24 @@ habitability = {
 }
 home_template = &"standard"
 home_planet_type = &"core:planet_type/ocean"
+traits = Array[StringName]([&"core:trait/vesskar_ancient_science", &"core:trait/vesskar_long_lived"])
+ai_personality = {
+&"aggression": 30,
+&"ambition": 85,
+&"caution": 75,
+&"expansion": 40,
+&"greed": 40,
+&"honour": 80,
+&"xenophilia": 30
+}
+personality_key = "PERSONALITY_VESSKAR"
+affinity = {
+&"core:species/human": -20,
+&"core:species/krothi": -30,
+&"core:species/ohlan": 5,
+&"core:species/thessari": 10,
+&"core:species/vesskar": 20
+}
+signature_mechanic = &"precedence"
 id = &"core:species/vesskar"
 name_key = "SPECIES_VESSKAR"

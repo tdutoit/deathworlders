@@ -69,7 +69,7 @@ func test_builds_a_defence_fleet() -> void:
 	assert_eq(_warship_queue(s), 0, "shipyards first")
 	_second_yard(s)
 	MilitaryAutopilot.month_tick(s, _ai(s).id, true)
-	assert_eq(_warship_queue(s), 1, "under ai_min_ships: one warship queued")
+	assert_eq(_warship_queue(s), 1, "under ai_min_fleet_value: one warship queued")
 	MilitaryAutopilot.month_tick(s, _ai(s).id, true)
 	assert_eq(_warship_queue(s), 1, "one at a time")
 
@@ -105,7 +105,7 @@ func test_too_weak_fleet_stays_home() -> void:
 	var s := _match()
 	var sys := _own_at(s, 2)
 	var f := _fleet(s, _home_sys(s), 1)
-	for i in 6:
+	for i in 12:
 		Pirates.spawn_raider(s, sys, _ai(s).id)
 	MilitaryAutopilot.month_tick(s, _ai(s).id, false)
 	assert_false(Fleets.lead(s, f).is_moving(), "below ai_attack_ratio")
@@ -137,7 +137,7 @@ func test_convoy_losses_start_patrol_and_escort() -> void:
 func test_beyond_the_minimum_only_while_threatened() -> void:
 	var s := _match()
 	_second_yard(s)
-	_fleet(s, _home_sys(s), 2)  # ai_min_ships already met
+	_fleet(s, _home_sys(s), 2)  # ai_min_fleet_value already met
 	_ai(s).credit_net = 200000  # room in the upkeep budget
 	var r: CombatRulesDef = _db.get_def(CombatRulesDef.ID)
 	assert_false(MilitaryAutopilot.threatened(s, _ai(s).id, r))

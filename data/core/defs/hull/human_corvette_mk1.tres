@@ -21,18 +21,18 @@ hardpoint = &"HP_D_S_01"
 script = ExtResource("2_4vio1")
 species = &"core:species/human"
 hull_class = &"corvette"
-hull = 300
+hull = 270
 armor = 20
 shield = 60
 evasion = 300
 speed = 8
 slots = Array[ExtResource("3_7f4r2")]([SubResource("Resource_hrftt"), SubResource("Resource_uqlnb"), SubResource("Resource_k0876")])
 cost = {
-&"core:resource/alloys": 60,
-&"core:resource/components": 10
+&"core:resource/alloys": 72,
+&"core:resource/components": 12
 }
 build_days = 45
 model = "assets/models/ships/human_corvette_mk1.glb"
-credit_upkeep_milli = 1000
+credit_upkeep_milli = 1200
 id = &"core:hull/human_corvette_mk1"
 name_key = "HULL_HUMAN_CORVETTE_MK1"

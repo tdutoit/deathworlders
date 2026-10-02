@@ -33,18 +33,18 @@ script = ExtResource("2_xoeh0")
 model = "assets/models/ships/human_destroyer_mk1.glb"
 species = &"core:species/human"
 hull_class = &"destroyer"
-hull = 700
+hull = 630
 armor = 40
 shield = 150
 evasion = 150
 speed = 7
 slots = Array[ExtResource("3_6vw5r")]([SubResource("Resource_b8nfx"), SubResource("Resource_7ctdv"), SubResource("Resource_suqdk"), SubResource("Resource_xwwk7"), SubResource("Resource_10rqt")])
 cost = {
-&"core:resource/alloys": 140,
-&"core:resource/components": 30
+&"core:resource/alloys": 168,
+&"core:resource/components": 36
 }
 build_days = 75
 size = &"M"
-credit_upkeep_milli = 2000
+credit_upkeep_milli = 2400
 id = &"core:hull/human_destroyer_mk1"
 name_key = "HULL_HUMAN_DESTROYER_MK1"

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ModifierKeyDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_jn0va"]
+[ext_resource type="Script" path="res://sim/defs/modifier_key_def.gd" id="2_ubgxj"]
+
+[resource]
+script = ExtResource("2_ubgxj")
+scope = 1
+id = &"core:modifier_key/empire.ally_opinion"
+name_key = "MODKEY_EMPIRE_ALLY_OPINION"

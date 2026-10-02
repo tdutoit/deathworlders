@@ -8,6 +8,25 @@ rules (CLAUDE.md), same tooling.*
 
 **Change log**
 - 2026-10-02: plan created. Scope decisions below agreed with the project owner.
+- 2026-10-02 (WP1, owner decisions): traits as proposed (open question 4 settled): Vess'kar Ancient Science
+  (energy damage +100‰, shield regen +100‰) and Long-Lived (growth −250‰, stability +5); Krothi Swarm
+  Doctrine (corvettes/frigates and fighters +100 accuracy), Ravenous (growth +500‰, food upkeep +250‰) and
+  Expendable (morale loss x0.8); Ohlan Merchant Princes (Clerk output +150‰) and Missile Doctrine (missile
+  accuracy +100, ECM +50 per suite); Thessari Shield Masters (shields +150‰), Steadfast Defenders (defensive
+  platforms +200‰ hull) and Reluctant Warriors (war exhaustion +50%, stability +5); humans as specced, plus
+  Pack Bonding (ally opinion growth +50%, used from WP3). Species balance target and the hull and design
+  changes that meet it: Sub-spec A change log. The designer's prediction now plays each side's species.
+- 2026-10-02 (WP1, owner decisions): cost-aware AI fleets: a species' ship credit upkeep follows its cost
+  premium (humans x1.2, Krothi x0.91 of B10), and the AI's minimum defence fleet is a battle value
+  (`combat_rules.ai_min_fleet_value` 2300, about two base-cost destroyers) instead of a ship count, so a
+  species with pricier ships keeps fewer of them. B20 stays species-neutral like A14: `economy_harness.gd`
+  runs with traits switched off by default (mode `neutral`); mode `species` keeps traits on and requires each
+  species to meet B20 in at least half its empires. A `first` argument runs long checks in chunks.
+  Results (20 seeds, small, 4 AIs): neutral 60 of 80 (M3 accepted 65; M3's own runs ranged 60-66); species
+  58 of 80 with humans 18, Krothi 16, Vess'kar 16 and Thessari 8 of 20 after widening Thessari habitability
+  (ocean 800, desert 600; was 5 of 20). Thessari miss the species floor: most failing empires stop at exactly
+  5 colonies, which points at the AI's expansion gates rather than the species data. Carried to WP10 (the
+  strategic loop reworks expansion) and WP14 (economy targets), together with the neutral 60 vs 65.
 
 ---
 

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TraitDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_046xs"]
+[ext_resource type="Script" path="res://sim/defs/trait_def.gd" id="2_y32no"]
+
+[sub_resource type="Resource" id="Resource_cxx18"]
+script = ExtResource("1_046xs")
+key = &"empire.salvage"
+mode = 1
+value = 500
+scope = 1
+
+[resource]
+script = ExtResource("2_y32no")
+id = &"core:trait/human_improvisers"
+name_key = "TRAIT_HUMAN_IMPROVISERS"
+desc_key = "TRAIT_HUMAN_IMPROVISERS_DESC"
+modifiers = Array[ExtResource("1_046xs")]([SubResource("Resource_cxx18")])

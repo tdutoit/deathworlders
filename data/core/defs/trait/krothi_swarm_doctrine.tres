@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="TraitDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_edlbx"]
+[ext_resource type="Script" path="res://sim/defs/trait_def.gd" id="2_1gv4f"]
+
+[sub_resource type="Resource" id="Resource_jodlh"]
+script = ExtResource("1_edlbx")
+key = &"ship.accuracy"
+value = 100
+scope = 5
+condition = {
+"hull_class": ["corvette", "frigate"]
+}
+
+[sub_resource type="Resource" id="Resource_yg7av"]
+script = ExtResource("1_edlbx")
+key = &"ship.accuracy.fighter"
+value = 100
+scope = 5
+
+[resource]
+script = ExtResource("2_1gv4f")
+id = &"core:trait/krothi_swarm_doctrine"
+name_key = "TRAIT_KROTHI_SWARM_DOCTRINE"
+desc_key = "TRAIT_KROTHI_SWARM_DOCTRINE_DESC"
+modifiers = Array[ExtResource("1_edlbx")]([SubResource("Resource_jodlh"), SubResource("Resource_yg7av")])

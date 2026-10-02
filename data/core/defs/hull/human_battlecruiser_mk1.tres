@@ -52,20 +52,20 @@ script = ExtResource("2_gqvtc")
 model = "assets/models/ships/human_battlecruiser_mk1.glb"
 species = &"core:species/human"
 hull_class = &"battlecruiser"
-hull = 2200
+hull = 1980
 armor = 80
 shield = 350
 evasion = 60
 speed = 6
 slots = Array[ExtResource("3_et78y")]([SubResource("Resource_veoq2"), SubResource("Resource_226a2"), SubResource("Resource_jvibr"), SubResource("Resource_mrx0i"), SubResource("Resource_7vlbc"), SubResource("Resource_jakkh"), SubResource("Resource_12tdn"), SubResource("Resource_h1fye")])
 cost = {
-&"core:resource/alloys": 420,
-&"core:resource/components": 100,
-&"core:resource/rare_earths": 20
+&"core:resource/alloys": 504,
+&"core:resource/components": 120,
+&"core:resource/rare_earths": 24
 }
 build_days = 180
 size = &"L"
 shipyard_size = &"M"
-credit_upkeep_milli = 6000
+credit_upkeep_milli = 7200
 id = &"core:hull/human_battlecruiser_mk1"
 name_key = "HULL_HUMAN_BATTLECRUISER_MK1"

@@ -28,6 +28,16 @@
   used for standard designs, platforms and pirates) and `combat_rules`. Stations gain function `defence`
   with the `design` it fights with. Schema: field type `int_list` (options min/max per item, `size`) and
   `id_list` option `allow_empty`. IDs: `core:hull/<species>_<class>_mk1`, `core:design/<species>_<class>_standard`.
+- 2026-10-02 (M4 WP1) C3: `SpeciesDef` gains `traits[]` (trait IDs), `ai_personality{}` (the seven E11
+  weights, 0-100), `personality_key`, `affinity{species: -100..100}` (E2) and `signature_mechanic` (name).
+  New category `trait` (TraitDef: a named bundle of modifiers; SHIP-scope modifiers apply to the owner's
+  ships and armed stations and may carry the condition `{"hull_class": [...]}`, EMPIRE-scope ones to the
+  owning empire, PLANET-scope ones to colonies whose pops are mostly of that species). New modifier keys:
+  `ship.hull`, `ship.shield_regen`, `ship.damage.<family>`, `ship.accuracy`, `ship.accuracy.<family>`,
+  `ship.ecm_strength`, `empire.morale_resist`, `empire.last_stand`, `empire.pursuit_rounds`,
+  `empire.pursuit_accuracy`, `empire.salvage`, `empire.war_exhaustion`, `empire.ally_opinion`,
+  `planet.food_upkeep`, `job.output.clerk`. `planet.stability` (declared since M2) is now read by the
+  stability rule.
 
 ---
 

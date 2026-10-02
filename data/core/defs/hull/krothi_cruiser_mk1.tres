@@ -52,14 +52,14 @@ evasion = 80
 speed = 5
 slots = Array[ExtResource("3_04qkh")]([SubResource("Resource_03fp4"), SubResource("Resource_ub8mp"), SubResource("Resource_qsiod"), SubResource("Resource_7bn34"), SubResource("Resource_h6osg"), SubResource("Resource_o4l7p"), SubResource("Resource_5oqw1")])
 cost = {
-&"core:resource/alloys": 169,
-&"core:resource/components": 39,
-&"core:resource/rare_earths": 6
+&"core:resource/alloys": 236,
+&"core:resource/components": 54,
+&"core:resource/rare_earths": 8
 }
 build_days = 120
 model = "assets/models/ships/human_cruiser_mk1.glb"
 size = &"M"
 shipyard_size = &"M"
-credit_upkeep_milli = 4000
+credit_upkeep_milli = 3640
 id = &"core:hull/krothi_cruiser_mk1"
 name_key = "HULL_KROTHI_CRUISER_MK1"

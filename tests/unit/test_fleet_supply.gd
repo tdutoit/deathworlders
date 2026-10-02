@@ -96,10 +96,10 @@ func test_out_of_supply_attrition_after_30_days() -> void:
 	var u := _ship(s, "cruiser", far)
 	for d in 30:
 		FleetSupply.day_tick(s)
-	assert_eq(u.hp, 1500, "30 days of grace")
+	assert_eq(u.hp, 1485, "30 days of grace (1350 + 10% Deathworlder)")
 	assert_eq(u.unsupplied_days, 30)
 	FleetSupply.day_tick(s)
-	assert_eq(u.hp, 1500 - 15, "then 1% of hull a day")
+	assert_eq(u.hp, 1485 - 14, "then 1% of hull a day")
 
 
 func test_attrition_can_destroy_a_ship() -> void:
@@ -120,12 +120,12 @@ func test_docked_repair_costs_alloys() -> void:
 	_dock(s).stockpile.add(ALLOYS, 100 * 1000)
 	var before := _dock(s).stockpile.milli(ALLOYS)
 	FleetSupply.day_tick(s)
-	assert_eq(u.hp, 1000 + 75, "5% of 1500 a day at a shipyard")
-	assert_eq(before - _dock(s).stockpile.milli(ALLOYS), 4 * 1000, "75 hull at 20 per alloy, rounded up")
+	assert_eq(u.hp, 1000 + 74, "5% of 1485 a day at a shipyard")
+	assert_eq(before - _dock(s).stockpile.milli(ALLOYS), 4 * 1000, "74 hull at 20 per alloy, rounded up")
 	assert_gt(u.armor, 70, "armour comes back with the hull")
-	u.hp = 1490
+	u.hp = 1480
 	FleetSupply.day_tick(s)
-	assert_eq(u.hp, 1500)
+	assert_eq(u.hp, 1485)
 	assert_eq(u.armor, 140, "full hull, full armour")
 
 
@@ -134,7 +134,7 @@ func test_field_repair_in_supply_range() -> void:
 	var u := _ship(s, "cruiser", _at(s, 1))  # the capital colony supplies 1 lane out
 	u.hp = 1000
 	FleetSupply.day_tick(s)
-	assert_eq(u.hp, 1015, "1% a day in the field")
+	assert_eq(u.hp, 1014, "1% of 1485 a day in the field")
 	assert_eq(u.unsupplied_days, 0)
 
 
@@ -145,5 +145,5 @@ func test_shields_refill_and_no_repair_while_moving() -> void:
 	u.hp = 1000
 	u.path = [_at(s, 1)] as Array[int]
 	FleetSupply.day_tick(s)
-	assert_eq(u.shield, 450, "shields refill outside battle")
+	assert_eq(u.shield, 200, "shields refill outside battle (standard human cruiser: no generator since M4)")
 	assert_eq(u.hp, 1000, "no repair while moving")

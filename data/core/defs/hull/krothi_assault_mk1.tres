@@ -35,11 +35,11 @@ evasion = 150
 speed = 7
 slots = Array[ExtResource("3_bidtg")]([SubResource("Resource_vuty8"), SubResource("Resource_fg5lb"), SubResource("Resource_ix3je"), SubResource("Resource_67nbg")])
 cost = {
-&"core:resource/alloys": 91,
-&"core:resource/components": 19
+&"core:resource/alloys": 127,
+&"core:resource/components": 26
 }
 build_days = 75
 size = &"M"
-credit_upkeep_milli = 2000
+credit_upkeep_milli = 1820
 id = &"core:hull/krothi_assault_mk1"
 name_key = "HULL_KROTHI_ASSAULT_MK1"

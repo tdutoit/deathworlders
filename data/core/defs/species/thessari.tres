@@ -10,12 +10,31 @@ habitability = {
 &"core:planet_type/arctic": 600,
 &"core:planet_type/barren": 200,
 &"core:planet_type/deathworld": 100,
-&"core:planet_type/desert": 500,
-&"core:planet_type/ocean": 700,
+&"core:planet_type/desert": 600,
+&"core:planet_type/ocean": 800,
 &"core:planet_type/terran": 1000,
 &"core:planet_type/toxic": 300
 }
 home_template = &"standard"
 home_planet_type = &"core:planet_type/terran"
+traits = Array[StringName]([&"core:trait/thessari_shield_masters", &"core:trait/thessari_steadfast_defenders", &"core:trait/thessari_reluctant_warriors"])
+ai_personality = {
+&"aggression": 10,
+&"ambition": 40,
+&"caution": 85,
+&"expansion": 30,
+&"greed": 20,
+&"honour": 90,
+&"xenophilia": 80
+}
+personality_key = "PERSONALITY_THESSARI"
+affinity = {
+&"core:species/human": 0,
+&"core:species/krothi": -25,
+&"core:species/ohlan": 0,
+&"core:species/thessari": 20,
+&"core:species/vesskar": 15
+}
+signature_mechanic = &"sanctuary"
 id = &"core:species/thessari"
 name_key = "SPECIES_THESSARI"

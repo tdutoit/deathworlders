@@ -6,6 +6,6 @@
 [resource]
 script = ExtResource("2_6hueo")
 hull = &"core:hull/ohlan_battleship_mk1"
-components = Array[StringName]([&"core:component/autocannon_s", &"core:component/autocannon_s", &"core:component/railgun_m", &"core:component/railgun_m", &"core:component/mass_driver_l", &"core:component/armor_plate", &"core:component/armor_plate", &"core:component/shield_gen", &"", &""])
+components = Array[StringName]([&"core:component/autocannon_s", &"core:component/autocannon_s", &"core:component/missile_pod_m", &"core:component/railgun_m", &"core:component/mass_driver_l", &"core:component/armor_plate", &"core:component/armor_plate", &"core:component/ecm_suite", &"", &""])
 id = &"core:design/ohlan_battleship_standard"
 name_key = "DESIGN_BATTLESHIP_STANDARD"

@@ -34,10 +34,10 @@ evasion = 200
 speed = 7
 slots = Array[ExtResource("3_cuvoi")]([SubResource("Resource_8t8kt"), SubResource("Resource_de748"), SubResource("Resource_atwul"), SubResource("Resource_h2gik")])
 cost = {
-&"core:resource/alloys": 58,
-&"core:resource/components": 9
+&"core:resource/alloys": 81,
+&"core:resource/components": 12
 }
 build_days = 60
-credit_upkeep_milli = 1500
+credit_upkeep_milli = 1365
 id = &"core:hull/krothi_frigate_mk1"
 name_key = "HULL_KROTHI_FRIGATE_MK1"

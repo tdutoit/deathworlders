@@ -48,9 +48,9 @@ func _fleets(s: MatchState) -> Array:
 func test_commissioned_ships_join_the_system_reserve() -> void:
 	var s := _match()
 	var a := _ship(s, "cruiser")
-	assert_eq(a.hp, 1500)
+	assert_eq(a.hp, 1485, "1350 + 10% (human Deathworlder)")
 	assert_eq(a.armor, 60 + 80)
-	assert_eq(a.shield, 200 + 250)
+	assert_eq(a.shield, 200, "the M4 standard cruiser carries point defence, not a shield generator")
 	assert_eq(a.crew, 40)
 	assert_ne(a.fleet, StateIO.NONE)
 	var b := _ship(s, "corvette")
@@ -160,7 +160,7 @@ func test_fractional_ship_upkeep() -> void:
 	for u: Unit in s.units.values():
 		if u.owner == _human(s).id and u.kind == "freighter":
 			freighters += 1000 * int((_db.get_def(StringName(u.hull_id)) as HullDef).upkeep.get(&"core:resource/credits", 0))
-	assert_eq(due[_human(s).id] - freighters, 1500, "B10: a frigate costs 1.5 credits a month")
+	assert_eq(due[_human(s).id] - freighters, 1800, "B10: a frigate costs 1.5 credits a month, x1.2 for humans (M4 WP1)")
 
 
 func test_fleets_survive_save_and_load() -> void:
@@ -171,4 +171,4 @@ func test_fleets_survive_save_and_load() -> void:
 	var back := MatchState.from_dict(s.to_dict())
 	assert_eq(back.checksum(), s.checksum())
 	assert_eq((back.fleets.get_or(a.fleet) as Fleet).range_pref, "close")
-	assert_eq((back.units.get_or(a.id) as Unit).hp, 1500)
+	assert_eq((back.units.get_or(a.id) as Unit).hp, 1485)

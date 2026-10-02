@@ -1,7 +1,8 @@
 class_name PlanetMods
 extends RefCounted
 ## Modifier sums for one colony (Sub-spec C4): from its buildings (not the one on strike), employed jobs
-## (per pop), Primary focus, Secondary focus (at the rules' share) and the matching synergy.
+## (per pop), Primary focus, Secondary focus (at the rules' share), the matching synergy and the PLANET-scope
+## traits of the species most of its pops belong to.
 ## Built once per colony per tick: get(key) -> [add, permille].
 
 var _sums := {}  # key -> [add, permille]
@@ -13,11 +14,15 @@ var caps := {}  # resource ID -> stockpile cap (milli), filled by Economy.cap_mi
 
 static func of(c: Colony, db: DefDatabase) -> PlanetMods:
 	# Memoised on the colony: the sums depend only on these inputs (and on the frozen content).
-	var key := [c.buildings, c.offline_building, c.primary_focus, c.secondary_focus, c.jobs, db]
+	var species := SpeciesTraits.dominant(c)
+	var key := [c.buildings, c.offline_building, c.primary_focus, c.secondary_focus, c.jobs, db, species]
 	if not c.mods_cache.is_empty() and c.mods_cache[0] == key:
 		return c.mods_cache[1]
 	var m := _build(c, db)
-	c.mods_cache = [[c.buildings.duplicate(), c.offline_building, c.primary_focus, c.secondary_focus, c.jobs.duplicate(), db], m]
+	var traits: Array[ModifierDef] = []
+	traits.assign(SpeciesTraits.modifiers(db, species, ModifierDef.Scope.PLANET))
+	m._add_all(traits, 1, 1000)  # species traits of the colony's main species (M4 WP1)
+	c.mods_cache = [[c.buildings.duplicate(), c.offline_building, c.primary_focus, c.secondary_focus, c.jobs.duplicate(), db, species], m]
 	return m
 
 

@@ -24,6 +24,20 @@
   Close; battles average 10 rounds. **Owner decision:** A14's "a hard counter holds to ~1.25× cost" conflicts
   with 70–85% at equal cost under A4–A10 (Lanchester; known issue 1): at 4 vs 5 the counter wins ~4%. It is
   report-only for M3 and revisited in M4 (species traits, morale).
+- 2026-10-02 (M4 WP1, owner decisions): species traits apply as A13 modifiers of the ship owner's species
+  (traits follow the crew: a captured ship fights with its captor's traits). Humans: kinetic damage +100‰,
+  hull +100‰ (Deathworlder), Stubborn = morale loss x0.7 (`empire.morale_resist` 300 in the code's
+  `1000 − resist` form), Last Stand (`combat_rules`: trigger morale 300 while outnumbered by
+  `outnumbered_ratio`, +150‰ damage, morale floor 100 and no morale retreat roll for 6 rounds, once per
+  battle), Persistence Hunters (+250‰ accuracy against disengaging ships, +1 pursuit round), Improvisers
+  (salvage +50%). Other species' traits per the M4 plan (owner-approved placeholders). Species balance
+  target (owner): each species' standard cruiser averages 40-60% against the others at exactly equal cost
+  (interpolated between neighbouring ship counts), no pairing worse than 25/75. Met by scaling the M3 hull
+  variations: humans hull x0.9 and cost x1.2 (A2's human values are now 1350 hull / 312 alloys for the
+  cruiser), Vess'kar hull x1.3 and shield x1.6, Krothi cost x1.4, Thessari hull x1.15, and by giving the
+  standard designs point defence (humans and Krothi swap the shield generator for it; Vess'kar and Thessari
+  carry lasers with one railgun, a shield and point defence; Ohlan one missile pod and ECM). The A14 checks
+  now run species-neutral (no trait modifiers); the combat harness adds the species matrix as a check.
 
 ---
 

@@ -8,7 +8,7 @@ extends RefCounted
 ##      most, once losses reach ai_loss_trigger; drop the patrol when the losses stop;
 ##   4. once it has Autopilot.MIN_SHIPYARDS shipyards, at an idle one (never ahead of colony ships or freighters), build its species' standard designs (ai_build_classes,
 ##      in turn) while warship credit upkeep is under ai_military_share of the credit net before it, or the
-##      fleet is under ai_min_ships.
+##      fleet's battle value is under ai_min_fleet_value (cost-aware: pricier ships, fewer of them; M4 WP1).
 ## No offensives (M4). Orders go through Commands' validate/apply, like the economic autopilot.
 
 
@@ -144,13 +144,15 @@ static func _build(state: MatchState, eid: int, r: CombatRulesDef) -> void:
 			yards += 1
 	if yards < Autopilot.MIN_SHIPYARDS:
 		return  # the economy's shipyards come first (B20)
-	var ships := 0
+	var ships := 0  # battle value of the fleet
+	var count := 0
 	var upkeep := 0
 	var queued := 0
 	for uid: int in state.units.ordered():
 		var u: Unit = state.units.get_or(uid)
 		if u.owner == eid and u.kind == "warship":
-			ships += 1
+			ships += Battles.cost_of(state, u.id)  # battle value, so pricier species build fewer ships
+			count += 1
 			upkeep += (state.defs.get_def(StringName(u.hull_id)) as HullDef).credit_upkeep_milli
 	for sid: int in state.stations.ordered():
 		var y: Station = state.stations.get_or(sid)
@@ -160,7 +162,7 @@ static func _build(state: MatchState, eid: int, r: CombatRulesDef) -> void:
 		return  # one warship at a time
 	var e := state.empire(eid)
 	var budget := FixedMath.floor_div((e.credit_net + upkeep) * r.ai_military_share, 1000)
-	if ships >= r.ai_min_ships and (upkeep >= budget or not threatened(state, eid, r)):
+	if ships >= r.ai_min_fleet_value and (upkeep >= budget or not threatened(state, eid, r)):
 		return
 	var by_class := {}  # hull class -> own standard design ID
 	for did: int in state.designs.ordered():
@@ -171,7 +173,7 @@ static func _build(state: MatchState, eid: int, r: CombatRulesDef) -> void:
 				by_class[String(h.hull_class)] = d.id
 	var n := r.ai_build_classes.size()
 	for i in n:
-		var cls := String(r.ai_build_classes[posmod(ships + i, n)])
+		var cls := String(r.ai_build_classes[posmod(count + i, n)])
 		if not by_class.has(cls):
 			continue
 		for sid: int in state.stations.ordered():

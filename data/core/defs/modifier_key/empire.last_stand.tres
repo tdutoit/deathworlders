@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ModifierKeyDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_p04i1"]
+[ext_resource type="Script" path="res://sim/defs/modifier_key_def.gd" id="2_cng5k"]
+
+[resource]
+script = ExtResource("2_cng5k")
+scope = 1
+id = &"core:modifier_key/empire.last_stand"
+name_key = "MODKEY_EMPIRE_LAST_STAND"

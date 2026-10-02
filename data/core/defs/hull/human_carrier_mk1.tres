@@ -45,20 +45,20 @@ script = ExtResource("2_u3qyu")
 model = "assets/models/ships/human_carrier_mk1.glb"
 species = &"core:species/human"
 hull_class = &"carrier"
-hull = 2500
+hull = 2250
 armor = 80
 shield = 500
 evasion = 30
 speed = 4
 slots = Array[ExtResource("3_u2lqo")]([SubResource("Resource_hko07"), SubResource("Resource_2boah"), SubResource("Resource_4j4tq"), SubResource("Resource_2b4yd"), SubResource("Resource_23tho"), SubResource("Resource_sd54w")])
 cost = {
-&"core:resource/alloys": 550,
-&"core:resource/components": 150,
-&"core:resource/exotics": 10
+&"core:resource/alloys": 660,
+&"core:resource/components": 180,
+&"core:resource/exotics": 12
 }
 build_days = 240
 size = &"L"
 shipyard_size = &"M"
-credit_upkeep_milli = 8000
+credit_upkeep_milli = 9600
 id = &"core:hull/human_carrier_mk1"
 name_key = "HULL_HUMAN_CARRIER_MK1"

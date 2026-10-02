@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="TraitDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_4mexg"]
+[ext_resource type="Script" path="res://sim/defs/trait_def.gd" id="2_ynheo"]
+
+[sub_resource type="Resource" id="Resource_5na7a"]
+script = ExtResource("1_4mexg")
+key = &"planet.growth"
+mode = 1
+value = -250
+scope = 2
+
+[sub_resource type="Resource" id="Resource_j4sp3"]
+script = ExtResource("1_4mexg")
+key = &"planet.stability"
+value = 5
+scope = 2
+
+[resource]
+script = ExtResource("2_ynheo")
+id = &"core:trait/vesskar_long_lived"
+name_key = "TRAIT_VESSKAR_LONG_LIVED"
+desc_key = "TRAIT_VESSKAR_LONG_LIVED_DESC"
+modifiers = Array[ExtResource("1_4mexg")]([SubResource("Resource_5na7a"), SubResource("Resource_j4sp3")])

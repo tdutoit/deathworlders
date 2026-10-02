@@ -6,6 +6,6 @@
 [resource]
 script = ExtResource("2_18sd2")
 hull = &"core:hull/human_battleship_mk1"
-components = Array[StringName]([&"core:component/autocannon_s", &"core:component/autocannon_s", &"core:component/railgun_m", &"core:component/railgun_m", &"core:component/mass_driver_l", &"core:component/armor_plate", &"core:component/armor_plate", &"core:component/shield_gen", &"", &""])
+components = Array[StringName]([&"core:component/autocannon_s", &"core:component/autocannon_s", &"core:component/railgun_m", &"core:component/railgun_m", &"core:component/mass_driver_l", &"core:component/armor_plate", &"core:component/armor_plate", &"core:component/point_defence", &"", &""])
 id = &"core:design/human_battleship_standard"
 name_key = "DESIGN_BATTLESHIP_STANDARD"

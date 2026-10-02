@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="TraitDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_py7vn"]
+[ext_resource type="Script" path="res://sim/defs/trait_def.gd" id="2_5y0p3"]
+
+[sub_resource type="Resource" id="Resource_77djl"]
+script = ExtResource("1_py7vn")
+key = &"empire.war_exhaustion"
+mode = 1
+value = 500
+scope = 1
+
+[sub_resource type="Resource" id="Resource_se6kp"]
+script = ExtResource("1_py7vn")
+key = &"planet.stability"
+value = 5
+scope = 2
+
+[resource]
+script = ExtResource("2_5y0p3")
+id = &"core:trait/thessari_reluctant_warriors"
+name_key = "TRAIT_THESSARI_RELUCTANT_WARRIORS"
+desc_key = "TRAIT_THESSARI_RELUCTANT_WARRIORS_DESC"
+modifiers = Array[ExtResource("1_py7vn")]([SubResource("Resource_77djl"), SubResource("Resource_se6kp")])

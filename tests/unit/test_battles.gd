@@ -255,7 +255,7 @@ func test_defence_platform_fights() -> void:
 	st.operational = true
 	s.stations.put(st.id, st)
 	Battles.arm_station(s, st)
-	assert_eq(st.hp, 1200)
+	assert_eq(st.hp, 1320, "1200 + 10% (human Deathworlder, M4)")
 	_ship(s, e[1], "corvette", home.system_id)
 	_run(s, 1)
 	var b: Battle = s.battles.values()[0]

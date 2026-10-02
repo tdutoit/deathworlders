@@ -42,29 +42,31 @@ func test_every_species_has_every_class_and_a_standard_design() -> void:
 			assert_eq(DesignDef.check_fit(h, d.components, _db), [] as Array[String], "%s %s design fits" % [sp, cls])
 
 
+## A2/B10 values with the M4 WP1 species balance applied (human hull x0.9, cost x1.2; owner 2026-10-02).
 func test_human_hulls_match_a2_and_b10() -> void:
 	var c := _hull("human", "cruiser")
-	assert_eq([c.hull, c.armor, c.shield, c.evasion, c.speed], [1500, 60, 200, 80, 5])
+	assert_eq([c.hull, c.armor, c.shield, c.evasion, c.speed], [1350, 60, 200, 80, 5])
 	assert_eq(c.size, &"M")
 	assert_eq(c.shipyard_size, &"M")
-	assert_eq(c.cost[&"core:resource/alloys"], 260)
-	assert_eq(c.cost[&"core:resource/rare_earths"], 10)
+	assert_eq(c.cost[&"core:resource/alloys"], 312)
+	assert_eq(c.cost[&"core:resource/rare_earths"], 12)
 	assert_eq(c.build_days, 120)
-	assert_eq(c.credit_upkeep_milli, 4000)
+	assert_eq(c.credit_upkeep_milli, 4800, "B10 4 credits, x1.2 with the human cost premium (M4 WP1)")
 	assert_eq(c.slots.size(), 7, "1S 2M · 2D · 1U · 1C")
 	var bb := _hull("human", "battleship")
-	assert_eq([bb.hull, bb.armor, bb.shield, bb.size, bb.shipyard_size], [4000, 150, 800, &"XL", &"L"])
-	assert_eq(_hull("human", "frigate").credit_upkeep_milli, 1500, "B10's 1.5 credits")
+	assert_eq([bb.hull, bb.armor, bb.shield, bb.size, bb.shipyard_size], [3600, 150, 800, &"XL", &"L"])
+	assert_eq(_hull("human", "frigate").credit_upkeep_milli, 1800, "B10's 1.5 credits x1.2 (M4 WP1)")
 
 
 func test_species_variations() -> void:
+	# M3 variations on the A2 cruiser (hull 1500, shield 200, 260 alloys), then the M4 WP1 species balance.
 	var human := _hull("human", "cruiser")
 	var vess := _hull("vesskar", "cruiser")
-	assert_eq(vess.shield, human.shield * 1400 / 1000, "Vess'kar shields +40%")
-	assert_eq(vess.hull, human.hull * 750 / 1000, "Vess'kar hull -25%")
+	assert_eq(vess.shield, 200 * 1400 / 1000 * 1600 / 1000, "Vess'kar shields +40%, then x1.6")
+	assert_eq(vess.hull, 1500 * 750 / 1000 * 1300 / 1000, "Vess'kar hull -25%, then x1.3")
 	var krothi := _hull("krothi", "cruiser")
-	assert_eq(krothi.hull, human.hull * 800 / 1000, "Krothi hull -20%")
-	assert_eq(krothi.cost[&"core:resource/alloys"], 260 * 650 / 1000, "Krothi cost -35%")
+	assert_eq(krothi.hull, 1500 * 800 / 1000, "Krothi hull -20%")
+	assert_eq(krothi.cost[&"core:resource/alloys"], 260 * 650 / 1000 * 1400 / 1000, "Krothi cost -35%, then x1.4")
 	assert_eq(_hull("thessari", "cruiser").armor, human.armor * 1300 / 1000, "Thessari armour +30%")
 	assert_eq(_hull("thessari", "cruiser").speed, human.speed - 1)
 	assert_eq(_hull("ohlan", "cruiser").evasion, human.evasion + 100, "Ohlan evasion +100")

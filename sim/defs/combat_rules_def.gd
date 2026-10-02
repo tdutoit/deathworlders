@@ -62,6 +62,11 @@ const VETERANCY: Array[String] = ["green", "regular", "veteran", "elite"]
 @export var out_of_supply_accuracy: int
 @export var attrition_after_days: int
 @export var attrition_per_day: int  # permille of hull_max
+# Last Stand (A10; species with empire.last_stand): outnumbered by outnumbered_ratio and morale below the trigger
+@export var last_stand_trigger_morale: int
+@export var last_stand_damage: int  # permille damage bonus while it lasts
+@export var last_stand_morale_floor: int
+@export var last_stand_rounds: int
 # Crew and ammunition placeholders (owner, 2026-10-01; A2 has none)
 @export var crew_by_size: Dictionary = {}  # hull size -> crew
 @export var ammo_per_weapon: int  # ammo_max per ammo-using weapon
@@ -79,7 +84,7 @@ const VETERANCY: Array[String] = ["green", "regular", "veteran", "elite"]
 # Defensive autopilot for AI slots (M3 WP10 placeholders)
 @export var ai_build_classes: Array[StringName] = []  # hull classes built in turn (unbuildable ones skipped)
 @export var ai_military_share: int  # warship credit upkeep allowed, permille of the credit net before it
-@export var ai_min_ships: int  # warships kept whatever the budget (while the economy may expand)
+@export var ai_min_fleet_value: int  # battle value (A1 cost) of warships kept whatever the budget (while the economy may expand)
 @export var ai_attack_ratio: int  # engage a threat with at least this battle value, permille of its own
 @export var ai_loss_months: int  # convoy losses this recent count
 @export var ai_loss_trigger: int  # recent losses that start a patrol and an escort
@@ -101,7 +106,8 @@ const _INTS: Array[String] = ["hit_min", "hit_max", "variance_min", "variance_ma
 	"xp_per_round", "xp_per_kill", "out_of_supply_accuracy", "attrition_after_days", "attrition_per_day",
 	"ammo_per_weapon", "squadron_max", "task_force_squadrons", "fleet_task_forces", "ammo_per_munition",
 	"repair_docked", "repair_field", "repair_hull_per_alloy", "escort_raid", "patrol_security", "patrol_wait_hours",
-	"ai_military_share", "ai_min_ships", "ai_attack_ratio", "ai_loss_months", "ai_loss_trigger"]
+	"ai_military_share", "ai_min_fleet_value", "ai_attack_ratio", "ai_loss_months", "ai_loss_trigger",
+	"last_stand_trigger_morale", "last_stand_damage", "last_stand_morale_floor", "last_stand_rounds"]
 
 
 func category() -> String:

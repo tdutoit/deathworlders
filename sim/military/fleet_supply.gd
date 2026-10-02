@@ -33,7 +33,7 @@ static func day_tick(state: MatchState) -> void:
 		var key := "%d:%d" % [u.owner, u.system_id]
 		if not sources_at.has(key):
 			sources_at[key] = Supply.sources_at(state, points.get(u.owner, []), u.system_id)
-		var st := ShipStats.cached(state.defs, u.hull_id, u.components)
+		var st := ShipStats.cached(state.defs, u.hull_id, u.components, SpeciesTraits.species_of(state, u.owner))
 		var sources: Array = sources_at[key]
 		var in_supply := not sources.is_empty() and not u.is_moving()
 		if not sources.is_empty():

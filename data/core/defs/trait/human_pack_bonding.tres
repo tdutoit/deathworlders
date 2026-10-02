@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TraitDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_u1adu"]
+[ext_resource type="Script" path="res://sim/defs/trait_def.gd" id="2_pa1sj"]
+
+[sub_resource type="Resource" id="Resource_b85ki"]
+script = ExtResource("1_u1adu")
+key = &"empire.ally_opinion"
+mode = 1
+value = 500
+scope = 1
+
+[resource]
+script = ExtResource("2_pa1sj")
+id = &"core:trait/human_pack_bonding"
+name_key = "TRAIT_HUMAN_PACK_BONDING"
+desc_key = "TRAIT_HUMAN_PACK_BONDING_DESC"
+modifiers = Array[ExtResource("1_u1adu")]([SubResource("Resource_b85ki")])

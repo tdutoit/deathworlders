@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TraitDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_0jnwe"]
+[ext_resource type="Script" path="res://sim/defs/trait_def.gd" id="2_abtgl"]
+
+[sub_resource type="Resource" id="Resource_mu760"]
+script = ExtResource("1_0jnwe")
+key = &"ship.shield"
+mode = 1
+value = 150
+scope = 5
+
+[resource]
+script = ExtResource("2_abtgl")
+id = &"core:trait/thessari_shield_masters"
+name_key = "TRAIT_THESSARI_SHIELD_MASTERS"
+desc_key = "TRAIT_THESSARI_SHIELD_MASTERS_DESC"
+modifiers = Array[ExtResource("1_0jnwe")]([SubResource("Resource_mu760")])

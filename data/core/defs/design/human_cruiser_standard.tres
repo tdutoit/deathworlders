@@ -6,6 +6,6 @@
 [resource]
 script = ExtResource("2_rkjot")
 hull = &"core:hull/human_cruiser_mk1"
-components = Array[StringName]([&"core:component/autocannon_s", &"core:component/railgun_m", &"core:component/railgun_m", &"core:component/armor_plate", &"core:component/shield_gen", &"", &""])
+components = Array[StringName]([&"core:component/autocannon_s", &"core:component/railgun_m", &"core:component/railgun_m", &"core:component/armor_plate", &"core:component/point_defence", &"", &""])
 id = &"core:design/human_cruiser_standard"
 name_key = "DESIGN_CRUISER_STANDARD"

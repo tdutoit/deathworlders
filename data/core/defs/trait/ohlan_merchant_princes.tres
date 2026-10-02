@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TraitDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_3ckdf"]
+[ext_resource type="Script" path="res://sim/defs/trait_def.gd" id="2_3chqj"]
+
+[sub_resource type="Resource" id="Resource_tbvxa"]
+script = ExtResource("1_3ckdf")
+key = &"job.output.clerk"
+mode = 1
+value = 150
+scope = 2
+
+[resource]
+script = ExtResource("2_3chqj")
+id = &"core:trait/ohlan_merchant_princes"
+name_key = "TRAIT_OHLAN_MERCHANT_PRINCES"
+desc_key = "TRAIT_OHLAN_MERCHANT_PRINCES_DESC"
+modifiers = Array[ExtResource("1_3ckdf")]([SubResource("Resource_tbvxa")])

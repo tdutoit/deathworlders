@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TraitDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_o8pk0"]
+[ext_resource type="Script" path="res://sim/defs/trait_def.gd" id="2_gqnkd"]
+
+[sub_resource type="Resource" id="Resource_h1t8t"]
+script = ExtResource("1_o8pk0")
+key = &"ship.damage.kinetic"
+mode = 1
+value = 100
+scope = 5
+
+[resource]
+script = ExtResource("2_gqnkd")
+id = &"core:trait/human_kinetic_doctrine"
+name_key = "TRAIT_HUMAN_KINETIC_DOCTRINE"
+desc_key = "TRAIT_HUMAN_KINETIC_DOCTRINE_DESC"
+modifiers = Array[ExtResource("1_o8pk0")]([SubResource("Resource_h1t8t")])

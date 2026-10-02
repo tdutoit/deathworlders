@@ -28,11 +28,11 @@ evasion = 300
 speed = 8
 slots = Array[ExtResource("3_32c6w")]([SubResource("Resource_1c7ps"), SubResource("Resource_ac5aj"), SubResource("Resource_s16xn")])
 cost = {
-&"core:resource/alloys": 39,
-&"core:resource/components": 6
+&"core:resource/alloys": 54,
+&"core:resource/components": 8
 }
 build_days = 45
 model = "assets/models/ships/human_corvette_mk1.glb"
-credit_upkeep_milli = 1000
+credit_upkeep_milli = 910
 id = &"core:hull/krothi_corvette_mk1"
 name_key = "HULL_KROTHI_CORVETTE_MK1"

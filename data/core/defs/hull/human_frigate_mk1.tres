@@ -28,17 +28,17 @@ script = ExtResource("2_yonep")
 model = "assets/models/ships/human_frigate_mk1.glb"
 species = &"core:species/human"
 hull_class = &"frigate"
-hull = 500
+hull = 450
 armor = 30
 shield = 100
 evasion = 200
 speed = 7
 slots = Array[ExtResource("3_r1q6e")]([SubResource("Resource_jyndj"), SubResource("Resource_34df8"), SubResource("Resource_bgacp"), SubResource("Resource_wgr1j")])
 cost = {
-&"core:resource/alloys": 90,
-&"core:resource/components": 15
+&"core:resource/alloys": 108,
+&"core:resource/components": 18
 }
 build_days = 60
-credit_upkeep_milli = 1500
+credit_upkeep_milli = 1800
 id = &"core:hull/human_frigate_mk1"
 name_key = "HULL_HUMAN_FRIGATE_MK1"

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ModifierKeyDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_kb8ko"]
+[ext_resource type="Script" path="res://sim/defs/modifier_key_def.gd" id="2_imtun"]
+
+[resource]
+script = ExtResource("2_imtun")
+scope = 5
+id = &"core:modifier_key/ship.damage.kinetic"
+name_key = "MODKEY_SHIP_DAMAGE_KINETIC"

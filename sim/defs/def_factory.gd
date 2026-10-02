@@ -27,6 +27,7 @@ static var SCRIPTS := {  # class refs are not constant expressions
 	"component": ComponentDef,
 	"design": DesignDef,
 	"combat_rules": CombatRulesDef,
+	"trait": TraitDef,
 }
 
 const META_FIELDS: Array[String] = ["op", "category", "id"]

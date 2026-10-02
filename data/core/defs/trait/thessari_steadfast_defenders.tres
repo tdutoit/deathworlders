@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="TraitDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mevsc"]
+[ext_resource type="Script" path="res://sim/defs/trait_def.gd" id="2_xtgcl"]
+
+[sub_resource type="Resource" id="Resource_dv4hm"]
+script = ExtResource("1_mevsc")
+key = &"ship.hull"
+mode = 1
+value = 200
+scope = 5
+condition = {
+"hull_class": ["defence_platform"]
+}
+
+[resource]
+script = ExtResource("2_xtgcl")
+id = &"core:trait/thessari_steadfast_defenders"
+name_key = "TRAIT_THESSARI_STEADFAST_DEFENDERS"
+desc_key = "TRAIT_THESSARI_STEADFAST_DEFENDERS_DESC"
+modifiers = Array[ExtResource("1_mevsc")]([SubResource("Resource_dv4hm")])

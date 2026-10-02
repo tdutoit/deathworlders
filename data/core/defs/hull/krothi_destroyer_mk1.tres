@@ -39,11 +39,11 @@ evasion = 150
 speed = 7
 slots = Array[ExtResource("3_f5i8x")]([SubResource("Resource_j3tno"), SubResource("Resource_fu1bu"), SubResource("Resource_6r4ho"), SubResource("Resource_jitic"), SubResource("Resource_mo7wv")])
 cost = {
-&"core:resource/alloys": 91,
-&"core:resource/components": 19
+&"core:resource/alloys": 127,
+&"core:resource/components": 26
 }
 build_days = 75
 size = &"M"
-credit_upkeep_milli = 2000
+credit_upkeep_milli = 1820
 id = &"core:hull/krothi_destroyer_mk1"
 name_key = "HULL_KROTHI_DESTROYER_MK1"

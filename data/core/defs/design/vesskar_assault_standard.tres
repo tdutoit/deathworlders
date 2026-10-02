@@ -6,6 +6,6 @@
 [resource]
 script = ExtResource("2_6r7ii")
 hull = &"core:hull/vesskar_assault_mk1"
-components = Array[StringName]([&"core:component/autocannon_s", &"core:component/armor_plate", &"core:component/marine_barracks", &"core:component/marine_barracks"])
+components = Array[StringName]([&"core:component/pulse_laser_s", &"core:component/shield_gen", &"core:component/marine_barracks", &"core:component/marine_barracks"])
 id = &"core:design/vesskar_assault_standard"
 name_key = "DESIGN_ASSAULT_STANDARD"

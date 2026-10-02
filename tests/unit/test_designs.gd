@@ -49,7 +49,7 @@ func _shipyard(s: MatchState, eid: int) -> Station:
 
 func test_stats_sum_hull_and_modules() -> void:
 	var st := ShipStats.of(_db, CRUISER, [AC, RAIL, RAIL, ARMOR, SHIELD, "", ""])
-	assert_eq(st.hull, 1500)
+	assert_eq(st.hull, 1350, "A2 1500, x0.9 (M4 WP1 species balance); no species: no traits")
 	assert_eq(st.armor, 60 + 80, "Armour Plating +80 (A2)")
 	assert_eq(st.shield, 200 + 250, "Shield Generator +250 (A2)")
 	assert_eq(st.shield_regen, 50, "A1 default")
@@ -65,8 +65,8 @@ func test_stats_sum_hull_and_modules() -> void:
 
 func test_cost_is_hull_plus_components() -> void:
 	var c := ShipStats.cost(_db, CORVETTE, [AC, AC, ARMOR])
-	assert_eq(c["core:resource/alloys"], 60 + 10 + 10 + 20)
-	assert_eq(c["core:resource/components"], 10 + 5 + 5 + 5)
+	assert_eq(c["core:resource/alloys"], 72 + 10 + 10 + 20, "hull 60 x1.2 (M4 WP1)")
+	assert_eq(c["core:resource/components"], 12 + 5 + 5 + 5)
 
 
 func test_empires_start_with_their_species_standard_designs() -> void:
@@ -127,7 +127,7 @@ func test_build_a_design_at_a_shipyard() -> void:
 	var b: Construction = yard.ship_queue[-1]
 	assert_eq(b.design, corvette.id)
 	assert_eq(b.components, corvette.components)
-	assert_eq(b.cost["core:resource/alloys"], 100 * 1000, "hull + components, milli")
+	assert_eq(b.cost["core:resource/alloys"], 112 * 1000, "hull + components, milli")
 	# Editing the design afterwards doesn't change the queued ship.
 	_do(s, eid, CmdSaveDesign.TYPE, {"design": corvette.id, "name": "Changed", "hull": CORVETTE, "components": ["", "", ""]})
 	assert_eq(b.components[0], AC)

@@ -26,8 +26,8 @@ func test_core_hull_is_valid() -> void:
 	var hull: HullDef = loader.db.get_def(&"core:hull/human_corvette_mk1")
 	assert_eq(hull.slots.size(), 3)
 	assert_eq(hull.slots[2].slot_type, SlotDef.SlotType.DEFENCE)
-	assert_eq(hull.hull, 300)
-	assert_eq(hull.cost[&"core:resource/alloys"], 60)
+	assert_eq(hull.hull, 270, "A2 300 x0.9 (M4 WP1 species balance)")
+	assert_eq(hull.cost[&"core:resource/alloys"], 72, "60 x1.2 (M4 WP1)")
 
 
 func test_bad_hulls_fail_readably() -> void:

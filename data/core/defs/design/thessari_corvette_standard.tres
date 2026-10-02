@@ -6,6 +6,6 @@
 [resource]
 script = ExtResource("2_sy1c4")
 hull = &"core:hull/thessari_corvette_mk1"
-components = Array[StringName]([&"core:component/autocannon_s", &"core:component/autocannon_s", &"core:component/armor_plate"])
+components = Array[StringName]([&"core:component/pulse_laser_s", &"core:component/pulse_laser_s", &"core:component/shield_gen"])
 id = &"core:design/thessari_corvette_standard"
 name_key = "DESIGN_CORVETTE_STANDARD"

@@ -6,6 +6,6 @@
 [resource]
 script = ExtResource("2_02we5")
 hull = &"core:hull/vesskar_carrier_mk1"
-components = Array[StringName]([&"core:component/fighter_wing", &"core:component/fighter_wing", &"core:component/point_defence", &"core:component/shield_gen", &"", &""])
+components = Array[StringName]([&"core:component/fighter_wing", &"core:component/fighter_wing", &"core:component/point_defence", &"core:component/point_defence", &"", &""])
 id = &"core:design/vesskar_carrier_standard"
 name_key = "DESIGN_CARRIER_STANDARD"

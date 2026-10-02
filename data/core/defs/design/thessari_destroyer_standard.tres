@@ -6,6 +6,6 @@
 [resource]
 script = ExtResource("2_i35p0")
 hull = &"core:hull/thessari_destroyer_mk1"
-components = Array[StringName]([&"core:component/autocannon_s", &"core:component/autocannon_s", &"core:component/missile_pod_m", &"core:component/armor_plate", &""])
+components = Array[StringName]([&"core:component/pulse_laser_s", &"core:component/pulse_laser_s", &"core:component/missile_pod_m", &"core:component/shield_gen", &""])
 id = &"core:design/thessari_destroyer_standard"
 name_key = "DESIGN_DESTROYER_STANDARD"

@@ -147,7 +147,7 @@ func _slot_row(state: MatchState, hull: HullDef, i: int, parent: Control) -> voi
 
 
 func _stats(state: MatchState, eid: int, hull: HullDef, parent: Control) -> void:
-	var st := ShipStats.of(state.defs, _hull, _components)
+	var st := ShipStats.of(state.defs, _hull, _components, state.empire(eid).species)
 	line(TranslationServer.translate("DESIGNER_STATS"), "Caption", parent)
 	for pair in [["DESIGNER_HULL", st.hull], ["DESIGNER_ARMOR", st.armor], ["DESIGNER_SHIELD", st.shield],
 			["DESIGNER_EVASION", st.evasion], ["DESIGNER_SPEED", st.speed], ["DESIGNER_PD", st.pd],
@@ -192,7 +192,8 @@ func _predict_row(state: MatchState, eid: int) -> void:
 	r.add_child(opt)
 	button(TranslationServer.translate("DESIGNER_PREDICT"), "Predict", func() -> void:
 		var e: ShipDesign = state.designs.get_or(_enemy)
-		var res := MatchupPredictor.predict(state.defs, _hull, _components, e.hull, e.components)
+		var res := MatchupPredictor.predict(state.defs, _hull, _components, e.hull, e.components,
+			state.empire(eid).species, SpeciesTraits.species_of(state, e.owner))
 		_prediction = TranslationServer.translate(res["error"]) if res.has("error") else UiKit.tr_fmt("DESIGNER_PREDICTION", res)
 		rebuild.call_deferred(), r)
 	if _prediction != "":

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="TraitDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_8e2i2"]
+[ext_resource type="Script" path="res://sim/defs/trait_def.gd" id="2_4sftk"]
+
+[sub_resource type="Resource" id="Resource_8b1m7"]
+script = ExtResource("1_8e2i2")
+key = &"empire.morale_resist"
+value = 300
+scope = 1
+
+[sub_resource type="Resource" id="Resource_np47q"]
+script = ExtResource("1_8e2i2")
+key = &"empire.last_stand"
+value = 1
+scope = 1
+
+[resource]
+script = ExtResource("2_4sftk")
+id = &"core:trait/human_stubborn"
+name_key = "TRAIT_HUMAN_STUBBORN"
+desc_key = "TRAIT_HUMAN_STUBBORN_DESC"
+modifiers = Array[ExtResource("1_8e2i2")]([SubResource("Resource_8b1m7"), SubResource("Resource_np47q")])

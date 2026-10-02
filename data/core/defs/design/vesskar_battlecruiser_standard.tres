@@ -6,6 +6,6 @@
 [resource]
 script = ExtResource("2_unxdu")
 hull = &"core:hull/vesskar_battlecruiser_mk1"
-components = Array[StringName]([&"core:component/autocannon_s", &"core:component/railgun_m", &"core:component/railgun_m", &"core:component/mass_driver_l", &"core:component/armor_plate", &"core:component/shield_gen", &"", &""])
+components = Array[StringName]([&"core:component/pulse_laser_s", &"core:component/heavy_laser_m", &"core:component/railgun_m", &"core:component/mass_driver_l", &"core:component/shield_gen", &"core:component/point_defence", &"", &""])
 id = &"core:design/vesskar_battlecruiser_standard"
 name_key = "DESIGN_BATTLECRUISER_STANDARD"

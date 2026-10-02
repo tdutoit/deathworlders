@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="TraitDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_qhayd"]
+[ext_resource type="Script" path="res://sim/defs/trait_def.gd" id="2_xwh26"]
+
+[sub_resource type="Resource" id="Resource_8skfl"]
+script = ExtResource("1_qhayd")
+key = &"ship.damage.energy"
+mode = 1
+value = 100
+scope = 5
+
+[sub_resource type="Resource" id="Resource_ul3k2"]
+script = ExtResource("1_qhayd")
+key = &"ship.shield_regen"
+mode = 1
+value = 100
+scope = 5
+
+[resource]
+script = ExtResource("2_xwh26")
+id = &"core:trait/vesskar_ancient_science"
+name_key = "TRAIT_VESSKAR_ANCIENT_SCIENCE"
+desc_key = "TRAIT_VESSKAR_ANCIENT_SCIENCE_DESC"
+modifiers = Array[ExtResource("1_qhayd")]([SubResource("Resource_8skfl"), SubResource("Resource_ul3k2")])

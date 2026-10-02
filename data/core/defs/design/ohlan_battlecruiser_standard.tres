@@ -6,6 +6,6 @@
 [resource]
 script = ExtResource("2_vu0fs")
 hull = &"core:hull/ohlan_battlecruiser_mk1"
-components = Array[StringName]([&"core:component/autocannon_s", &"core:component/railgun_m", &"core:component/railgun_m", &"core:component/mass_driver_l", &"core:component/armor_plate", &"core:component/shield_gen", &"", &""])
+components = Array[StringName]([&"core:component/autocannon_s", &"core:component/missile_pod_m", &"core:component/railgun_m", &"core:component/mass_driver_l", &"core:component/armor_plate", &"core:component/ecm_suite", &"", &""])
 id = &"core:design/ohlan_battlecruiser_standard"
 name_key = "DESIGN_BATTLECRUISER_STANDARD"

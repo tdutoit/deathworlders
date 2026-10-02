@@ -17,5 +17,24 @@ habitability = {
 }
 home_template = &"standard"
 home_planet_type = &"core:planet_type/desert"
+traits = Array[StringName]([&"core:trait/krothi_swarm_doctrine", &"core:trait/krothi_ravenous", &"core:trait/krothi_expendable"])
+ai_personality = {
+&"aggression": 80,
+&"ambition": 50,
+&"caution": 20,
+&"expansion": 90,
+&"greed": 30,
+&"honour": 35,
+&"xenophilia": 15
+}
+personality_key = "PERSONALITY_KROTHI"
+affinity = {
+&"core:species/human": 0,
+&"core:species/krothi": 10,
+&"core:species/ohlan": -10,
+&"core:species/thessari": -10,
+&"core:species/vesskar": -30
+}
+signature_mechanic = &"brood_surge"
 id = &"core:species/krothi"
 name_key = "SPECIES_KROTHI"

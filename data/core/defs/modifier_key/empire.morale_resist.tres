@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ModifierKeyDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_4f4ev"]
+[ext_resource type="Script" path="res://sim/defs/modifier_key_def.gd" id="2_2pxlb"]
+
+[resource]
+script = ExtResource("2_2pxlb")
+scope = 1
+id = &"core:modifier_key/empire.morale_resist"
+name_key = "MODKEY_EMPIRE_MORALE_RESIST"
