@@ -187,3 +187,45 @@ func test_military_access_resupplies() -> void:
 	FleetSupply.day_tick(s)
 	assert_eq(u.unsupplied_days, 0, "military access: their stockpiles supply us")
 	assert_gt(u.ammo, 0)
+
+
+func _fleet_at(s: MatchState, eid: int, design: String, system: int, n: int) -> void:
+	var d: DesignDef = _db.get_def(StringName(design))
+	var ids := []
+	for i in n:
+		var u := Shipyards.spawn(s, eid, String(d.hull), system)
+		u.components.assign(Array(d.components).map(func(cc: StringName) -> String: return String(cc)))
+		Fleets.arm(s, u)
+		ids.append(u.id)
+	Fleets.create(s, eid, ids)
+
+
+## Coalition battles (owner decision 2026-10-02): allies at war with the same enemy fight on one side.
+func test_coalition_battle() -> void:
+	var s := _match()
+	var ids := _ids(s)
+	Treaties.sign(s, ids[0], ids[1], PACT)
+	s.wars[Battles.war_key(ids[0], ids[2])] = true
+	s.wars[Battles.war_key(ids[1], ids[2])] = true
+	var arena := -1
+	for sid: int in s.galaxy.systems.ordered():
+		if s.galaxy.system(sid).owner == StateIO.NONE:
+			arena = sid
+			break
+	_fleet_at(s, ids[0], "core:design/human_cruiser_standard", arena, 3)
+	_fleet_at(s, ids[1], "core:design/human_cruiser_standard", arena, 3)
+	_fleet_at(s, ids[2], "core:design/krothi_corvette_standard", arena, 2)
+	s.clear_scratch()
+	Battles.tick(s)
+	assert_eq(s.battles.size(), 1, "one battle")
+	var b: Battle = s.battles.values()[0]
+	var allies := b.side_of_owner(ids[0])
+	assert_eq(b.side_of_owner(ids[1]), allies, "allies on one side")
+	assert_eq(b.side_of_owner(ids[2]), 1 - allies)
+	for h in 120:
+		s.clear_scratch()
+		Battles.tick(s)
+	var rep: BattleReport = s.reports.values()[0]
+	assert_eq(rep.side_of(ids[1]), rep.side_of(ids[0]))
+	assert_eq(rep.all_owners().size(), 3)
+	assert_gt(s.empire(ids[0]).tech_fragments + s.empire(ids[1]).tech_fragments, 0, "salvage shared by the winners")

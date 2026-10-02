@@ -38,6 +38,8 @@
   standard designs point defence (humans and Krothi swap the shield generator for it; Vess'kar and Thessari
   carry lasers with one railgun, a shield and point defence; Ohlan one missile pod and ECM). The A14 checks
   now run species-neutral (no trait modifiers); the combat harness adds the species matrix as a check.
+- 2026-10-02 (M4 WP4, owner decision): battles are fought between two coalitions; allies and co-belligerents
+  share a side (each formation keeps its owner's doctrine and traits); salvage is split by damage dealt.
 
 ---
 

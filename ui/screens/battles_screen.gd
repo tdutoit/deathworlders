@@ -20,7 +20,7 @@ func _fill(state: MatchState, eid: int) -> void:
 	var mine: Array[BattleReport] = []
 	for rid: int in state.reports.ordered():
 		var rep: BattleReport = state.reports.get_or(rid)
-		if eid in rep.data["owners"]:
+		if rep.side_of(eid) >= 0:
 			mine.append(rep)
 	if mine.is_empty():
 		heading("BATTLES_NONE")
@@ -44,20 +44,20 @@ func _fill(state: MatchState, eid: int) -> void:
 
 
 func _title_of(state: MatchState, rep: BattleReport, eid: int) -> String:
-	var side: int = (rep.data["owners"] as Array).find(eid)
+	var side: int = rep.side_of(eid)
 	return "%s · %s" % [state.galaxy.system(int(rep.data["system"])).name,
 		TranslationServer.translate("RESULT_" + String(rep.data["results"][side]).to_upper())]
 
 
 func _detail(state: MatchState, rep: BattleReport, eid: int) -> void:
 	var d := rep.data
-	var owners: Array = d["owners"]
-	var side := owners.find(eid)
+	var side := rep.side_of(eid)
+	var owners := [_side_name(state, rep, 0), _side_name(state, rep, 1)]
 	var other := 1 - side
 	line(UiKit.tr_fmt("BATTLES_HEADER", {"system": state.galaxy.system(int(d["system"])).name,
 		"date": Calendar.format(int(d["start_tick"])),
 		"result": TranslationServer.translate("RESULT_" + String(d["results"][side]).to_upper())}), "Subtitle")
-	line(UiKit.tr_fmt("BATTLES_SIDES", {"a": UiNames.owner(state, owners[side]), "b": UiNames.owner(state, owners[other]),
+	line(UiKit.tr_fmt("BATTLES_SIDES", {"a": owners[side], "b": owners[other],
 		"rounds": d["rounds"], "a_cost": d["start_cost"][side], "b_cost": d["start_cost"][other]}))
 	# Strength over time (hull per round), with range phases.
 	heading("BATTLES_STRENGTH")
@@ -65,15 +65,15 @@ func _detail(state: MatchState, rep: BattleReport, eid: int) -> void:
 	var top := 1
 	for s: Array in strength:
 		top = maxi(top, maxi(int(s[0]), int(s[1])))
-	line("%s  %s" % [_spark(strength, side, top), UiNames.owner(state, owners[side])], "Mono")
-	line("%s  %s" % [_spark(strength, other, top), UiNames.owner(state, owners[other])], "Mono")
+	line("%s  %s" % [_spark(strength, side, top), owners[side]], "Mono")
+	line("%s  %s" % [_spark(strength, other, top), owners[other]], "Mono")
 	var bands: Array = d.get("bands", [])
 	if not bands.is_empty():
 		line("%s  %s" % [_phases(bands), TranslationServer.translate("BATTLES_PHASES")], "Mono")
 	# Losses by class.
 	heading("BATTLES_LOSSES")
 	for s in [side, other]:
-		line("%s: %s" % [UiNames.owner(state, owners[s]), _losses(d, s)])
+		line("%s: %s" % [owners[s], _losses(d, s)])
 	if int(d["salvage"][side]) > 0:
 		line(UiKit.tr_fmt("BATTLES_SALVAGE", {"n": d["salvage"][side]}))
 	# What worked: weapon families and point defence.
@@ -84,7 +84,7 @@ func _detail(state: MatchState, rep: BattleReport, eid: int) -> void:
 		var fam: Dictionary = d["family"][s]
 		for fk: String in IdMap.sort_keys(fam.keys()):
 			var v: Array = fam[fk]
-			cell(g, UiNames.owner(state, owners[s]))
+			cell(g, owners[s])
 			cell(g, UiNames.def_name(fk))
 			cell(g, str(v[0]), "Mono")
 			cell(g, "%d%%" % (int(v[1]) * 100 / maxi(1, int(v[0]))), "Mono")
@@ -100,6 +100,12 @@ func _detail(state: MatchState, rep: BattleReport, eid: int) -> void:
 		line(UiKit.tr_fmt("BATTLES_MVP", {"ship": TranslationServer.translate(String(n[2])),
 			"cls": TranslationServer.translate("CLASS_" + String(n[1]).to_upper()), "dmg": d["dmg"][mvp],
 			"kills": int(d["kills"].get(mvp, 0))}), "Subtitle")
+
+
+## "Human + Thessari" for a coalition side.
+static func _side_name(state: MatchState, rep: BattleReport, side: int) -> String:
+	var sides: Array = rep.data.get("sides", [[rep.data["owners"][0]], [rep.data["owners"][1]]])
+	return " + ".join((sides[side] as Array).map(func(o: int) -> String: return UiNames.owner(state, o)))
 
 
 func _spark(strength: Array, side: int, top: int) -> String:

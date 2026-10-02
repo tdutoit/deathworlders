@@ -43,11 +43,11 @@ static func collect(state: MatchState, eid: int) -> Array:
 	# M3: battles under way and recent battle reports.
 	for bid: int in state.battles.ordered():
 		var b: Battle = state.battles.get_or(bid)
-		if eid in b.owners:
+		if b.side_of_owner(eid) >= 0:
 			out.append(_alert(URGENT, "ALERT_BATTLE", {"system": state.galaxy.system(b.system_id).name}, "system", b.system_id))
 	for rid: int in state.reports.ordered():
 		var rep: BattleReport = state.reports.get_or(rid)
-		var side: int = (rep.data["owners"] as Array).find(eid)
+		var side: int = rep.side_of(eid)
 		if side >= 0 and state.tick - int(rep.data["end_tick"]) <= LOSS_DAYS * Calendar.HOURS_PER_DAY:
 			out.append(_alert(INFO, "ALERT_BATTLE_REPORT", {"system": state.galaxy.system(int(rep.data["system"])).name,
 				"result": TranslationServer.translate("RESULT_" + String(rep.data["results"][side]).to_upper())},

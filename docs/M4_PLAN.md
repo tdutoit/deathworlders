@@ -61,6 +61,13 @@ rules (CLAUDE.md), same tooling.*
   protected's credit net; when the protected is attacked, a guardian warship in one of its systems within 60
   days earns "rescued" +20, trust +10, Reputation +25, otherwise the protectorate fails (trust 0, Reputation
   -75). Pack Bonding scales allies' positive opinion events toward humans by 1.5.
+- 2026-10-02 (WP4 part 2, coalition battles): a battle's sides are coalitions (`Battle.sides`; `owners` keeps
+  each side's lead). An owner arriving in a battle joins the side whose enemies it is hostile to while hostile
+  to nobody on that side (allies and co-belligerents); otherwise it waits, as a third party did in M3.
+  Formations carry their own owner (doctrine, morale traits, Last Stand and retreat home per owner); a boarded
+  ship goes to the boarding ship's owner; the battle ends as a truce once no owner on one side is hostile to
+  any on the other. Salvage goes to each winning-side empire by its share of the hull damage the side dealt
+  (Improvisers on its own share). Reports keep `sides`; the UI names coalition sides "A + B".
 
 ---
 

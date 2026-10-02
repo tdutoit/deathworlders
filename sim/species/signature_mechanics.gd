@@ -56,7 +56,7 @@ static func month_tick(state: MatchState) -> void:
 
 
 static func battle_resolved(state: MatchState, report: BattleReport) -> void:
-	for owner: int in report.data["owners"]:
+	for owner: int in report.all_owners():
 		var e := state.empire(owner) if owner >= 0 else null
 		var m := of(state, e)
 		if m != null:

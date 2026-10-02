@@ -182,7 +182,7 @@ static func _start_battles(state: MatchState) -> void:
 				continue
 			b = _create(state, system_id, pair)
 		for cid: int in ids:
-			var side := b.owners.find(_owner(state, cid))
+			var side := _assign_side(state, b, _owner(state, cid))
 			if side >= 0:
 				_join(state, b, cid, side)
 	state.scratch().erase("in_battle")
@@ -194,6 +194,31 @@ static func _battle_at(state: MatchState, system_id: int) -> Battle:
 		if b.system_id == system_id:
 			return b
 	return null
+
+
+## The side this owner fights on: its existing side, or the side whose enemies it is hostile to while hostile
+## to nobody on that side (allies and co-belligerents join; owner decision 2026-10-02), else -1 (it waits).
+static func _assign_side(state: MatchState, b: Battle, owner: int) -> int:
+	var s := b.side_of_owner(owner)
+	if s >= 0:
+		return s
+	for side in 2:
+		var friends: Array = b.sides[side]
+		var foes: Array = b.sides[1 - side]
+		if foes.any(func(o: int) -> bool: return hostile(state, owner, o)) \
+				and not friends.any(func(o: int) -> bool: return hostile(state, owner, o)):
+			friends.append(owner)
+			return side
+	return -1
+
+
+## True while some owner on one side is still hostile to some owner on the other.
+static func _sides_hostile(state: MatchState, b: Battle) -> bool:
+	for a: int in b.sides[0]:
+		for o: int in b.sides[1]:
+			if hostile(state, a, o):
+				return true
+	return false
 
 
 static func _hostile_pair(state: MatchState, owners: Array) -> Array[int]:
@@ -214,6 +239,7 @@ static func _create(state: MatchState, system_id: int, owners: Array[int]) -> Ba
 	b.system_id = system_id
 	b.start_tick = state.tick
 	b.owners = owners
+	b.sides = [[owners[0]] as Array[int], [owners[1]] as Array[int]]
 	b.band = 0  # A3: battles open at Long range (no nebulae or ambushes in M3)
 	b.rng = DetRng.from_seed(state.match_seed ^ b.id, DetRng.COMBAT).get_state()
 	b.log = {"strength": [], "bands": [], "lost": [], "captured": [], "retreated": [], "events": [], "start_cost": [0, 0],
@@ -236,8 +262,9 @@ static func _join(state: MatchState, b: Battle, id: int, side: int) -> void:
 			for sq: Array in fleet.task_forces[i]:
 				if id in sq:
 					key = "f:%d:%d" % [fleet.id, i]
+	var owner := _owner(state, id)
 	if key == "":
-		key = ("o:%d" % b.owners[side]) if u != null else ("s:%d" % b.owners[side])
+		key = ("o:%d" % owner) if u != null else ("s:%d" % owner)
 	var form: Dictionary = {}
 	for f: Dictionary in b.formations:
 		if f["key"] == key and not f["left"]:
@@ -250,7 +277,7 @@ static func _join(state: MatchState, b: Battle, id: int, side: int) -> void:
 			morale += r.morale_out_of_supply
 		if fleet != null and fleet.defeated_tick > 0 and state.tick - fleet.defeated_tick <= RECENT_DEFEAT_DAYS * Calendar.HOURS_PER_DAY:
 			morale += r.morale_recent_defeat
-		form = {"key": key, "side": side, "members": [] as Array[int], "morale": morale, "hull_start": 0,
+		form = {"key": key, "side": side, "owner": owner, "members": [] as Array[int], "morale": morale, "hull_start": 0,
 			"cost_start": 0, "disengage": -1, "left": false,
 			"retreat_at": fleet.retreat_at if fleet != null else (0 if u == null else 500),
 			"range_pref": fleet.range_pref if fleet != null else "line",
@@ -263,7 +290,7 @@ static func _join(state: MatchState, b: Battle, id: int, side: int) -> void:
 	var design_name := ""
 	if u != null and state.designs.has(u.design):
 		design_name = (state.designs.get_or(u.design) as ShipDesign).name
-	b.log["names"][str(id)] = [b.owners[side], String(st.hull_class), design_name]
+	b.log["names"][str(id)] = [owner, String(st.hull_class), design_name]
 
 
 # --- one round (A4). Returns true when the battle is over. ---
@@ -276,7 +303,7 @@ static func _round(state: MatchState, b: Battle) -> bool:
 		f["members"] = (f["members"] as Array).filter(func(cid: int) -> bool: return entity(state, cid) != null)
 	if b.active(0).is_empty() or b.active(1).is_empty():
 		return true
-	if not hostile(state, b.owners[0], b.owners[1]):
+	if not _sides_hostile(state, b):
 		b.log["truce"] = 1  # peace was made: the battle ends where it stands
 		return true
 	b.round += 1
@@ -292,9 +319,6 @@ static func _round(state: MatchState, b: Battle) -> bool:
 	var queue := []  # [target, damage, family ID, penetration, shooter, order]
 	var lists := {}  # "side:priority" -> ordered candidate IDs
 	var disengaging := _disengaging(b)
-	var pursuit_acc := [0, 0]  # Persistence Hunters (A10): bonus against disengaging ships
-	for side in 2:
-		pursuit_acc[side] = SpeciesTraits.empire_add(state, b.owners[side], "empire.pursuit_accuracy")
 	var last_stand := {}  # combatants of formations in a Last Stand (A10)
 	for f: Dictionary in b.formations:
 		if int(f.get("last_stand", 0)) > 0:
@@ -333,7 +357,7 @@ static func _round(state: MatchState, b: Battle) -> bool:
 				if fam != null and fam.ecm_affected:
 					hit -= (r.ecm_missile_penalty + tst.ecm_strength) * tst.ecm
 				if disengaging.has(target):
-					hit += r.disengage_incoming_accuracy + int(pursuit_acc[side])
+					hit += r.disengage_incoming_accuracy + SpeciesTraits.empire_add(state, int(shooter.get("owner")), "empire.pursuit_accuracy")
 				hit = clampi(hit, r.hit_min, r.hit_max)
 				if rng.roll_permille() >= hit:
 					continue
@@ -582,12 +606,12 @@ static func _boarding(state: MatchState, b: Battle, rng: DetRng, r: CombatRulesD
 		boarded[target.id] = true
 		var chance := clampi(FixedMath.floor_div(u.marines * 1000, maxi(1, u.marines + target.crew)), r.boarding_min, r.boarding_max)
 		if rng.roll_permille() < chance:
-			_capture(state, b, target, side, r)
+			_capture(state, b, target, side, r, int(entity(state, cid).get("owner")))
 		else:
 			u.marines -= FixedMath.mul_permille(u.marines, r.boarding_fail_loss)
 
 
-static func _capture(state: MatchState, b: Battle, t: Unit, side: int, r: CombatRulesDef) -> void:
+static func _capture(state: MatchState, b: Battle, t: Unit, side: int, r: CombatRulesDef, captor: int) -> void:
 	var from := _formation_of(b, t.id)
 	(from["members"] as Array).erase(t.id)
 	var cost := cost_of(state, t.id)
@@ -595,14 +619,14 @@ static func _capture(state: MatchState, b: Battle, t: Unit, side: int, r: Combat
 	b.log["captured_cost"][side] += cost
 	b.log["lost_cost"][1 - side] += cost
 	Fleets.remove_ship(state, t)
-	t.owner = b.owners[side]
+	t.owner = captor
 	t.path.clear()
 	var key := "c:%d" % t.owner
 	for f: Dictionary in b.formations:
 		if f["key"] == key and not f["left"]:
 			(f["members"] as Array).append(t.id)
 			return
-	b.formations.append({"key": key, "side": side, "members": [t.id] as Array[int], "morale": r.morale_start,
+	b.formations.append({"key": key, "side": side, "owner": t.owner, "members": [t.id] as Array[int], "morale": r.morale_start,
 		"hull_start": stats(state, t.id).hull, "cost_start": cost, "disengage": -1, "left": false, "retreat_at": 500,
 		"range_pref": "line", "target": "largest"})
 
@@ -630,14 +654,14 @@ static func _morale_and_retreat(state: MatchState, b: Battle, rng: DetRng, r: Co
 		loss += r.morale_capital_lost * int(capital_lost.get(f["key"], 0))
 		if side_cost[side] > 0 and side_cost[1 - side] * 1000 >= side_cost[side] * r.outnumbered_ratio:
 			loss += r.morale_outnumbered
-		loss = FixedMath.mul_permille(loss, 1000 - _morale_resist(state, f, r) - SpeciesTraits.empire_add(state, b.owners[side], "empire.morale_resist"))
+		loss = FixedMath.mul_permille(loss, 1000 - _morale_resist(state, f, r) - SpeciesTraits.empire_add(state, int(f["owner"]), "empire.morale_resist"))
 		f["morale"] = maxi(0, int(f["morale"]) - loss)
 		var outnumbered: bool = side_cost[side] > 0 and side_cost[1 - side] * 1000 >= side_cost[side] * r.outnumbered_ratio
 		if int(f.get("last_stand", 0)) > 0:
 			f["last_stand"] = int(f["last_stand"]) - 1
 			f["morale"] = maxi(int(f["morale"]), r.last_stand_morale_floor)
 		elif not f.has("last_stand") and outnumbered and int(f["morale"]) < r.last_stand_trigger_morale \
-				and SpeciesTraits.empire_add(state, b.owners[side], "empire.last_stand") > 0:
+				and SpeciesTraits.empire_add(state, int(f["owner"]), "empire.last_stand") > 0:
 			f["last_stand"] = r.last_stand_rounds  # once per battle (A10)
 			f["morale"] = maxi(int(f["morale"]), r.last_stand_morale_floor)
 			b.log["events"].append([b.round, "last_stand", side, f["key"]])
@@ -652,7 +676,9 @@ static func _morale_and_retreat(state: MatchState, b: Battle, rng: DetRng, r: Co
 			retreat = rng.roll_permille() < 1000 - int(f["morale"]) * r.retreat_roll_mult
 		if retreat:
 			var pursued := _slowest(state, b, 1 - side) >= _slowest_of(state, f["members"])
-			var extra := r.pursuit_rounds + SpeciesTraits.empire_add(state, b.owners[1 - side], "empire.pursuit_rounds")
+			var extra := r.pursuit_rounds
+			for o: int in b.sides[1 - side]:
+				extra = maxi(extra, r.pursuit_rounds + SpeciesTraits.empire_add(state, o, "empire.pursuit_rounds"))
 			f["disengage"] = r.disengage_rounds - 1 + (extra if pursued else 0)
 			b.log["events"].append([b.round, "retreat", side, f["key"]])
 
@@ -680,7 +706,7 @@ static func _morale_resist(state: MatchState, f: Dictionary, r: CombatRulesDef) 
 ## A formation that finished disengaging leaves: a fleet task force becomes its own fleet heading home.
 static func _leave(state: MatchState, b: Battle, f: Dictionary, rng: DetRng) -> void:
 	f["left"] = true
-	var owner: int = b.owners[f["side"]]
+	var owner: int = f["owner"]
 	b.log["retreated"].append([f["side"], (f["members"] as Array).size(), b.round])
 	var ships: Array[int] = []
 	for cid: int in f["members"]:
@@ -743,9 +769,7 @@ static func _finish(state: MatchState, b: Battle) -> void:
 		if String(results[side]).ends_with("victory") and b.owners[side] != Pirates.PIRATES:
 			var destroyed := int(b.log["lost_cost"][other]) - int(b.log["captured_cost"][side])
 			salvage[side] = FixedMath.floor_div(destroyed * r.salvage + int(b.log["captured_cost"][side]) * r.salvage * r.capture_salvage_mult, 1000)
-			salvage[side] = FixedMath.mul_permille(salvage[side], 1000 + SpeciesTraits.empire_permille(state, b.owners[side], "empire.salvage"))  # Improvisers
-			var e := state.empire(b.owners[side])
-			e.tech_fragments += salvage[side]
+			_share_salvage(state, b, side, salvage[side])
 	# Veterancy for survivors; defeat marks for the loser's fleets; captured ships join the captor's reserve.
 	for side in 2:
 		for cid in b.active(side):
@@ -765,11 +789,31 @@ static func _finish(state: MatchState, b: Battle) -> void:
 	rep.data["end_tick"] = state.tick
 	rep.data["rounds"] = b.round
 	rep.data["owners"] = Array(b.owners)
+	rep.data["sides"] = [Array(b.sides[0]), Array(b.sides[1])]
 	rep.data["results"] = results
 	rep.data["salvage"] = salvage
 	state.reports.put(rep.id, rep)
 	state.battles.erase(b.id)
 	SignatureMechanics.battle_resolved(state, rep)
+
+
+## Salvage to each empire on the winning side by its share of the hull damage the side dealt (coalitions,
+## owner decision 2026-10-02); Improvisers scale each owner's own share.
+static func _share_salvage(state: MatchState, b: Battle, side: int, total: int) -> void:
+	var dmg := {}  # owner -> damage
+	var side_dmg := 0
+	for cid: String in IdMap.sort_keys(b.log["dmg"].keys()):
+		var n: Variant = b.log["names"].get(cid)
+		if n == null or not (int(n[0]) in (b.sides[side] as Array)):
+			continue
+		dmg[int(n[0])] = int(dmg.get(int(n[0]), 0)) + int(b.log["dmg"][cid])
+		side_dmg += int(b.log["dmg"][cid])
+	for owner: int in b.sides[side]:
+		var e := state.empire(owner) if owner >= 0 else null
+		if e == null:
+			continue
+		var share := FixedMath.floor_div(total * int(dmg.get(owner, 0)), side_dmg) if side_dmg > 0 else (total if owner == b.owners[side] else 0)
+		e.tech_fragments += FixedMath.mul_permille(share, 1000 + SpeciesTraits.empire_permille(state, owner, "empire.salvage"))  # Improvisers
 
 
 ## A12 result for a side from both sides' cost-weighted loss shares (permille).
