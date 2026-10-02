@@ -139,6 +139,20 @@ rules (CLAUDE.md), same tooling.*
   defensive platform, free, not buildable; one per 10 pops, at least one), which fight in battles in the
   system; others' opinion +10; defence pacts, alliances and protectorates proposed to them +10 acceptance.
   Stations gain `buildable` (false for planetary defences).
+- 2026-10-02 (WP10): `StrategicAI` (month phase 5, after the Council). E11: each empire's weights are its
+  species' defaults +-15 on the `ai` stream at match start (`Empire.personality`; every personality term now
+  reads them). E12: each month an AI scores candidates and takes the best `actions_per_month` (2; difficulty
+  sets `Empire.ai_actions`, WP12): treaties it would get (E5 >= 0; weight by Caution for non-aggression,
+  Greed for trade, Aggression/2 for access, Xenophilia for pacts and alliances, +15 x5 when a stronger hostile
+  neighbour exists), war (from year 10 only, E16; a target within 6 lanes, power at least 1 + Caution/100
+  times its own, a casus belli unless Aggression >= 80; cautious AIs leave humans with Fear 300 alone),
+  peace (losing at -20 or exhausted at 75: white peace; winning at +10 with exhaustion 37.5 or score 30:
+  its war goals, then reparations, within what the score buys), claims (Aggression >= 50: a disliked
+  neighbour's border system, one a month), Council proposals (Ambition >= 50: sanctions on an empire it
+  likes at -40 or less, recognition of a liked non-member, Trade Standards at Greed 60, Pirate Suppression at
+  Caution 60 with raiders about) and protectorate requests when threatened (humans with Respect 300 first).
+  Numbers in a new `ai_rules` Def. Economy harness sanity (neutral, seeds 1-4): 11 of 16 (13 before); the
+  full economy and expansion pass (Thessari floor) stays with WP14.
 
 ---
 

@@ -52,7 +52,8 @@ func test_valuation() -> void:
 	assert_eq(Deals.value(s, ids[1], monthly), 600, "recurring at 60% of the total (E6)")
 	var given := once.duplicate()
 	given["giver"] = ids[1]
-	assert_eq(Deals.value(s, ids[1], given), 100 * (500 + 40 * 10) / 1000, "greed 40: what it gives up weighs 0.9")
+	var greed := Treaties.personality(s, ids[1], "greed")
+	assert_eq(Deals.value(s, ids[1], given), 100 * (500 + greed * 10) / 1000, "greed weighs what it gives up (E6)")
 	assert_between(Deals.scarcity(s, ids[1], ORE), 500, 2000)
 
 

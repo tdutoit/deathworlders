@@ -49,9 +49,12 @@ static func power(state: MatchState, eid: int) -> int:
 	return scratch[key]
 
 
-## E11 weight of an empire (species defaults; WP10 adds per-empire variation).
+## E11 weight of an empire: its rolled personality (WP10), else its species' default.
 static func personality(state: MatchState, eid: int, weight: String) -> int:
-	var sd := state.defs.get_def(StringName(state.empire(eid).species)) as SpeciesDef
+	var e := state.empire(eid)
+	if e.personality.has(weight):
+		return int(e.personality[weight])
+	var sd := state.defs.get_def(StringName(e.species)) as SpeciesDef
 	return int(sd.ai_personality.get(StringName(weight), 50)) if sd != null else 50
 
 

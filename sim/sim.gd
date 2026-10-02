@@ -101,6 +101,7 @@ static func _month_phase(state: MatchState, hour: int) -> void:
 			Wars.month_tick(state)  # blockades, exhaustion, forced peace
 			WarFooting.month_tick(state)  # Total War exhaustion
 			Councils.month_tick(state)  # Galactic Council sessions
+			StrategicAI.month_tick(state)  # E12: AI diplomacy and war decisions
 			SignatureMechanics.month_tick(state)
 
 

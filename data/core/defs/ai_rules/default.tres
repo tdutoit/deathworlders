@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="AiRulesDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/ai_rules_def.gd" id="1_airu"]
+
+[resource]
+script = ExtResource("1_airu")
+personality_spread = 15
+actions_per_month = 2
+peace_years = 10
+war_lanes = 6
+war_ratio_base = 1000
+war_ratio_per_caution = 10
+war_no_cb_aggression = 80
+war_cb_bonus = 10
+war_opportunity_bonus = 10
+claim_aggression = 50
+claim_influence_cushion = 50
+claim_opinion = -10
+peace_exhaustion = 75000
+peace_losing_score = -20
+peace_winning_score = 10
+peace_utility = 40
+treaty_divisor = 5
+treaty_threat_bonus = 15
+council_ambition = 50
+sanction_opinion = -40
+protectorate_utility = 40
+id = &"core:ai_rules/default"
+name_key = "AI_RULES_DEFAULT"

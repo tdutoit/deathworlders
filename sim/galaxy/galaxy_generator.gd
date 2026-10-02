@@ -43,6 +43,7 @@ static func new_match(settings: MatchSettings, seed_value: int, db: DefDatabase,
 			state.defs = db
 			StartSetup.apply(state, db)
 			Councils.found(state)  # M4: the Galactic Council (E9)
+			StrategicAI.roll_personalities(state)  # M4: E11 weights per empire
 			return state
 		attempt += 1
 		if attempt % ATTEMPTS_PER_SPACING == 0:
