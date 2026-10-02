@@ -7,7 +7,7 @@ const ID := &"core:diplomacy_rules/default"
 ## Event modifiers (E2): one accumulating modifier per type and directed pair, decaying 1 point toward 0
 ## every `event_decay_months[type]` months (0 = never).
 const EVENTS: Array[String] = ["gift", "fought_together", "rescued", "denied", "espionage", "treaty_broken",
-	"treaty_broken_other", "humiliated", "war_memory", "deal_failed"]
+	"treaty_broken_other", "humiliated", "war_memory", "deal_failed", "warmonger"]
 
 # Contact (owner decision 2026-10-02): territory within contact_lanes, or a ship in the other's space.
 @export var contact_lanes: int
@@ -60,6 +60,30 @@ const EVENTS: Array[String] = ["gift", "fought_together", "rescued", "denied", "
 @export var deal_value_per_point: int  # E5 deal_balance: credits of value per point (placeholder)
 @export var deal_balance_max: int  # E5 deal_balance cap either way (placeholder)
 @export var gift_value_per_opinion: int  # E2: +1 opinion per 25 credit-value
+# War (E7; M4 WP6)
+@export var claim_influence: int  # E7: influence per claimed system
+@export var opinion_claims: int  # E2: overlapping claims, while true
+@export var no_cb_reputation: int  # E7/E14: war without a casus belli (half of Respect -200)
+@export var no_cb_opinion: int  # E7: everyone's opinion of the aggressor ('warmonger' event)
+@export var containment_ratio: int  # E7: the target's power at least this permille of yours
+@export var score_battle_cost: int  # E7: battle value of enemy ships destroyed per point
+@export var score_convoy_value: int  # E7: cargo value destroyed per point
+@export var blockade_max: int  # E7: blockade points a month
+@export var exhaustion_loss_step: int  # E7: +1 per this permille of the pre-war fleet lost (5%)
+@export var exhaustion_peace_recovery: int  # points a month at peace (placeholder; E7 gives none)
+@export var exhaustion_stability_50: int  # E7
+@export var exhaustion_stability_75: int  # E7
+@export var forced_peace_months: int  # E7: at 100 for this long, a status quo peace
+@export var cede_cost_min: int  # E7
+@export var cede_cost_max: int  # E7
+@export var cede_value_per_point: int  # E7 'by value': system value per point above the minimum (placeholder)
+@export var reparations_cost: int  # E7: war score per 1000 credit-value
+@export var reparations_months: int  # E7: paid monthly over 5 years (owner)
+@export var humiliation_cost: int  # E7
+@export var humiliation_influence: int  # influence the humiliated loses (placeholder)
+@export var disarmament_cost: int  # E7
+@export var disarmament_years: int  # E7; cap = half the fleet value at peace (owner)
+@export var peace_days: int  # a player's peace offer waits this long
 # E14 Reputation (every empire; Legend for humans comes with WP9)
 @export var reputation_min: int
 @export var reputation_max: int
@@ -73,7 +97,12 @@ const _INTS: Array[String] = ["influence_value", "deal_target_months", "scarcity
 	"break_others_opinion", "break_others_trust", "break_reputation", "call_days", "call_answered_trust",
 	"call_ignored_trust", "proposal_days", "protectorate_power", "protectorate_hostile_opinion",
 	"protectorate_lanes", "protectorate_tribute", "protectorate_days", "protectorate_success_trust",
-	"protectorate_success_reputation", "protectorate_fail_reputation"]
+	"protectorate_success_reputation", "protectorate_fail_reputation", "claim_influence", "opinion_claims",
+	"no_cb_reputation", "no_cb_opinion", "containment_ratio", "score_battle_cost", "score_convoy_value",
+	"blockade_max", "exhaustion_loss_step", "exhaustion_peace_recovery", "exhaustion_stability_50",
+	"exhaustion_stability_75", "forced_peace_months", "cede_cost_min", "cede_cost_max", "cede_value_per_point",
+	"reparations_cost", "reparations_months", "humiliation_cost", "humiliation_influence", "disarmament_cost",
+	"disarmament_years", "peace_days"]
 
 
 func category() -> String:

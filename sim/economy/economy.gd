@@ -322,6 +322,7 @@ static func _month_colony(state: MatchState, c: Colony, db: DefDatabase, r: Econ
 	stab += r.stability_deficit_each_month * state.empire(c.owner).deficit_months
 	stab += reach_stability
 	stab += mods.add("planet.stability")  # species traits (M4), buildings
+	stab += Wars.stability_penalty(state, c.owner)  # E7 war exhaustion
 	for job: String in IdMap.sort_keys(c.jobs.keys()):
 		stab += (db.get_def(StringName(job)) as JobDef).stability * int(c.jobs[job])
 	c.stability = clampi(stab, 0, 100)

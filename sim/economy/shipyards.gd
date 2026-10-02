@@ -42,7 +42,7 @@ static func check_design_ship(state: MatchState, empire_id: int, station_id: int
 		return "unknown hull %s" % d.hull
 	if HullDef.YARD_SIZES.find(String(def.shipyard_size)) < HullDef.YARD_SIZES.find(String(hull.shipyard_size)):
 		return "a %s hull needs a size %s shipyard" % [hull.hull_class, hull.shipyard_size]
-	return ""
+	return Wars.check_disarmament(state, empire_id, Wars._cost_value(state, ShipStats.cost(state.defs, d.hull, d.components)))  # E7
 
 
 ## Queues a ship of one of the empire's designs (rules already checked). The construction keeps a copy of

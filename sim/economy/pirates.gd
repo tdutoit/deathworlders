@@ -232,7 +232,7 @@ static func tick(state: MatchState) -> void:
 			for other: int in enemies.get(u.owner, []):
 				var key := "%d:%d" % [u.system_id, other]
 				if not hunted.has(key):
-					hunted[key] = "fleet"  # fleets at war raid convoys (main spec 6.6)
+					hunted[key] = "fleet:%d" % u.owner  # fleets at war raid convoys (main spec 6.6)
 	if hunted.is_empty():
 		return
 	var r := Economy.rules(state.defs)
@@ -257,6 +257,9 @@ static func tick(state: MatchState) -> void:
 static func _lose(state: MatchState, f: Unit, by := "pirates") -> void:
 	if f.job.has("delivery"):
 		Deals.lost(state, int(f.job["delivery"]))  # a deal convoy lost: the deal fails (E6)
+	if by.begins_with("fleet:"):
+		Wars.convoy_raided(state, int(by.get_slice(":", 1)), f.owner, f.cargo)  # E7 war score
+		by = "fleet"
 	var e := state.empire(f.owner)
 	e.losses.append({"tick": state.tick, "unit": f.id, "system": f.system_id, "hull": f.hull_id, "cargo": f.cargo.duplicate(),
 		"hub": f.home, "by": by})

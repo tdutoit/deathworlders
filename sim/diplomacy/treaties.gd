@@ -233,8 +233,9 @@ static func check_war(state: MatchState, attacker: int, target: int) -> String:
 
 
 ## A war was declared: the declarer breaks its treaties with the target, the target's partners are called to
-## arms, and an attacked protected starts its guardian's response clock.
-static func on_war_declared(state: MatchState, attacker: int, target: int) -> void:
+## arms (not for a war without casus belli: E7 says allies won't join), and an attacked protected starts its
+## guardian's response clock.
+static func on_war_declared(state: MatchState, attacker: int, target: int, call_allies := true) -> void:
 	var r := rules(state)
 	for t in between(state, attacker, target):
 		break_treaty(state, t, attacker)
@@ -248,7 +249,7 @@ static func on_war_declared(state: MatchState, attacker: int, target: int) -> vo
 			continue
 		if d.has("protectorate") and t.a == target and t.attacked_tick < 0:
 			t.attacked_tick = state.tick
-		if state.wars.has(Battles.war_key(partner, attacker)) or _has_call(state, target, partner, attacker):
+		if not call_allies or state.wars.has(Battles.war_key(partner, attacker)) or _has_call(state, target, partner, attacker):
 			continue
 		var c := CallToArms.new()
 		c.id = state.alloc_id()
@@ -277,8 +278,7 @@ static func answer_call(state: MatchState, c: CallToArms, join: bool) -> void:
 	state.calls.erase(c.id)
 	if join and check_war(state, c.to, c.enemy) == "":
 		if not state.wars.has(Battles.war_key(c.to, c.enemy)):
-			state.wars[Battles.war_key(c.to, c.enemy)] = true
-			on_war_declared(state, c.to, c.enemy)
+			Wars.declare(state, c.to, c.enemy, "call_to_arms")
 		Relations.change_trust(state, c.from, c.to, r.call_answered_trust)
 	else:
 		Relations.change_trust(state, c.from, c.to, r.call_ignored_trust)

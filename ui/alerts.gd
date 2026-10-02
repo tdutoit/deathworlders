@@ -37,7 +37,7 @@ static func collect(state: MatchState, eid: int) -> Array:
 	_freighter_alerts(state, eid, out)
 	for l: Dictionary in e.losses:
 		if state.tick - int(l["tick"]) <= LOSS_DAYS * Calendar.HOURS_PER_DAY:
-			out.append(_alert(SOON, "ALERT_CONVOY_LOST_FLEET" if l.get("by", "") == "fleet" else "ALERT_CONVOY_LOST",
+			out.append(_alert(SOON, "ALERT_CONVOY_LOST_FLEET" if String(l.get("by", "")).begins_with("fleet") else "ALERT_CONVOY_LOST",
 				{"system": state.galaxy.system(int(l["system"])).name},
 				"system", int(l["system"])))
 	# M3: battles under way and recent battle reports.

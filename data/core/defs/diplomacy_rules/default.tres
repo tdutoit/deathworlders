@@ -20,7 +20,8 @@ event_cap = {
 &"rescued": 20,
 &"treaty_broken": -50,
 &"treaty_broken_other": -15,
-&"war_memory": -50
+&"war_memory": -50,
+&"warmonger": -20
 }
 event_decay_months = {
 &"deal_failed": 1,
@@ -32,7 +33,8 @@ event_decay_months = {
 &"rescued": 3,
 &"treaty_broken": 1,
 &"treaty_broken_other": 1,
-&"war_memory": 1
+&"war_memory": 1,
+&"warmonger": 1
 }
 trust_start = 20
 trust_start_wary = 10
@@ -40,6 +42,29 @@ wary_affinity = -20
 trust_max = 100
 reputation_min = -500
 reputation_max = 500
+claim_influence = 25
+opinion_claims = -20
+no_cb_reputation = -100
+no_cb_opinion = -20
+containment_ratio = 2000
+score_battle_cost = 200
+score_convoy_value = 400
+blockade_max = 10
+exhaustion_loss_step = 50
+exhaustion_peace_recovery = 2
+exhaustion_stability_50 = -5
+exhaustion_stability_75 = -15
+forced_peace_months = 6
+cede_cost_min = 10
+cede_cost_max = 25
+cede_value_per_point = 2000
+reparations_cost = 5
+reparations_months = 60
+humiliation_cost = 10
+humiliation_influence = 50
+disarmament_cost = 30
+disarmament_years = 10
+peace_days = 30
 influence_value = 5
 deal_target_months = 6
 scarcity_min = 500

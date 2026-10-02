@@ -14,12 +14,18 @@ var credit_net := 0  # last month: credits produced (jobs, buildings, taxes) min
 var losses: Array[Dictionary] = []  # convoy losses, newest last (B9; kept to LOSS_LOG entries)
 var mechanic := {}  # signature mechanic state (M4 WP2): string keys, int or string values
 var reputation := 0  # E14: -500..500, every empire (Legend for humans is its mechanic, WP9)
+var war_exhaustion := 0  # E7: milli-points, 0..100 000
+var prewar_fleet := 0  # battle value when its current wars began (exhaustion from losses)
+var exhausted_since := -1  # tick exhaustion reached 100 (forced peace after forced_peace_months)
+var disarm_until := 0  # E7 disarmament: warship value capped at disarm_cap until this tick
+var disarm_cap := 0
 
 
 func to_dict() -> Dictionary:
 	return {"id": id, "species": species, "player_slot": player_slot, "capital_planet": capital_planet, "color": color,
 		"treasury": treasury.duplicate(), "deficit_months": deficit_months, "credit_net": credit_net,
-		"losses": losses.duplicate(true), "tech_fragments": tech_fragments, "mechanic": mechanic.duplicate(true), "reputation": reputation}
+		"losses": losses.duplicate(true), "tech_fragments": tech_fragments, "mechanic": mechanic.duplicate(true), "reputation": reputation, "war_exhaustion": war_exhaustion,
+		"prewar_fleet": prewar_fleet, "exhausted_since": exhausted_since, "disarm_until": disarm_until, "disarm_cap": disarm_cap}
 
 
 static func from_dict(d: Dictionary) -> Empire:
@@ -35,6 +41,11 @@ static func from_dict(d: Dictionary) -> Empire:
 	e.tech_fragments = int(d.get("tech_fragments", 0))
 	e.mechanic = StateIO.ints_deep(d.get("mechanic", {}))
 	e.reputation = int(d.get("reputation", 0))
+	e.war_exhaustion = int(d.get("war_exhaustion", 0))
+	e.prewar_fleet = int(d.get("prewar_fleet", 0))
+	e.exhausted_since = int(d.get("exhausted_since", -1))
+	e.disarm_until = int(d.get("disarm_until", 0))
+	e.disarm_cap = int(d.get("disarm_cap", 0))
 	for l: Dictionary in d.get("losses", []):
 		e.losses.append({"tick": int(l["tick"]), "unit": int(l["unit"]), "system": int(l["system"]),
 			"hull": String(l["hull"]), "cargo": StateIO.int_map(l["cargo"]), "hub": int(l.get("hub", StateIO.NONE)),

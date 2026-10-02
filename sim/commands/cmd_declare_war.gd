@@ -1,7 +1,8 @@
 class_name CmdDeclareWar
 extends Command
-## core:cmd/declare_war {"empire": empire ID}. M3 stub (no AI diplomacy, no war goals): unilateral, the two
-## empires are at war at once. M4 replaces it with real diplomacy (Sub-spec E).
+## core:cmd/declare_war {"empire": empire ID, "casus_belli": "claim" | "retaliation" | "protectorate" |
+## "containment" | "" (none)} (Sub-spec E7). Without a casus belli the war is allowed but costs Reputation and
+## everyone's opinion, and allies aren't called. A non-aggression pact needs its notice to have run out.
 
 const TYPE := &"core:cmd/declare_war"
 
@@ -15,9 +16,11 @@ func validate(state: MatchState) -> bool:
 	var treaty_reason := Treaties.check_war(state, player_id, other)
 	if treaty_reason != "":
 		return reject(treaty_reason)
+	var cb := str(payload.get("casus_belli", ""))
+	if cb != "" and not cb in Wars.casus_belli(state, player_id, other):
+		return reject("no %s casus belli against empire %d" % [cb, other])
 	return true
 
 
 func apply(state: MatchState) -> void:
-	state.wars[Battles.war_key(player_id, p_int("empire"))] = true
-	Treaties.on_war_declared(state, player_id, p_int("empire"))  # M4: treaties broken, partners called
+	Wars.declare(state, player_id, p_int("empire"), str(payload.get("casus_belli", "")))

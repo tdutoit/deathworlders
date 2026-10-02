@@ -794,6 +794,7 @@ static func _finish(state: MatchState, b: Battle) -> void:
 	rep.data["salvage"] = salvage
 	state.reports.put(rep.id, rep)
 	state.battles.erase(b.id)
+	Wars.battle_resolved(state, b)  # M4: war score and exhaustion
 	SignatureMechanics.battle_resolved(state, rep)
 
 

@@ -46,6 +46,12 @@ func _do(s: MatchState, eid: int, type: StringName, payload: Dictionary) -> Comm
 	return c
 
 
+## `by` claims `on`'s home system (a casus belli, E7).
+func _claim(s: MatchState, by: int, on: int) -> void:
+	var sid := s.galaxy.planet(s.empire(on).capital_planet).system_id
+	s.claims[Wars.claim_key(by, sid)] = s.tick
+
+
 func test_ai_answers_by_e5_and_proposer_pays() -> void:
 	var s := _match()
 	var ids := _ids(s)
@@ -119,7 +125,8 @@ func test_calls_to_arms() -> void:
 	var s := _match()
 	var ids := _ids(s)
 	Treaties.sign(s, ids[1], ids[0], PACT)  # the player and the human AI
-	_do(s, ids[2], CmdDeclareWar.TYPE, {"empire": ids[1]})
+	_claim(s, ids[2], ids[1])
+	_do(s, ids[2], CmdDeclareWar.TYPE, {"empire": ids[1], "casus_belli": "claim"})
 	assert_eq(s.calls.size(), 1, "the player is called to defend the AI")
 	var c: CallToArms = s.calls.values()[0]
 	assert_eq(c.to, ids[0])
@@ -133,7 +140,8 @@ func test_ignored_call_costs_trust() -> void:
 	var s := _match()
 	var ids := _ids(s)
 	Treaties.sign(s, ids[1], ids[0], PACT)
-	_do(s, ids[2], CmdDeclareWar.TYPE, {"empire": ids[1]})
+	_claim(s, ids[2], ids[1])
+	_do(s, ids[2], CmdDeclareWar.TYPE, {"empire": ids[1], "casus_belli": "claim"})
 	var trust := Relations.trust(s, ids[1], ids[0])
 	s.tick += 31 * Calendar.HOURS_PER_DAY
 	Treaties.month_tick(s)

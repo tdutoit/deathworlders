@@ -27,6 +27,9 @@ var proposals := IdMap.new()  # id -> Proposal waiting for a player
 var calls := IdMap.new()  # id -> CallToArms
 var deals := IdMap.new()  # id -> Deal being carried out (M4 WP5)
 var deliveries := IdMap.new()  # id -> Delivery (deal goods by convoy)
+var war_info := IdMap.new()  # id -> War record per warring pair (M4 WP6; `wars` stays the hostility set)
+var peace_offers := IdMap.new()  # id -> PeaceOffer waiting for a player
+var claims := {}  # "empire:system" -> tick claimed (E7)
 var relations := {}  # "from:to" -> Relation, from first contact (M4); iterate with IdMap.sort_keys
 var wars := {}  # "a:b" (lower empire ID first) -> true while those empires are at war (M3 toggle)
 var pirate_bases := {}  # system ID -> months until it sends out the next raider (D9)
@@ -127,6 +130,9 @@ func to_dict() -> Dictionary:
 		"calls": StateIO.map_to_array(calls),
 		"deals": StateIO.map_to_array(deals),
 		"deliveries": StateIO.map_to_array(deliveries),
+		"war_info": StateIO.map_to_array(war_info),
+		"peace_offers": StateIO.map_to_array(peace_offers),
+		"claims": claims.duplicate(),
 		"pirate_bases": pirate_bases.duplicate(),
 		"reserves": reserves.duplicate(),
 		"next_id": next_id,
@@ -165,6 +171,9 @@ static func from_dict(d: Dictionary) -> MatchState:
 	s.calls = StateIO.array_to_map(d.get("calls", []), CallToArms.from_dict)
 	s.deals = StateIO.array_to_map(d.get("deals", []), Deal.from_dict)
 	s.deliveries = StateIO.array_to_map(d.get("deliveries", []), Delivery.from_dict)
+	s.war_info = StateIO.array_to_map(d.get("war_info", []), War.from_dict)
+	s.peace_offers = StateIO.array_to_map(d.get("peace_offers", []), PeaceOffer.from_dict)
+	s.claims = StateIO.int_map(d.get("claims", {}))
 	for rd: Dictionary in d.get("relations", []):
 		var rel := Relation.from_dict(rd)
 		s.relations["%d:%d" % [rel.from, rel.to]] = rel
@@ -200,7 +209,7 @@ func checksum() -> Dictionary:
 		"logistics": DetHash.hash_value([d["routes"], d["demands"], d["reserves"]]),
 		"military": DetHash.hash_value([d["designs"], d["fleets"]]),
 		"combat": DetHash.hash_value([d["battles"], d["reports"], d["wars"]]),
-		"diplomacy": DetHash.hash_value([d["relations"], d["treaties"], d["proposals"], d["calls"], d["deals"], d["deliveries"]]),
+		"diplomacy": DetHash.hash_value([d["relations"], d["treaties"], d["proposals"], d["calls"], d["deals"], d["deliveries"], d["war_info"], d["peace_offers"], d["claims"]]),
 		"rng": DetHash.hash_value(d["rng_streams"]),
 	}
 	parts["total"] = DetHash.hash_value(parts)

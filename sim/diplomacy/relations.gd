@@ -109,6 +109,8 @@ static func month_tick(state: MatchState) -> void:
 		var rel: Relation = state.relations[k]
 		rel.standing.clear()
 		rel.standing.merge(Treaties.standing(state, rel.from, rel.to))  # E2 treaty bonuses (WP4)
+		if not Wars.claims_on(state, rel.from, rel.to).is_empty() or not Wars.claims_on(state, rel.to, rel.from).is_empty():
+			rel.standing["claims"] = r.opinion_claims  # E2 overlapping claims (WP6)
 		if borders.has(Battles.war_key(rel.from, rel.to)):
 			rel.standing["border"] = r.opinion_border
 		for enemy: int in at_war.get(rel.from, []):

@@ -97,6 +97,7 @@ static func _month_phase(state: MatchState, hour: int) -> void:
 			Relations.month_tick(state)  # M4: contacts, opinion standing and decay
 			Treaties.month_tick(state)  # trust from treaties, notice, tribute, obligations, calls
 			Deals.month_tick(state)  # recurring deal payments
+			Wars.month_tick(state)  # blockades, exhaustion, forced peace
 			SignatureMechanics.month_tick(state)
 
 

@@ -80,6 +80,24 @@ rules (CLAUDE.md), same tooling.*
   credits; deal balance 1 point per 50 credits of value, capped at +-50. A gift adds +1 opinion per 25 value
   (E2). A failed deal (unpaid, or a deal freighter lost to raiders) costs the at-fault side -20 opinion
   ("failed a deal", -1 a month).
+- 2026-10-02 (WP6, owner decisions): `claim_system` (25 influence; claims cost -20 opinion both ways while
+  they stand). Casus belli: claim (take claimed systems), retaliation (they broke a treaty or failed a deal
+  with you, while that memory lasts), protectorate (they are at war with your protected), containment (they
+  are at least twice your power: disarmament); liberation and crisis mandate wait for M6/M7.
+  `declare_war {empire, casus_belli}`: without one, Reputation -100 (half of E14's Respect -200), everyone
+  else's opinion -20 ("warmonger") and no calls to arms. A `War` record per pair (`war_info`; joining allies
+  fight their own pair wars): war score from battles (+1 per 200 battle value of the enemy's ships destroyed or
+  captured, weighted by each empire's share of its side's damage), convoy raids by its fleets (+1 per 400 cargo
+  value) and blockades (own stationary warships in an enemy system with none of theirs, +1 a month each, at
+  most +10). War exhaustion (0-100): +1 per 5% of the pre-war fleet value lost (Reluctant Warriors +50%),
+  -2 a month at peace (placeholder); stability -5 at 50 and -15 at 75; at 100 for 6 months a status quo
+  peace. Peace: `offer_peace {empire, loser, terms}` and `answer_peace`: white (0), cede a claimed system
+  (10-25 by value, 1 per 2000 of value above 10), reparations (5 per 1000 credit-value, paid as credits
+  monthly for 60 months), humiliation (10: -50 influence and "humiliated" -40), disarmament (30: for 10 years
+  the loser's warship value stays at most half of what it had; the shipyard check enforces it). The attacker
+  may demand its casus belli's goals; either side reparations and humiliation. An AI loser accepts when the
+  cost is at most the demander's score + half the exhaustion gap; an AI winner accepts terms worth at least
+  that. Peace adds "war memory" -50 both ways (-1 a month). `make_peace` stays as the dev white peace.
 
 ---
 
