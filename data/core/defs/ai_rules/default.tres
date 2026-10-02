@@ -25,5 +25,7 @@ treaty_threat_bonus = 15
 council_ambition = 50
 sanction_opinion = -40
 protectorate_utility = 40
+reserve_per_caution = 5
+repair_hull = 500
 id = &"core:ai_rules/default"
 name_key = "AI_RULES_DEFAULT"

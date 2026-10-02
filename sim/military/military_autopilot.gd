@@ -9,7 +9,11 @@ extends RefCounted
 ##   4. once it has Autopilot.MIN_SHIPYARDS shipyards, at an idle one (never ahead of colony ships or freighters), build its species' standard designs (ai_build_classes,
 ##      in turn) while warship credit upkeep is under ai_military_share of the credit net before it, or the
 ##      fleet's battle value is under ai_min_fleet_value (cost-aware: pricier ships, fewer of them; M4 WP1).
-## No offensives (M4). Orders go through Commands' validate/apply, like the economic autopilot.
+## M4 WP11 (war operations): threats in allied and protected systems count like own ones (calls to arms and
+## guardian duty); fleets under ai_repair_hull of their hull go home to repair; at war, idle fleets beyond a
+## home reserve (Caution x ai_reserve_per_caution permille of the fleet value) attack: enemy fleets they beat
+## by ai_attack_ratio first, then undefended enemy colony systems (blockades score war points), nearest first.
+## Orders go through Commands' validate/apply, like the economic autopilot.
 
 
 static func month_tick(state: MatchState, eid: int, may_build: bool) -> void:
@@ -20,9 +24,120 @@ static func month_tick(state: MatchState, eid: int, may_build: bool) -> void:
 	_footing(state, eid)
 	var idle := _idle_fleets(state, eid)
 	idle = _answer_threats(state, eid, idle, r)
+	idle = _repair(state, eid, idle)
+	idle = _offensive(state, eid, idle, r)
 	_convoys(state, eid, idle, r)
 	if may_build:
 		_build(state, eid, r)
+
+
+## Damaged fleets head for the nearest own shipyard system to repair (A13 docked repair).
+static func _repair(state: MatchState, eid: int, idle: Array[Fleet]) -> Array[Fleet]:
+	var ar := StrategicAI.rules(state)
+	if ar == null:
+		return idle
+	var yards: Array[int] = []
+	for sid: int in state.stations.ordered():
+		var st: Station = state.stations.get_or(sid)
+		if st.owner == eid and st.operational and (state.defs.get_def(StringName(st.def_id)) as StationDef).function == &"shipyard":
+			yards.append(st.system_id)
+	if yards.is_empty():
+		return idle
+	var keep: Array[Fleet] = []
+	for f in idle:
+		var c := _condition(state, f)
+		var l := Fleets.lead(state, f)
+		if c[1] > 0 and c[0] * 1000 < c[1] * ar.repair_hull and not l.system_id in yards:
+			var dist := AutoLogistics._hops_from(state, l.system_id, {})
+			var best := yards[0]
+			for y in yards:
+				if int(dist.get(y, Sectors.FAR)) < int(dist.get(best, Sectors.FAR)):
+					best = y
+			if Autopilot._do(state, eid, CmdMoveFleet.TYPE, {"fleet": f.id, "to": best}):
+				continue
+		keep.append(f)
+	return keep
+
+
+## [hull now, hull max] of a fleet.
+static func _condition(state: MatchState, f: Fleet) -> Array[int]:
+	var out: Array[int] = [0, 0]
+	for sid in f.ships():
+		var u: Unit = state.units.get_or(sid)
+		out[0] += u.hp
+		out[1] += ShipStats.cached(state.defs, u.hull_id, u.components, SpeciesTraits.species_of(state, u.owner)).hull
+	return out
+
+
+## At war: attack with idle fleets beyond the home reserve (WP11).
+static func _offensive(state: MatchState, eid: int, idle: Array[Fleet], r: CombatRulesDef) -> Array[Fleet]:
+	var ar := StrategicAI.rules(state)
+	if ar == null or idle.is_empty():
+		return idle
+	var enemies: Array[int] = []
+	for wid: int in state.war_info.ordered():
+		var w: War = state.war_info.get_or(wid)
+		if w.attacker == eid:
+			enemies.append(w.defender)
+		elif w.defender == eid:
+			enemies.append(w.attacker)
+	if enemies.is_empty():
+		return idle
+	var total := Treaties.power(state, eid)
+	var reserve := FixedMath.floor_div(total * Treaties.personality(state, eid, "caution") * ar.reserve_per_caution, 1000)
+	var idle_value := 0
+	for f in idle:
+		idle_value += strength(state, f)
+	var targets := _targets(state, enemies)  # [[system, defending value, kind order], ...]
+	var keep: Array[Fleet] = []
+	var sent := {}
+	for f in idle:
+		var fv := strength(state, f)
+		if total - fv < reserve or idle_value - fv < 0:
+			keep.append(f)
+			continue
+		var l := Fleets.lead(state, f)
+		var dist := AutoLogistics._hops_from(state, l.system_id, {})
+		var best := -1
+		var best_key := Sectors.FAR
+		for t: Array in targets:
+			if sent.has(t[0]) or fv * 1000 < int(t[1]) * r.ai_attack_ratio:
+				continue
+			var key := int(t[2]) * 10000 + int(dist.get(t[0], Sectors.FAR))
+			if key < best_key:
+				best = t[0]
+				best_key = key
+		if best >= 0 and Autopilot._do(state, eid, CmdMoveFleet.TYPE, {"fleet": f.id, "to": best}):
+			sent[best] = true
+			total -= fv
+			continue
+		keep.append(f)
+	return keep
+
+
+## Offensive targets: systems where enemy warships sit (kind 0, their value) and enemy colony systems with no
+## enemy warships (kind 1, value 0), in system ID order.
+static func _targets(state: MatchState, enemies: Array[int]) -> Array:
+	var value := {}
+	for uid: int in state.units.ordered():
+		var u: Unit = state.units.get_or(uid)
+		if u.owner in enemies and u.kind == "warship" and not u.is_moving():
+			value[u.system_id] = int(value.get(u.system_id, 0)) + Battles.cost_of(state, u.id)
+	var out := []
+	for sid: int in IdMap.sort_keys(value.keys()):
+		out.append([sid, value[sid], 0])
+	for pid: int in state.colonies.ordered():
+		var c: Colony = state.colonies.get_or(pid)
+		var sid := state.galaxy.planet(pid).system_id
+		if c.owner in enemies and not value.has(sid):
+			var defended := 0
+			for stid: int in state.stations.ordered():
+				var st: Station = state.stations.get_or(stid)
+				if st.system_id == sid and st.owner in enemies and Battles.is_armed_station(state, st):
+					defended += Battles.cost_of(state, st.id)
+			out.append([sid, defended, 1])
+			value[sid] = defended
+	return out
 
 
 ## D7 for AI slots (until the strategic AI, WP10): Peace when at peace; at war Mobilised, or Total War when an
@@ -72,7 +187,8 @@ static func _merge(state: MatchState, eid: int) -> void:
 			Autopilot._do(state, eid, CmdMergeFleets.TYPE, {"into": first[sys], "from": f.id})
 
 
-## {system: battle value} of hostiles in the empire's own systems, sorted by system ID.
+## {system: battle value} of hostiles in the empire's own systems (and, from WP11, its allies' and protected's),
+## sorted by system ID.
 static func threats(state: MatchState, eid: int) -> Dictionary:
 	var by_system := {}
 	for uid: int in state.units.ordered():
@@ -81,7 +197,10 @@ static func threats(state: MatchState, eid: int) -> Dictionary:
 			continue
 		if not (u.kind == "raider" or u.kind == "pirate_base" or u.kind == "warship"):
 			continue
-		if state.galaxy.system(u.system_id).owner != eid or not Battles.hostile(state, eid, u.owner):
+		var owner := state.galaxy.system(u.system_id).owner
+		var ours := owner == eid or (owner != StateIO.NONE and owner >= 0 and Treaties.allied(state, eid, owner)
+			and Battles.hostile(state, owner, u.owner))  # WP11: allies and protected count as our own
+		if not ours or not Battles.hostile(state, eid, u.owner):
 			continue
 		by_system[u.system_id] = int(by_system.get(u.system_id, 0)) + Battles.cost_of(state, u.id)
 	var out := {}

@@ -26,13 +26,16 @@ const ID := &"core:ai_rules/default"
 @export var council_ambition: int  # members at least this ambitious propose resolutions
 @export var sanction_opinion: int  # propose sanctions on empires it likes no more than this
 @export var protectorate_utility: int
+# War operations (M4 WP11)
+@export var reserve_per_caution: int  # home reserve = fleet value x Caution x this / 1000
+@export var repair_hull: int  # permille of hull below which a fleet goes home to repair
 
 
 const _INTS: Array[String] = ["personality_spread", "actions_per_month", "peace_years", "war_lanes",
 	"war_ratio_base", "war_ratio_per_caution", "war_no_cb_aggression", "war_cb_bonus", "war_opportunity_bonus",
 	"claim_aggression", "claim_influence_cushion", "claim_opinion", "peace_exhaustion", "peace_losing_score",
 	"peace_winning_score", "peace_utility", "treaty_divisor", "treaty_threat_bonus", "council_ambition",
-	"sanction_opinion", "protectorate_utility"]
+	"sanction_opinion", "protectorate_utility", "reserve_per_caution", "repair_hull"]
 
 
 func category() -> String:

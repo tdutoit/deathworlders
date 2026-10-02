@@ -153,6 +153,12 @@ rules (CLAUDE.md), same tooling.*
   Caution 60 with raiders about) and protectorate requests when threatened (humans with Respect 300 first).
   Numbers in a new `ai_rules` Def. Economy harness sanity (neutral, seeds 1-4): 11 of 16 (13 before); the
   full economy and expansion pass (Thessari floor) stays with WP14.
+- 2026-10-03 (WP11): the military autopilot goes to war. Threats in allied and protected systems count like
+  its own (calls to arms, guardian duty within E8's 60 days). Fleets under 50% hull head for the nearest own
+  shipyard system. At war, idle fleets beyond a home reserve (fleet value x Caution x 0.5%) attack: systems
+  where enemy warships sit, when they bring at least `ai_attack_ratio` (1.5x) of their battle value, else enemy
+  colony systems with no enemy warships (blockades score war points; their armed stations count), nearest
+  first, one fleet a target. Retreat in battle stays with fleet doctrine (A10). Numbers in ai_rules.
 
 ---
 
