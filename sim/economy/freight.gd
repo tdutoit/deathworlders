@@ -167,7 +167,10 @@ static func _wait_done(state: MatchState, u: Unit) -> void:
 				u.wait_hours = DAY  # manual route: nothing to load yet, try again tomorrow
 				return
 		"unloading":
+			var before := u.cargo_milli()
 			_unload(state, u, p["dest"] if not p.is_empty() else u.home)
+			if u.job.has("delivery"):  # M4 deal goods (Deals)
+				Deals.delivered(state, int(u.job["delivery"]), before - u.cargo_milli())
 			if not p.is_empty() and p["auto"]:
 				u.job = {}
 				u.phase = "home"

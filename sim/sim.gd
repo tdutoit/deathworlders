@@ -66,6 +66,7 @@ static func _day_tick(state: MatchState) -> void:
 	StationOps.day_tick(state, day)
 	Builder.day_tick(state)
 	Shipyards.day_tick(state)
+	Deals.day_tick(state)  # M4: deal goods claim idle freighters before auto-logistics
 	AutoLogistics.day_tick(state)
 	FleetSupply.day_tick(state)
 
@@ -95,6 +96,7 @@ static func _month_phase(state: MatchState, hour: int) -> void:
 		5:
 			Relations.month_tick(state)  # M4: contacts, opinion standing and decay
 			Treaties.month_tick(state)  # trust from treaties, notice, tribute, obligations, calls
+			Deals.month_tick(state)  # recurring deal payments
 			SignatureMechanics.month_tick(state)
 
 

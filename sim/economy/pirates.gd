@@ -255,6 +255,8 @@ static func tick(state: MatchState) -> void:
 
 
 static func _lose(state: MatchState, f: Unit, by := "pirates") -> void:
+	if f.job.has("delivery"):
+		Deals.lost(state, int(f.job["delivery"]))  # a deal convoy lost: the deal fails (E6)
 	var e := state.empire(f.owner)
 	e.losses.append({"tick": state.tick, "unit": f.id, "system": f.system_id, "hull": f.hull_id, "cargo": f.cargo.duplicate(),
 		"hub": f.home, "by": by})

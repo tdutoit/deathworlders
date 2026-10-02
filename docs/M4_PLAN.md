@@ -68,6 +68,18 @@ rules (CLAUDE.md), same tooling.*
   ship goes to the boarding ship's owner; the battle ends as a truce once no owner on one side is hostile to
   any on the other. Salvage goes to each winning-side empire by its share of the hull damage the side dealt
   (Improvisers on its own share). Reports keep `sides`; the UI names coalition sides "A + B".
+- 2026-10-02 (WP5): deals (`propose_deal`: items each way, optionally with a treaty; an AI answers by E5 with
+  a deal-balance term, a plain deal using threshold 0 and the trade personality term, gifts always accepted;
+  a player answers the proposal). Items: credits and influence (moved at once), resources (the giver's idle
+  freighters carry them to the receiver's capital; goods need a trade agreement, which may be signed in the
+  same proposal), claimed systems (not the capital; the giver's colonies there, pops keeping their species,
+  and stations change hands; routes and demands touching them are removed). Recurring items pay monthly for
+  N months. E6 value from the valuer's side: base value x amount x scarcity (target stock = 6 months of last
+  month's use; clamp 500-2000 permille), greed (500 + 10 x greed permille) on what it gives up, recurring at
+  60%, systems at 60 months of their colonies' output (at least 500). Placeholders: influence worth 5
+  credits; deal balance 1 point per 50 credits of value, capped at +-50. A gift adds +1 opinion per 25 value
+  (E2). A failed deal (unpaid, or a deal freighter lost to raiders) costs the at-fault side -20 opinion
+  ("failed a deal", -1 a month).
 
 ---
 

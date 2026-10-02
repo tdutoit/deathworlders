@@ -11,6 +11,7 @@ opinion_border = -10
 opinion_common_enemy = 20
 war_opinion_cap = -50
 event_cap = {
+&"deal_failed": -20,
 &"denied": -15,
 &"espionage": -30,
 &"fought_together": 25,
@@ -22,6 +23,7 @@ event_cap = {
 &"war_memory": -50
 }
 event_decay_months = {
+&"deal_failed": 1,
 &"denied": 1,
 &"espionage": 1,
 &"fought_together": 2,
@@ -38,6 +40,18 @@ wary_affinity = -20
 trust_max = 100
 reputation_min = -500
 reputation_max = 500
+influence_value = 5
+deal_target_months = 6
+scarcity_min = 500
+scarcity_max = 2000
+recurring_permille = 600
+system_value_months = 60
+system_min_value = 500
+greed_base = 500
+greed_per_point = 10
+deal_value_per_point = 50
+deal_balance_max = 50
+gift_value_per_opinion = 25
 shared_threat = 20
 fear_max = 25
 fear_ratio_step = 40

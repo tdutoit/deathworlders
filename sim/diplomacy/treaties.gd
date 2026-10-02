@@ -116,12 +116,16 @@ static func _lanes_between(state: MatchState, a: int, b: int) -> int:
 
 ## E5 acceptance of `to` for a treaty proposed by `from`: {"total", "parts": [[loc key, value], ...],
 ## "blocked": loc key of a failed E4 gate or ""}. Accepted when not blocked and total >= 0.
-static func acceptance(state: MatchState, from: int, to: int, def_id: String) -> Dictionary:
+static func acceptance(state: MatchState, from: int, to: int, def_id: String, items: Array = []) -> Dictionary:
 	var r := rules(state)
-	var d := def_of(state, def_id)
+	var d := def_of(state, def_id) if def_id != "" else null  # no treaty: a plain deal (threshold 0, trade-minded)
 	var op := Relations.opinion(state, to, from)
 	var tr := Relations.trust(state, to, from)
-	var parts := [["ACCEPT_OPINION", op / 2], ["ACCEPT_TRUST", tr / 2], ["ACCEPT_THRESHOLD", -d.threshold]]
+	var parts := [["ACCEPT_OPINION", op / 2], ["ACCEPT_TRUST", tr / 2]]
+	if d != null:
+		parts.append(["ACCEPT_THRESHOLD", -d.threshold])
+	if not items.is_empty():
+		parts.append(["ACCEPT_DEAL", Deals.balance_points(state, to, items)])
 	var rel := Relations.of(state, to, from)
 	if rel != null and rel.standing.has("common_enemy"):
 		parts.append(["ACCEPT_SHARED_THREAT", r.shared_threat])
@@ -131,9 +135,10 @@ static func acceptance(state: MatchState, from: int, to: int, def_id: String) ->
 	if fear > 0:
 		parts.append(["ACCEPT_FEAR", fear])
 	var pers := FixedMath.floor_div(personality(state, to, "xenophilia") - 50, 5)
-	if d.kind == &"defensive":
+	var kind := d.kind if d != null else &"trade"
+	if kind == &"defensive":
 		pers += FixedMath.floor_div(personality(state, to, "honour") - 50, 10)
-	elif d.kind == &"trade":
+	elif kind == &"trade":
 		pers -= FixedMath.floor_div(personality(state, to, "greed") - 50, 5)
 	parts.append(["ACCEPT_PERSONALITY", pers])
 	if rel != null and int(rel.refusals.get(def_id, -1)) >= 0 \
@@ -143,15 +148,17 @@ static func acceptance(state: MatchState, from: int, to: int, def_id: String) ->
 	for p: Array in parts:
 		total += int(p[1])
 	var blocked := ""
-	if op < d.min_opinion:
+	if d != null and op < d.min_opinion:
 		blocked = "ACCEPT_GATE_OPINION"
-	elif tr < d.min_trust:
+	elif d != null and tr < d.min_trust:
 		blocked = "ACCEPT_GATE_TRUST"
 	return {"total": total, "parts": parts, "blocked": blocked}
 
 
-static func accepts(state: MatchState, from: int, to: int, def_id: String) -> bool:
-	var a := acceptance(state, from, to, def_id)
+static func accepts(state: MatchState, from: int, to: int, def_id: String, items: Array = []) -> bool:
+	if def_id == "" and Deals.is_gift(items, from):
+		return true  # gifts are always welcome
+	var a := acceptance(state, from, to, def_id, items)
 	return a["blocked"] == "" and int(a["total"]) >= 0
 
 

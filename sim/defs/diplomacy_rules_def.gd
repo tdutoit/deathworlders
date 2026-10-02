@@ -7,7 +7,7 @@ const ID := &"core:diplomacy_rules/default"
 ## Event modifiers (E2): one accumulating modifier per type and directed pair, decaying 1 point toward 0
 ## every `event_decay_months[type]` months (0 = never).
 const EVENTS: Array[String] = ["gift", "fought_together", "rescued", "denied", "espionage", "treaty_broken",
-	"treaty_broken_other", "humiliated", "war_memory"]
+	"treaty_broken_other", "humiliated", "war_memory", "deal_failed"]
 
 # Contact (owner decision 2026-10-02): territory within contact_lanes, or a ship in the other's space.
 @export var contact_lanes: int
@@ -47,17 +47,33 @@ const EVENTS: Array[String] = ["gift", "fought_together", "rescued", "denied", "
 @export var protectorate_success_trust: int  # E8
 @export var protectorate_success_reputation: int  # E14 half of Respect +50
 @export var protectorate_fail_reputation: int  # E14 half of Respect -150
+# Deals (E6; M4 WP5)
+@export var influence_value: int  # credits per influence point in deals (placeholder; influence has no B1 base value)
+@export var deal_target_months: int  # E6 scarcity: target stock = this many months of last month's use
+@export var scarcity_min: int  # E6
+@export var scarcity_max: int  # E6
+@export var recurring_permille: int  # E6: recurring deals at 60%
+@export var system_value_months: int  # E6: a system is worth 60 months of its output
+@export var system_min_value: int  # an outpost system with no colony output (placeholder)
+@export var greed_base: int  # E6 personality_greed = (base + greed x per_point) permille on what the valuer gives up
+@export var greed_per_point: int  # E6
+@export var deal_value_per_point: int  # E5 deal_balance: credits of value per point (placeholder)
+@export var deal_balance_max: int  # E5 deal_balance cap either way (placeholder)
+@export var gift_value_per_opinion: int  # E2: +1 opinion per 25 credit-value
 # E14 Reputation (every empire; Legend for humans comes with WP9)
 @export var reputation_min: int
 @export var reputation_max: int
 
-const _INTS: Array[String] = ["contact_lanes", "opinion_min", "opinion_max", "opinion_border", "opinion_common_enemy",
-	"war_opinion_cap", "trust_start", "trust_start_wary", "wary_affinity", "trust_max", "reputation_min", "reputation_max",
-	"shared_threat", "fear_max", "fear_ratio_step", "refusal_months", "refusal_penalty", "trust_per_treaty",
-	"trust_treaty_max", "break_others_opinion", "break_others_trust", "break_reputation", "call_days",
-	"call_answered_trust", "call_ignored_trust", "proposal_days", "protectorate_power",
-	"protectorate_hostile_opinion", "protectorate_lanes", "protectorate_tribute", "protectorate_days",
-	"protectorate_success_trust", "protectorate_success_reputation", "protectorate_fail_reputation"]
+const _INTS: Array[String] = ["influence_value", "deal_target_months", "scarcity_min", "scarcity_max",
+	"recurring_permille", "system_value_months", "system_min_value", "greed_base", "greed_per_point",
+	"deal_value_per_point", "deal_balance_max", "gift_value_per_opinion", "contact_lanes", "opinion_min",
+	"opinion_max", "opinion_border", "opinion_common_enemy", "war_opinion_cap", "trust_start", "trust_start_wary",
+	"wary_affinity", "trust_max", "reputation_min", "reputation_max", "shared_threat", "fear_max",
+	"fear_ratio_step", "refusal_months", "refusal_penalty", "trust_per_treaty", "trust_treaty_max",
+	"break_others_opinion", "break_others_trust", "break_reputation", "call_days", "call_answered_trust",
+	"call_ignored_trust", "proposal_days", "protectorate_power", "protectorate_hostile_opinion",
+	"protectorate_lanes", "protectorate_tribute", "protectorate_days", "protectorate_success_trust",
+	"protectorate_success_reputation", "protectorate_fail_reputation"]
 
 
 func category() -> String:
