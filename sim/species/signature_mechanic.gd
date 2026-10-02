@@ -12,6 +12,11 @@ func init_state(_state: MatchState, _empire: Empire) -> void:
 	pass
 
 
+## Daily, in empire ID order (day tick).
+func day_tick(_state: MatchState, _empire: Empire) -> void:
+	pass
+
+
 ## Monthly, in empire ID order, in the month phase after the AI (Sim._month_phase).
 func month_tick(_state: MatchState, _empire: Empire) -> void:
 	pass
@@ -39,6 +44,36 @@ func council_votes(_state: MatchState, _empire: Empire) -> int:
 
 ## True to veto a passed Council resolution (E9 Precedence: one a session).
 func council_veto(_state: MatchState, _empire: Empire, _proposal: Dictionary) -> bool:
+	return false
+
+
+## Standing opinion `viewer` holds toward this empire because of the mechanic (Legend, Sanctuary).
+func opinion_from(_state: MatchState, _empire: Empire, _viewer: int) -> int:
+	return 0
+
+
+## E5 acceptance bonus when `proposer` offers this empire a treaty (Sanctuary).
+func acceptance_bonus(_state: MatchState, _empire: Empire, _proposer: int, _def_id: String) -> int:
+	return 0
+
+
+## War score discount this empire gets when demanding peace terms (Legend: Fear).
+func peace_discount(_state: MatchState, _empire: Empire) -> int:
+	return 0
+
+
+## Job output modifier for the whole empire, permille (Precedence stagnation).
+func output_permille(_state: MatchState, _empire: Empire) -> int:
+	return 0
+
+
+## True when others may declare a containment war on this empire whatever its power (Legend: Fear 800).
+func containment_target(_state: MatchState, _empire: Empire) -> bool:
+	return false
+
+
+## True when the Council admits this empire without a vote (Legend: Respect 800).
+func auto_recognition(_state: MatchState, _empire: Empire) -> bool:
 	return false
 
 

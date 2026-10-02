@@ -66,6 +66,8 @@ static func check_station(state: MatchState, empire: int, planet_id: int, statio
 	var def := db.get_def(StringName(station_id)) as StationDef
 	if def == null:
 		return "unknown station %s" % station_id
+	if not def.buildable:
+		return "%s can't be built" % station_id
 	if def.tier != 1:
 		return "build tier 1 and upgrade it"
 	var planet := state.galaxy.planet(planet_id)

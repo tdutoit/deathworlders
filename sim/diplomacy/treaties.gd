@@ -141,6 +141,9 @@ static func acceptance(state: MatchState, from: int, to: int, def_id: String, it
 	elif kind == &"trade":
 		pers -= FixedMath.floor_div(personality(state, to, "greed") - 50, 5)
 	parts.append(["ACCEPT_PERSONALITY", pers])
+	var sig := SignatureMechanics.acceptance_bonus(state, to, from, def_id)
+	if sig != 0:
+		parts.append(["ACCEPT_SIGNATURE", sig])  # Sanctuary (WP9)
 	if rel != null and int(rel.refusals.get(def_id, -1)) >= 0 \
 			and state.tick - int(rel.refusals[def_id]) < r.refusal_months * Calendar.HOURS_PER_MONTH:
 		parts.append(["ACCEPT_RECENT_REFUSAL", r.refusal_penalty])

@@ -111,6 +111,9 @@ static func month_tick(state: MatchState) -> void:
 		rel.standing.merge(Treaties.standing(state, rel.from, rel.to))  # E2 treaty bonuses (WP4)
 		if not Wars.claims_on(state, rel.from, rel.to).is_empty() or not Wars.claims_on(state, rel.to, rel.from).is_empty():
 			rel.standing["claims"] = r.opinion_claims  # E2 overlapping claims (WP6)
+		var sig := SignatureMechanics.opinion_from(state, rel.to, rel.from)
+		if sig != 0:
+			rel.standing["signature"] = sig  # Legend (Respect / Fear) or Sanctuary (WP9)
 		var sanction := Councils.sanctions_standing(state, rel.from, rel.to)
 		if sanction != 0:
 			rel.standing["sanctions"] = sanction  # E9 Sanctions on X (WP8)

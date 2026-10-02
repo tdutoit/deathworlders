@@ -1,0 +1,54 @@
+[gd_resource type="Resource" script_class="SignatureRulesDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/signature_rules_def.gd" id="1_sigr"]
+
+[resource]
+script = ExtResource("1_sigr")
+legend_start = 100
+legend_max = 1000
+outnumbered_ratio = 1500
+outnumbered_respect = 30
+outnumbered_fear = 20
+protect_respect = 50
+protect_fail_respect = -150
+kept_treaty_years = 10
+kept_treaty_respect = 20
+break_respect = -100
+break_fear = 30
+capital_fleet_share = 500
+capital_fleet_respect = 20
+capital_fleet_fear = 50
+no_cb_respect = -200
+no_cb_fear = 50
+opinion_divisor = 40
+respect_first_pick = 300
+respect_all_opinion = 600
+respect_all_bonus = 10
+respect_recognition = 800
+fear_deterrence = 300
+fear_deterrence_caution = 50
+fear_peace = 600
+fear_peace_discount = 20
+fear_coalition = 800
+precedence_votes = 2
+stagnation_free = 5
+stagnation_step = -20
+stagnation_max = -200
+veto_stance = -20
+surge_min_pops = 6
+surge_pops = 2
+surge_days = 15
+surge_component_permille = 500
+surge_cooldown_months = 6
+merc_hire = 300
+merc_monthly = 30
+merc_ships = 3
+merc_months = 12
+convoy_profit = 50
+contract_per_trade = 3
+sanctuary_min_pops = 5
+sanctuary_pops_per_platform = 10
+sanctuary_opinion = 10
+sanctuary_acceptance = 10
+id = &"core:signature_rules/default"
+name_key = "SIGNATURE_RULES_DEFAULT"

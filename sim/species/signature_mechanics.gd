@@ -45,6 +45,54 @@ static func init_all(state: MatchState) -> void:
 			m.init_state(state, e)
 
 
+static func rules(state: MatchState) -> SignatureRulesDef:
+	return state.defs.get_def(SignatureRulesDef.ID) as SignatureRulesDef
+
+
+static func day_tick(state: MatchState) -> void:
+	for eid: int in state.empires.ordered():
+		var e: Empire = state.empires.get_or(eid)
+		var m := of(state, e)
+		if m != null:
+			m.day_tick(state, e)
+
+
+static func opinion_from(state: MatchState, target: int, viewer: int) -> int:
+	var e := state.empire(target)
+	var m := of(state, e)
+	return m.opinion_from(state, e, viewer) if m != null else 0
+
+
+static func acceptance_bonus(state: MatchState, target: int, proposer: int, def_id: String) -> int:
+	var e := state.empire(target)
+	var m := of(state, e)
+	return m.acceptance_bonus(state, e, proposer, def_id) if m != null else 0
+
+
+static func peace_discount(state: MatchState, eid: int) -> int:
+	var e := state.empire(eid)
+	var m := of(state, e)
+	return m.peace_discount(state, e) if m != null else 0
+
+
+static func output_permille(state: MatchState, eid: int) -> int:
+	var e := state.empire(eid)
+	var m := of(state, e)
+	return m.output_permille(state, e) if m != null else 0
+
+
+static func containment_target(state: MatchState, eid: int) -> bool:
+	var e := state.empire(eid)
+	var m := of(state, e)
+	return m != null and m.containment_target(state, e)
+
+
+static func auto_recognition(state: MatchState, eid: int) -> bool:
+	var e := state.empire(eid)
+	var m := of(state, e)
+	return m != null and m.auto_recognition(state, e)
+
+
 static func month_tick(state: MatchState) -> void:
 	for eid: int in state.empires.ordered():
 		var e: Empire = state.empires.get_or(eid)

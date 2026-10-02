@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="StationDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/station_def.gd" id="1_pdef"]
+
+[resource]
+script = ExtResource("1_pdef")
+function = &"defence"
+buildable = false
+design = &"core:design/defence_platform"
+id = &"core:station/planetary_defence"
+name_key = "STATION_PLANETARY_DEFENCE"

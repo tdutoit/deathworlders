@@ -69,6 +69,7 @@ static func _day_tick(state: MatchState) -> void:
 	Deals.day_tick(state)  # M4: deal goods claim idle freighters before auto-logistics
 	AutoLogistics.day_tick(state)
 	FleetSupply.day_tick(state)
+	SignatureMechanics.day_tick(state)  # M4: Brood Surge and other daily mechanics
 
 
 ## Settlement at the month boundary: growth, stability, taxes and upkeep, then sector membership (M2).

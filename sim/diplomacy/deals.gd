@@ -282,6 +282,7 @@ static func delivered(state: MatchState, delivery_id: int, amount: int) -> void:
 		return
 	dl.remaining -= amount
 	dl.unit = StateIO.NONE
+	SignatureMechanics.treaty_event(state, dl.giver, {"type": "goods_delivered", "resource": dl.resource, "amount": amount})
 	if dl.remaining <= 0:
 		state.deliveries.erase(dl.id)
 		var d: Deal = state.deals.get_or(dl.deal)

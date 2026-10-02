@@ -116,6 +116,29 @@ rules (CLAUDE.md), same tooling.*
   opinion of X -20 while in force; a member signing a treaty or deal with X defies it: -15 opinion and -10
   trust from each member that voted for it), Pirate Suppression Mandate (+10 security in member space),
   Recognition of X (admits X). Kinetic Bombardment Ban and Crisis Mandate wait for M6/M7.
+- 2026-10-02 (WP9, owner decisions on open question 2): the five mechanics, numbers in a new
+  `signature_rules` Def. New mechanic hooks: day_tick, opinion_from, acceptance_bonus, peace_discount,
+  output_permille, containment_target, auto_recognition, council_votes, council_veto; events through
+  treaty_event (treaty signed/broken/ended, protectorate defended/failed, war declared, war won, resolution
+  passed, goods delivered).
+  Legend (humans, E14): Respect and Fear start 100 (0-1000): outnumbered victory (enemy start cost >= 1.5x)
+  +30/+20, protectorate defended +50 / failed -150, a treaty kept 10 years +20, a treaty broken -100/+30,
+  an empire's capital fleet (half its navy lost in one battle) +20/+50, war without casus belli -200/+50.
+  Every other empire's opinion + Respect/40 - Fear/40, +10 at Respect 600; Respect 800 = Council member;
+  Fear 600 = peace terms 20 cheaper; Fear 800 = anyone has a containment casus belli. (Respect 300's first
+  pick and Fear 300's deterrence are AI rules, WP10.) Other species keep Reputation (WP3).
+  Precedence (Vess'kar): +2 Council votes; one veto a session (AI: a passed resolution it scores at -20 or
+  less; player: `precedence_veto`); stagnation +1 a year without signing a treaty, passing its own resolution
+  or winning a war, -2% job output per point beyond 5 (to -20%).
+  Brood Surge (Krothi): `brood_surge {colony}`: 6+ pops, 2 pops and half a corvette's components become a
+  Krothi corvette after 15 days; a colony once per 6 months.
+  Contracts (Ohlan): `hire_mercenaries`: 300 credits + 30 a month, 3 Ohlan destroyers for 12 months (they
+  leave when time or money runs out); +5% of the value of goods its freighters deliver in deals; +3 credits a
+  month per trade agreement.
+  Sanctuary (Thessari): colonies with 5+ pops keep planetary defences (`core:station/planetary_defence`, a
+  defensive platform, free, not buildable; one per 10 pops, at least one), which fight in battles in the
+  system; others' opinion +10; defence pacts, alliances and protectorates proposed to them +10 acceptance.
+  Stations gain `buildable` (false for planetary defences).
 
 ---
 

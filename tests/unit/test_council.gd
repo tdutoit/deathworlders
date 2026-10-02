@@ -66,7 +66,12 @@ func test_recognition_vote() -> void:
 	assert_eq((s.council.last_session[0] as Dictionary)["passed"], true)
 
 
+func after_each() -> void:
+	SignatureMechanics.register(&"precedence", PrecedenceMechanic)
+
+
 func test_resolution_effects_and_repeal() -> void:
+	SignatureMechanics.register(&"precedence", SignatureMechanic)  # plain votes here; Precedence: test_signatures
 	var s := _match()
 	var ids := _ids(s)
 	s.council.members.append(ids[0])

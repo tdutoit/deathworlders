@@ -51,6 +51,9 @@ static var _types := {  # class refs are not constant expressions
 	CmdSetWarFooting.TYPE: CmdSetWarFooting,
 	CmdCouncilPropose.TYPE: CmdCouncilPropose,
 	CmdCouncilVote.TYPE: CmdCouncilVote,
+	CmdBroodSurge.TYPE: CmdBroodSurge,
+	CmdHireMercenaries.TYPE: CmdHireMercenaries,
+	CmdPrecedenceVeto.TYPE: CmdPrecedenceVeto,
 	CmdSetPatrol.TYPE: CmdSetPatrol,
 }
 

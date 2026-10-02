@@ -55,7 +55,8 @@ static func casus_belli(state: MatchState, attacker: int, target: int) -> Array[
 		if Treaties.def_of(state, t.def_id).has("protectorate") and t.b == attacker and state.wars.has(Battles.war_key(t.a, target)):
 			out.append("protectorate")
 			break
-	if Treaties.power(state, target) * 1000 >= maxi(1, Treaties.power(state, attacker)) * rules(state).containment_ratio:
+	if Treaties.power(state, target) * 1000 >= maxi(1, Treaties.power(state, attacker)) * rules(state).containment_ratio \
+			or SignatureMechanics.containment_target(state, target):  # Legend: Fear 800 (E14)
 		out.append("containment")
 	return out
 
@@ -96,6 +97,7 @@ static func declare(state: MatchState, attacker: int, target: int, cb: String) -
 			if other != attacker and Relations.has_contact(state, other, attacker):
 				Relations.add_event(state, other, attacker, "warmonger", r.no_cb_opinion)
 	Treaties.on_war_declared(state, attacker, target, cb != "")
+	SignatureMechanics.treaty_event(state, attacker, {"type": "war_declared", "target": target, "casus_belli": cb})
 	return w
 
 
@@ -273,6 +275,7 @@ static func terms_cost(state: MatchState, terms: Array) -> int:
 static func accepts(state: MatchState, w: War, loser: int, terms: Array) -> bool:
 	var demander := w.attacker if loser == w.defender else w.defender
 	var limit := w.score_of(demander) + FixedMath.floor_div(state.empire(loser).war_exhaustion - state.empire(demander).war_exhaustion, 2000)
+	limit += SignatureMechanics.peace_discount(state, demander)  # Legend: Fear 600 makes peace 20 cheaper
 	return terms_cost(state, terms) <= maxi(0, limit)
 
 
@@ -312,6 +315,8 @@ static func make_peace(state: MatchState, w: War, loser: int, terms: Array) -> v
 				e.disarm_cap = FixedMath.floor_div(Treaties.power(state, loser), 2)
 	for pair: Array in [[w.attacker, w.defender], [w.defender, w.attacker]]:
 		Relations.add_event(state, pair[0], pair[1], "war_memory", r.war_opinion_cap)
+	if not terms.is_empty():
+		SignatureMechanics.treaty_event(state, winner, {"type": "war_won", "enemy": loser})
 
 
 ## Disarmament: "" if `eid` may add a warship worth `value` (queued ones count), else why.

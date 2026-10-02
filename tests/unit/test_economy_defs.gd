@@ -24,7 +24,7 @@ func test_counts() -> void:
 	assert_eq(_db.ids("building").size(), 12)
 	assert_eq(_db.ids("focus").size(), 8)
 	assert_eq(_db.ids("synergy").size(), 5)
-	assert_eq(_db.ids("station").size(), 15, "14 + Defensive Platform (M3 WP1)")
+	assert_eq(_db.ids("station").size(), 16, "14 + Defensive Platform (M3 WP1) + planetary defences (M4 WP9)")
 	assert_eq(_db.ids("directive").size(), 7)
 	assert_eq(_db.ids("template").size(), 8 * 7 + 1, "every ordered focus pair + colony default")
 

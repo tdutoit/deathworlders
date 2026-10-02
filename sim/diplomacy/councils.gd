@@ -109,12 +109,18 @@ static func cast(state: MatchState, eid: int, proposal_id: int, vote: int) -> vo
 			p["votes"][str(eid)] = vote
 
 
-## AI vote (E9: by personality and opinion of the proposer; owner placeholder weights).
+## AI vote (E9: by personality and opinion of the proposer; owner placeholder weights): for when its score is
+## positive; the proposer always votes for its own proposal.
 static func ai_vote(state: MatchState, voter: int, p: Dictionary) -> int:
+	if voter == int(p["proposer"]):
+		return 1
+	return 1 if ai_score(state, voter, p) > 0 else -1
+
+
+## How much an AI member likes a proposal: opinion of the proposer / 2 plus its stance on the resolution.
+static func ai_score(state: MatchState, voter: int, p: Dictionary) -> int:
 	var proposer := int(p["proposer"])
 	var score := 0 if voter == proposer else FixedMath.floor_div(Relations.opinion(state, voter, proposer), 2)
-	if voter == proposer:
-		return 1
 	var repeal := int(p["repeal"])
 	var def_id: String = p["def"]
 	var target := int(p["target"])
@@ -140,13 +146,16 @@ static func ai_vote(state: MatchState, voter: int, p: Dictionary) -> int:
 			stance = (Relations.opinion(state, voter, target) if Relations.has_contact(state, voter, target) else -20) \
 				+ Treaties.personality(state, voter, "xenophilia") - 50
 	score += -stance if repeal >= 0 else stance
-	return 1 if score > 0 else -1
+	return score
 
 
 ## Monthly: hold the session when due.
 static func month_tick(state: MatchState) -> void:
 	if state.council == null or state.defs == null:
 		return
+	for eid: int in state.empires.ordered():
+		if not eid in state.council.members and SignatureMechanics.auto_recognition(state, eid):
+			state.council.members.append(eid)  # Legend: Respect 800 (E14)
 	if state.tick < state.council.next_session:
 		return
 	session(state)
@@ -173,6 +182,7 @@ static func session(state: MatchState) -> void:
 		var vetoed := passed and SignatureMechanics.council_veto(state, p)
 		if passed and not vetoed:
 			_enact(state, p, voted_for)
+			SignatureMechanics.treaty_event(state, int(p["proposer"]), {"type": "resolution_passed", "def": p["def"]})
 		c.last_session.append({"def": p["def"], "target": p["target"], "repeal": p["repeal"], "proposer": p["proposer"],
 			"yes": yes, "no": no, "passed": passed and not vetoed, "vetoed": vetoed})
 	c.proposals = []

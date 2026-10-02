@@ -24,6 +24,7 @@ const SHIP_SIZES: Array[String] = ["S", "M", "L"]
 @export var sector_range: int  # lanes a sector anchored here reaches (D3: T2 3, T3 5; 0 = can't anchor)
 @export var design: StringName  # defence stations: the design it fights with (a platform hull, M3)
 @export var security: int  # D9: +10 for defensive platforms and listening posts (none in M2)
+@export var buildable: bool = true  # false: placed by rules only (M4 Sanctuary planetary defences)
 
 
 func category() -> String:
@@ -50,6 +51,7 @@ func schema() -> Dictionary:
 		"sector_range": {"type": "int", "min": 0},
 		"security": {"type": "int", "min": 0},
 		"design": {"type": "id", "ref": "design"},
+		"buildable": {"type": "bool"},
 	}
 
 
