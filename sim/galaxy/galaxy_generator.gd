@@ -42,6 +42,7 @@ static func new_match(settings: MatchSettings, seed_value: int, db: DefDatabase,
 		if gen._run(state, db, spacing):
 			state.defs = db
 			StartSetup.apply(state, db)
+			Councils.found(state)  # M4: the Galactic Council (E9)
 			return state
 		attempt += 1
 		if attempt % ATTEMPTS_PER_SPACING == 0:

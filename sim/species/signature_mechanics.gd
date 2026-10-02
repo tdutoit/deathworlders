@@ -70,6 +70,22 @@ static func command_applied(state: MatchState, cmd: Command) -> void:
 		m.command_applied(state, e, cmd)
 
 
+static func council_votes(state: MatchState, eid: int) -> int:
+	var e := state.empire(eid)
+	var m := of(state, e)
+	return m.council_votes(state, e) if m != null else 0
+
+
+## True if any member's mechanic vetoes this passed proposal (members in ID order).
+static func council_veto(state: MatchState, proposal: Dictionary) -> bool:
+	for eid: int in state.council.members:
+		var e := state.empire(eid)
+		var m := of(state, e)
+		if m != null and m.council_veto(state, e, proposal):
+			return true
+	return false
+
+
 static func treaty_event(state: MatchState, eid: int, event: Dictionary) -> void:
 	var e := state.empire(eid)
 	var m := of(state, e)

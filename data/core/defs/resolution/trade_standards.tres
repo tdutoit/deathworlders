@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ResolutionDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/resolution_def.gd" id="1_reso"]
+
+[resource]
+script = ExtResource("1_reso")
+effect = &"trade_standards"
+needs_target = false
+value = 100
+permanent = false
+id = &"core:resolution/trade_standards"
+name_key = "RESOLUTION_TRADE_STANDARDS"

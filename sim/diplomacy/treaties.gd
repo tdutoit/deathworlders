@@ -174,6 +174,7 @@ static func sign(state: MatchState, from: int, to: int, def_id: String) -> Treat
 	t.b = to
 	t.start_tick = state.tick
 	state.treaties.put(t.id, t)
+	Councils.on_dealing(state, from, to)  # E9 defiance of sanctions
 	for eid: int in [from, to]:
 		SignatureMechanics.treaty_event(state, eid, {"type": "treaty_signed", "treaty": t.id, "def": def_id})
 	return t

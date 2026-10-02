@@ -104,6 +104,18 @@ rules (CLAUDE.md), same tooling.*
   together: at Total War, exhaustion from losses grows x0.5 and +1 a month is added while at war; humans
   (Stubborn, `empire.total_war_exhaustion` 350) use x0.35 for both. The AI sets Peace at peace, Mobilised at
   war, Total War against a stronger enemy (placeholder until WP10).
+- 2026-10-02 (WP8, owner decisions on open question 3 and the Council details): `MatchState.council`; founders
+  are every Vess'kar empire, else the empire with the highest species Ambition (ties: lowest ID). Sessions every
+  24 months; a member makes one proposal a session (`council_propose`, 30 influence; the proposer votes for
+  it), members vote (`council_vote`; AI members by opinion of the proposer / 2 plus a stance: Trade Standards
+  greed - 50, Sanctions minus their opinion of the target (-100 if it is them, -50 more if allied to it),
+  Pirate Suppression caution - 40, Recognition their opinion of the target + xenophilia - 50; repeals flip
+  the stance). Votes: 1 + influence income / 5 + protectorates held + mechanic bonuses (Precedence, WP9).
+  Passes on more weighted yes than no; in force until a later session repeals it (`repeal`). Resolutions (as
+  `resolution` Defs): Trade Standards (members' Clerk credits +10%, others -10%), Sanctions on X (members'
+  opinion of X -20 while in force; a member signing a treaty or deal with X defies it: -15 opinion and -10
+  trust from each member that voted for it), Pirate Suppression Mandate (+10 security in member space),
+  Recognition of X (admits X). Kinetic Bombardment Ban and Crisis Mandate wait for M6/M7.
 
 ---
 

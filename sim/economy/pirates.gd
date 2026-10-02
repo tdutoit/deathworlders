@@ -24,6 +24,7 @@ static func security(state: MatchState, system_id: int, reach: Dictionary = {}, 
 	var by_system: Dictionary = station_security if station_security != null else station_security_map(state)
 	sec += int(by_system.get(system_id, 0))
 	sec += int(patrol_security_map(state).get(system_id, 0))
+	sec += Councils.security_bonus(state, sys.owner)  # E9 Pirate Suppression Mandate
 	if sys.owner != StateIO.NONE and Economy.reach_of(state, reach, sys.owner, system_id) >= r.reach_3:
 		sec = FixedMath.floor_div(sec, 2)
 	return clampi(sec, 0, 100)

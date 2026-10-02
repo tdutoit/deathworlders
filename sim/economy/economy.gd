@@ -123,7 +123,10 @@ static func _produce(state: MatchState, c: Colony, db: DefDatabase, day: int, or
 		var out_permille := output_permille(c, job_id, db, mods)
 		for res: StringName in _sorted(job.outputs):
 			var total := FixedMath.mul_permille(int(job.outputs[res]) * n * MILLI, out_permille)
-			total = FixedMath.mul_permille(total, 1000 + WarFooting.output_permille(state, e, String(res)))  # D7
+			var extra := WarFooting.output_permille(state, e, String(res))  # D7
+			if job_id == "core:job/clerk" and res == &"core:resource/credits":
+				extra += Councils.clerk_credits_permille(state, c.owner)  # E9 Trade Standards
+			total = FixedMath.mul_permille(total, 1000 + extra)
 			_deliver(state, c, e, db, mods, String(res), FixedMath.floor_div(share(total, day) * ratio, MILLI))
 	for i in c.buildings.size():
 		if i == c.offline_building:

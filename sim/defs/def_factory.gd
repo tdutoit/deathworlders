@@ -31,6 +31,7 @@ static var SCRIPTS := {  # class refs are not constant expressions
 	"diplomacy_rules": DiplomacyRulesDef,
 	"treaty": TreatyDef,
 	"war_footing": WarFootingDef,
+	"resolution": ResolutionDef,
 }
 
 const META_FIELDS: Array[String] = ["op", "category", "id"]

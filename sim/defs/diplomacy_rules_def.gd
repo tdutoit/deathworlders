@@ -7,7 +7,7 @@ const ID := &"core:diplomacy_rules/default"
 ## Event modifiers (E2): one accumulating modifier per type and directed pair, decaying 1 point toward 0
 ## every `event_decay_months[type]` months (0 = never).
 const EVENTS: Array[String] = ["gift", "fought_together", "rescued", "denied", "espionage", "treaty_broken",
-	"treaty_broken_other", "humiliated", "war_memory", "deal_failed", "warmonger"]
+	"treaty_broken_other", "humiliated", "war_memory", "deal_failed", "warmonger", "defiance"]
 
 # Contact (owner decision 2026-10-02): territory within contact_lanes, or a ship in the other's space.
 @export var contact_lanes: int
@@ -88,6 +88,12 @@ const EVENTS: Array[String] = ["gift", "fought_together", "rescued", "denied", "
 @export var footing_transition_days: int  # D7
 @export var demob_months: int  # D7
 @export var demob_stability: int  # D7
+# Galactic Council (E9; M4 WP8)
+@export var council_session_months: int  # E9: a session every 2 years
+@export var council_proposal_influence: int  # E9
+@export var votes_influence_step: int  # E9: 1 vote per 5 influence income a month
+@export var defiance_opinion: int  # E9
+@export var defiance_trust: int  # E9
 # E14 Reputation (every empire; Legend for humans comes with WP9)
 @export var reputation_min: int
 @export var reputation_max: int
@@ -106,7 +112,9 @@ const _INTS: Array[String] = ["influence_value", "deal_target_months", "scarcity
 	"blockade_max", "exhaustion_loss_step", "exhaustion_peace_recovery", "exhaustion_stability_50",
 	"exhaustion_stability_75", "forced_peace_months", "cede_cost_min", "cede_cost_max", "cede_value_per_point",
 	"reparations_cost", "reparations_months", "humiliation_cost", "humiliation_influence", "disarmament_cost",
-	"disarmament_years", "peace_days", "footing_transition_days", "demob_months", "demob_stability"]
+	"disarmament_years", "peace_days", "footing_transition_days", "demob_months", "demob_stability",
+	"council_session_months", "council_proposal_influence", "votes_influence_step", "defiance_opinion",
+	"defiance_trust"]
 
 
 func category() -> String:

@@ -99,6 +99,7 @@ static func _month_phase(state: MatchState, hour: int) -> void:
 			Deals.month_tick(state)  # recurring deal payments
 			Wars.month_tick(state)  # blockades, exhaustion, forced peace
 			WarFooting.month_tick(state)  # Total War exhaustion
+			Councils.month_tick(state)  # Galactic Council sessions
 			SignatureMechanics.month_tick(state)
 
 

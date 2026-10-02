@@ -21,7 +21,8 @@ event_cap = {
 &"treaty_broken": -50,
 &"treaty_broken_other": -15,
 &"war_memory": -50,
-&"warmonger": -20
+&"warmonger": -20,
+&"defiance": -30
 }
 event_decay_months = {
 &"deal_failed": 1,
@@ -34,7 +35,8 @@ event_decay_months = {
 &"treaty_broken": 1,
 &"treaty_broken_other": 1,
 &"war_memory": 1,
-&"warmonger": 1
+&"warmonger": 1,
+&"defiance": 1
 }
 trust_start = 20
 trust_start_wary = 10
@@ -42,6 +44,11 @@ wary_affinity = -20
 trust_max = 100
 reputation_min = -500
 reputation_max = 500
+council_session_months = 24
+council_proposal_influence = 30
+votes_influence_step = 5
+defiance_opinion = -15
+defiance_trust = -10
 footing_transition_days = 60
 demob_months = 6
 demob_stability = -5

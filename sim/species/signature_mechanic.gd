@@ -32,6 +32,16 @@ func treaty_event(_state: MatchState, _empire: Empire, _event: Dictionary) -> vo
 	pass
 
 
+## Extra Galactic Council votes (E9; Precedence: +2).
+func council_votes(_state: MatchState, _empire: Empire) -> int:
+	return 0
+
+
+## True to veto a passed Council resolution (E9 Precedence: one a session).
+func council_veto(_state: MatchState, _empire: Empire, _proposal: Dictionary) -> bool:
+	return false
+
+
 ## Values for the UI meter, {loc key: int} (read-only).
 func meter(_state: MatchState, _empire: Empire) -> Dictionary:
 	return {}

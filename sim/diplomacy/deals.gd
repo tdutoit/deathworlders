@@ -140,6 +140,7 @@ static func execute(state: MatchState, a: int, b: int, items: Array) -> void:
 		x["left"] = maxi(1, int(it.get("months", 0)))
 		d.items.append(x)
 	state.deals.put(d.id, d)
+	Councils.on_dealing(state, a, b)  # E9 defiance of sanctions
 	if is_gift(items, a):
 		var r := rules(state)
 		var worth := 0
