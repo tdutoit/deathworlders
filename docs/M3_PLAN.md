@@ -280,8 +280,9 @@ Size: **S** ≈ one focused session, **M** ≈ 2–3 sessions, **L** ≈ 4+ sess
 
 ## D3. M3 Definition of Done
 
-- [ ] All WP acceptance criteria met.
-- [ ] `tools/run_tests.sh` green; determinism harness green (20 seeds × 4 sizes, with combat checksums).
+- [x] All WP acceptance criteria met.
+- [x] `tools/run_tests.sh` green (317); determinism harness green (20 seeds × 4 sizes × 60 months, with combat
+      checksums: 80 cases identical, 2026-10-02).
 - [x] Combat harness meets the A14 targets: mirror 45–55%; hard counter at equal cost 70–85%; typical battles
       8–20 rounds; missiles dominant at standoff without PD, weak at close (WP6). "A hard counter holds to
       ~1.25× cost" is report-only (owner, 2026-10-01; revisited in M4).
