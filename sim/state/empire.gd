@@ -24,6 +24,7 @@ var footing_until := 0  # transition at half effect until this tick
 var demob_until := 0  # demobilisation stability dip until this tick
 var personality := {}  # E11 weight -> 0..100 (species defaults +-15, rolled at match start; M4 WP10)
 var ai_actions := 0  # E13 strategic actions a month (0 = ai_rules default; difficulty sets it, WP12)
+var ai_output := 0  # E13 difficulty output bonus on job output, permille (AI slots)
 
 
 func to_dict() -> Dictionary:
@@ -32,7 +33,7 @@ func to_dict() -> Dictionary:
 		"losses": losses.duplicate(true), "tech_fragments": tech_fragments, "mechanic": mechanic.duplicate(true), "reputation": reputation, "war_exhaustion": war_exhaustion,
 		"prewar_fleet": prewar_fleet, "exhausted_since": exhausted_since, "disarm_until": disarm_until, "disarm_cap": disarm_cap,
 		"footing": footing, "footing_until": footing_until, "demob_until": demob_until,
-		"personality": personality.duplicate(), "ai_actions": ai_actions}
+		"personality": personality.duplicate(), "ai_actions": ai_actions, "ai_output": ai_output}
 
 
 static func from_dict(d: Dictionary) -> Empire:
@@ -58,6 +59,7 @@ static func from_dict(d: Dictionary) -> Empire:
 	e.demob_until = int(d.get("demob_until", 0))
 	e.personality = StateIO.ints_deep(d.get("personality", {}))
 	e.ai_actions = int(d.get("ai_actions", 0))
+	e.ai_output = int(d.get("ai_output", 0))
 	for l: Dictionary in d.get("losses", []):
 		e.losses.append({"tick": int(l["tick"]), "unit": int(l["unit"]), "system": int(l["system"]),
 			"hull": String(l["hull"]), "cargo": StateIO.int_map(l["cargo"]), "hub": int(l.get("hub", StateIO.NONE)),

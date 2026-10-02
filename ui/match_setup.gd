@@ -13,7 +13,8 @@ var _size: OptionButton
 var _pace: OptionButton
 var _crisis: OptionButton
 var _seed: LineEdit
-var _slots: Array = []  # [species OptionButton, controller OptionButton]
+var _slots: Array = []  # [species OptionButton, controller OptionButton, difficulty OptionButton, council CheckBox]
+var _species_info: Label
 var _error: Label
 
 
@@ -44,20 +45,41 @@ func _ready() -> void:
 	box.add_child(HSeparator.new())
 	box.add_child(UiKit.label("SETUP_PLAYERS", "Caption"))
 	var slots := GridContainer.new()
-	slots.columns = 3
+	slots.columns = 5
 	slots.add_theme_constant_override("h_separation", 12)
 	box.add_child(slots)
 	var species_items := []
 	for def in Database.defs.defs("species"):
 		species_items.append([def.name_key, String(def.id)])
+	var difficulties: Array = Database.defs.defs("difficulty")
+	difficulties.sort_custom(func(a: DifficultyDef, b: DifficultyDef) -> bool: return a.order < b.order)
+	var diff_items := []
+	var officer := 0
+	for d: DifficultyDef in difficulties:
+		if String(d.id) == MatchSettings.OFFICER:
+			officer = diff_items.size()
+		diff_items.append([d.name_key, String(d.id)])
 	for i in MAX_SLOTS:
 		slots.add_child(UiKit.label("SETUP_SLOT", "Caption", {"n": i + 1}))
 		var sp := UiKit.options(species_items, i % species_items.size())
 		var ctrl := UiKit.options([["CONTROLLER_HUMAN", "human"], ["CONTROLLER_AI", "ai"], ["CONTROLLER_CLOSED", "closed"]],
 				0 if i == 0 else (1 if i < 4 else 2))
+		var diff := UiKit.options(diff_items, officer)
+		diff.tooltip_text = _difficulty_tips(difficulties)
+		var seat := CheckBox.new()
+		seat.text = TranslationServer.translate("SETUP_COUNCIL_SEAT")
+		seat.focus_mode = Control.FOCUS_ALL
+		sp.item_selected.connect(func(_i: int) -> void: _show_species(sp.get_selected_metadata()))
 		slots.add_child(sp)
 		slots.add_child(ctrl)
-		_slots.append([sp, ctrl])
+		slots.add_child(diff)
+		slots.add_child(seat)
+		_slots.append([sp, ctrl, diff, seat])
+	_species_info = UiKit.label("", "Caption")
+	_species_info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_species_info.custom_minimum_size.x = 520
+	box.add_child(_species_info)
+	_show_species(_slots[0][0].get_selected_metadata())
 	_error = UiKit.label("", "Caption")
 	_error.add_theme_color_override("font_color", UiTokens.color("signal"))
 	box.add_child(_error)
@@ -107,8 +129,33 @@ func build_settings() -> MatchSettings:
 	for i in _slots.size():
 		var controller: String = _slots[i][1].get_selected_metadata()
 		if controller != "closed":
-			s.add_player(i, _slots[i][0].get_selected_metadata(), controller)
+			s.add_player(i, _slots[i][0].get_selected_metadata(), controller, _slots[i][2].get_selected_metadata(),
+				(_slots[i][3] as CheckBox).button_pressed)
 	return s
+
+
+## F15: the species' traits and signature mechanic, listed when its slot's species changes.
+func _show_species(species_id: String) -> void:
+	var sd := Database.defs.get_def(StringName(species_id)) as SpeciesDef
+	if sd == null:
+		return
+	var traits := []
+	for t in sd.traits:
+		var td := Database.defs.get_def(t)
+		traits.append(TranslationServer.translate(td.name_key) if td else String(t))
+	_species_info.text = UiKit.tr_fmt("SETUP_SPECIES_INFO", {"species": TranslationServer.translate(sd.name_key),
+		"personality": TranslationServer.translate(sd.personality_key), "traits": ", ".join(traits),
+		"signature": TranslationServer.translate("SIGNATURE_" + String(sd.signature_mechanic).to_upper())})
+
+
+## E13: every bonus listed openly.
+static func _difficulty_tips(defs: Array) -> String:
+	var lines := []
+	for d: DifficultyDef in defs:
+		lines.append(UiKit.tr_fmt("DIFFICULTY_TIP", {"name": TranslationServer.translate(d.name_key),
+			"desc": TranslationServer.translate(d.desc_key), "output": "%+d%%" % (d.output_permille / 10), "actions": d.actions}))
+	return "
+".join(lines)
 
 
 func _on_start() -> void:

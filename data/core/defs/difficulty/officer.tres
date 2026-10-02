@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DifficultyDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/difficulty_def.gd" id="1_diff"]
+
+[resource]
+script = ExtResource("1_diff")
+output_permille = 0
+actions = 2
+order = 1
+id = &"core:difficulty/officer"
+name_key = "DIFFICULTY_OFFICER"
+desc_key = "DIFFICULTY_OFFICER_DESC"

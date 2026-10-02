@@ -159,6 +159,11 @@ rules (CLAUDE.md), same tooling.*
   where enemy warships sit, when they bring at least `ai_attack_ratio` (1.5x) of their battle value, else enemy
   colony systems with no enemy warships (blockades score war points; their armed stations count), nearest
   first, one fleet a target. Retreat in battle stays with fleet doctrine (A10). Numbers in ai_rules.
+- 2026-10-03 (WP12): `difficulty` Defs (E13): Cadet (AI job output -20%, 1 strategic action a month), Officer
+  (0, 2), Commander (+15%, 3), Admiral (+30%, 3), per AI slot in match setup (default Officer), applied at match
+  start (`Empire.ai_output`, `ai_actions`); Admiral's +1 intel level and Deathworld wait for intel (M5).
+  Match setup also offers a founding Council seat per slot and shows the selected species' personality, traits
+  and signature mechanic; the difficulty tooltip lists every bonus from the data.
 
 ---
 

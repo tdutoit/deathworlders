@@ -26,6 +26,19 @@ static func roll_personalities(state: MatchState) -> void:
 			e.personality[w] = clampi(base + rng.range(-r.personality_spread, r.personality_spread + 1), 0, 100)
 
 
+## E13: each AI slot's difficulty sets its output bonus and actions a month (match start).
+static func apply_difficulty(state: MatchState) -> void:
+	for p: Dictionary in state.settings.players:
+		if p["controller"] != "ai":
+			continue
+		var d := state.defs.get_def(StringName(String(p.get("difficulty", MatchSettings.OFFICER)))) as DifficultyDef
+		for eid: int in state.empires.ordered():
+			var e: Empire = state.empires.get_or(eid)
+			if e.player_slot == int(p["slot"]) and d != null:
+				e.ai_actions = d.actions
+				e.ai_output = d.output_permille
+
+
 static func month_tick(state: MatchState) -> void:
 	var r := rules(state)
 	if r == null:

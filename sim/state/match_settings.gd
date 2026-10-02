@@ -6,11 +6,16 @@ var galaxy_size := "core:match_preset/size_small"
 var pace := "core:match_preset/pace_standard"
 var seed_text := ""  # what the player typed; match_seed is derived from it (or random)
 var crisis := "normal"  # off / early / normal / late; stored, unused in M1
-var players: Array[Dictionary] = []  # {slot: int, species: String, controller: "human" | "ai"}
+var players: Array[Dictionary] = []  # {slot, species, controller: "human" | "ai", difficulty (AI), council_seat (bool)}
 
 
-func add_player(slot: int, species: String, controller: String) -> void:
-	players.append({"slot": slot, "species": species, "controller": controller})
+const OFFICER := "core:difficulty/officer"
+
+
+## difficulty: an AI slot's E13 level (M4); council_seat: a founding Galactic Council seat (E9, M4).
+func add_player(slot: int, species: String, controller: String, difficulty := OFFICER, council_seat := false) -> void:
+	players.append({"slot": slot, "species": species, "controller": controller, "difficulty": difficulty,
+		"council_seat": council_seat})
 
 
 func to_dict() -> Dictionary:
@@ -27,5 +32,6 @@ static func from_dict(d: Dictionary) -> MatchSettings:
 	s.seed_text = String(d["seed_text"])
 	s.crisis = String(d["crisis"])
 	for p: Dictionary in d["players"]:
-		s.add_player(int(p["slot"]), String(p["species"]), String(p["controller"]))
+		s.add_player(int(p["slot"]), String(p["species"]), String(p["controller"]), String(p.get("difficulty", OFFICER)),
+			p.get("council_seat", false) == true)
 	return s

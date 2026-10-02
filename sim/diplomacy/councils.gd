@@ -25,6 +25,11 @@ static func found(state: MatchState) -> void:
 	for eid: int in state.empires.ordered():
 		if state.empire(eid).species == "core:species/vesskar":
 			c.members.append(eid)
+	for p: Dictionary in state.settings.players:  # founding seats from match setup (E9)
+		if p.get("council_seat", false) == true:
+			for eid: int in state.empires.ordered():
+				if state.empire(eid).player_slot == int(p["slot"]) and not eid in c.members:
+					c.members.append(eid)
 	if c.members.is_empty():
 		var best := -1
 		var best_amb := -1

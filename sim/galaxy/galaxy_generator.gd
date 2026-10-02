@@ -44,6 +44,7 @@ static func new_match(settings: MatchSettings, seed_value: int, db: DefDatabase,
 			StartSetup.apply(state, db)
 			Councils.found(state)  # M4: the Galactic Council (E9)
 			StrategicAI.roll_personalities(state)  # M4: E11 weights per empire
+			StrategicAI.apply_difficulty(state)  # M4: E13
 			return state
 		attempt += 1
 		if attempt % ATTEMPTS_PER_SPACING == 0:
@@ -65,6 +66,8 @@ static func check_settings(settings: MatchSettings, db: DefDatabase) -> Array[St
 			errors.append("player slot %d: unknown species '%s'" % [p["slot"], p["species"]])
 		if slots.has(p["slot"]):
 			errors.append("player slot %d used twice" % p["slot"])
+		if p["controller"] == "ai" and not db.get_def(StringName(String(p.get("difficulty", MatchSettings.OFFICER)))) is DifficultyDef:
+			errors.append("player slot %d: unknown difficulty '%s'" % [p["slot"], p.get("difficulty", "")])
 		slots[p["slot"]] = true
 	if preset != null and settings.players.size() > preset.target_systems:
 		errors.append("more players than systems")

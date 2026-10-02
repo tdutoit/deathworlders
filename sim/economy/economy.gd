@@ -125,6 +125,7 @@ static func _produce(state: MatchState, c: Colony, db: DefDatabase, day: int, or
 			var total := FixedMath.mul_permille(int(job.outputs[res]) * n * MILLI, out_permille)
 			var extra := WarFooting.output_permille(state, e, String(res))  # D7
 			extra += SignatureMechanics.output_permille(state, c.owner)  # Precedence stagnation (WP9)
+			extra += e.ai_output  # E13 difficulty (AI slots)
 			if job_id == "core:job/clerk" and res == &"core:resource/credits":
 				extra += Councils.clerk_credits_permille(state, c.owner)  # E9 Trade Standards
 			total = FixedMath.mul_permille(total, 1000 + extra)
