@@ -4,6 +4,7 @@ extends PanelContainer
 ## Planets with a colony show the F4 colony block (stage, focus, autonomy, pops, jobs, stockpile, buildings).
 
 signal colonise_requested(planet_id: int)
+signal fleet_requested(fleet_id: int)
 
 const AUTONOMY: Array[String] = ["automated", "assisted", "manual"]
 const STOCK_LINES := 6
@@ -124,8 +125,26 @@ func _fill() -> void:
 				_line("CTX_ETA", "", {"n": _eta_days(state, u)})
 			else:
 				_line("CTX_IDLE")
-			if u.owner == CommandQueue.local_player:
+			var f: Fleet = state.fleets.get_or(u.fleet) if u.fleet != StateIO.NONE else null
+			if f != null:
+				_fleet_section(state, f)
+			elif u.owner == CommandQueue.local_player:
 				_line("CTX_ORDER_HINT", "Caption")
+
+
+## A warship's fleet (F5, compact): name, size and condition, status; own fleets link to the Fleets screen.
+func _fleet_section(state: MatchState, f: Fleet) -> void:
+	_line("CTX_FLEET", "Caption")
+	_text(UiFleets.name_of(state, f), "Subtitle")
+	var c := UiFleets.condition(state, f)
+	_text(UiKit.tr_fmt("FLEET_SUMMARY", {"ships": f.size(), "str": UiKit.units(UiFleets.strength(state, f) * 1000),
+		"hull": UiNames.bar(c[0], c[1]), "ammo": UiNames.bar(c[2], c[3]) if c[3] > 0 else "—",
+		"supply": TranslationServer.translate("FLEET_SUPPLIED" if UiFleets.supplied(state, f) else "FLEET_UNSUPPLIED")}), "Mono")
+	for i in f.task_forces.size():
+		_text(UiKit.tr_fmt("FLEET_TF", {"n": i + 1, "ships": UiFleets.composition(state, f.task_forces[i])}))
+	if f.owner == CommandQueue.local_player:
+		_line("CTX_FLEET_HINT", "Caption")
+		_button("FLEET_OPEN", func() -> void: fleet_requested.emit(f.id))
 
 
 func _line(key: String, variation := "", params := {}) -> void:

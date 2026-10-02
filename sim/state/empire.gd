@@ -33,5 +33,6 @@ static func from_dict(d: Dictionary) -> Empire:
 	e.tech_fragments = int(d.get("tech_fragments", 0))
 	for l: Dictionary in d.get("losses", []):
 		e.losses.append({"tick": int(l["tick"]), "unit": int(l["unit"]), "system": int(l["system"]),
-			"hull": String(l["hull"]), "cargo": StateIO.int_map(l["cargo"])})
+			"hull": String(l["hull"]), "cargo": StateIO.int_map(l["cargo"]), "hub": int(l.get("hub", StateIO.NONE)),
+			"by": String(l.get("by", "pirates"))})
 	return e

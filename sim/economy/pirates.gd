@@ -215,7 +215,7 @@ static func _traffic_map(state: MatchState, eid: int) -> Dictionary:
 
 ## Hourly: passage rolls for freighters sharing a system with a raider hunting their owner (B9).
 static func tick(state: MatchState) -> void:
-	var hunted := {}  # "system:owner" -> true: raiders hunting that owner, or (M3) its enemies' warships at war
+	var hunted := {}  # "system:owner" -> "pirates" (raiders hunting that owner) or "fleet" (M3: enemy warships at war)
 	var enemies := {}  # empire -> [empires at war with it]
 	for key: String in state.wars:
 		var a := int(key.get_slice(":", 0))
@@ -227,10 +227,12 @@ static func tick(state: MatchState) -> void:
 		if u.is_moving():
 			continue
 		if u.kind == "raider":
-			hunted["%d:%d" % [u.system_id, u.target_owner]] = true
+			hunted["%d:%d" % [u.system_id, u.target_owner]] = "pirates"
 		elif u.kind == "warship":
 			for other: int in enemies.get(u.owner, []):
-				hunted["%d:%d" % [u.system_id, other]] = true  # fleets at war raid convoys (main spec 6.6)
+				var key := "%d:%d" % [u.system_id, other]
+				if not hunted.has(key):
+					hunted[key] = "fleet"  # fleets at war raid convoys (main spec 6.6)
 	if hunted.is_empty():
 		return
 	var r := Economy.rules(state.defs)
@@ -249,12 +251,13 @@ static func tick(state: MatchState) -> void:
 			odds = FixedMath.mul_permille(odds, cr.escort_raid)  # escorted: the raiders must get past the escort
 			Fleets.hunt(state, escort, f.system_id)
 		if state.rng(DetRng.EVENTS).range(0, 1000) < odds:
-			_lose(state, f)
+			_lose(state, f, hunted["%d:%d" % [f.system_id, f.owner]])
 
 
-static func _lose(state: MatchState, f: Unit) -> void:
+static func _lose(state: MatchState, f: Unit, by := "pirates") -> void:
 	var e := state.empire(f.owner)
-	e.losses.append({"tick": state.tick, "unit": f.id, "system": f.system_id, "hull": f.hull_id, "cargo": f.cargo.duplicate()})
+	e.losses.append({"tick": state.tick, "unit": f.id, "system": f.system_id, "hull": f.hull_id, "cargo": f.cargo.duplicate(),
+		"hub": f.home, "by": by})
 	if e.losses.size() > LOSS_LOG:
 		e.losses.remove_at(0)
 	state.units.erase(f.id)

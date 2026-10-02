@@ -8,7 +8,8 @@ extends Node
 ##   --ui=menu|setup       with --screenshot: capture that screen instead of a match
 ##   --load=<save>         open that save and unpause (with --speed=<1|2|4|8>, --perf=<seconds>)
 ##   --months=<n>          run the quickstart match n months before showing it
-##   --screen=planet|sectors|logistics|stockpile|alerts   (--tab=routes|demands|hubs|losses) open that panel
+##   --screen=planet|sectors|logistics|stockpile|alerts|fleets|designer|battles   (--tab=routes|demands|hubs|losses|empires) open that panel
+##   --warships=<n>        quickstart: queue n standard destroyers at the human's first shipyard (Commands)
 
 var _args := {}
 
@@ -64,6 +65,7 @@ func _quickstart() -> void:
 	var home := state.galaxy.planet(human.capital_planet).system_id
 	var spawn := CommandRegistry.create(CmdDebugSpawnScout.TYPE, human.id, {"system": home})
 	Sim.execute(state, [spawn] as Array[Command])
+	_queue_warships(state, human.id, int(_args.get("warships", "0")))
 	var none: Array[Command] = []
 	for h in int(_args.get("months", "0")) * Calendar.HOURS_PER_MONTH:
 		Sim.step(state, none)
@@ -75,6 +77,22 @@ func _quickstart() -> void:
 	elif _args.has("perf"):
 		await _measure(float(_args["perf"]))
 		get_tree().quit()
+
+
+func _queue_warships(state: MatchState, eid: int, n: int) -> void:
+	var design := 0
+	for did: int in state.designs.ordered():
+		var d: ShipDesign = state.designs.get_or(did)
+		if d.owner == eid and d.source.ends_with("destroyer_standard"):
+			design = d.id
+	for sid: int in state.stations.ordered():
+		var y: Station = state.stations.get_or(sid)
+		if y.owner == eid and design != 0 and Shipyards.check_design_ship(state, eid, y.id, design) == "":
+			var cmds: Array[Command] = []
+			for i in n:
+				cmds.append(CommandRegistry.create(CmdQueueShip.TYPE, eid, {"station": y.id, "design": design}))
+			Sim.execute(state, cmds)
+			return
 
 
 func _show_view(home: int) -> void:
@@ -101,6 +119,13 @@ func _open_screen(human: Empire) -> void:
 			ui.toggle_screen(ui.stockpile_screen)
 		"alerts":
 			ui.toggle_screen(ui.alerts_screen)
+		"fleets":
+			ui.fleets_screen._tab = _args.get("tab", "fleets")
+			ui.toggle_screen(ui.fleets_screen)
+		"designer":
+			ui.toggle_screen(ui.designer_screen)
+		"battles":
+			ui.toggle_screen(ui.battles_screen)
 
 
 func _save_screenshot() -> void:

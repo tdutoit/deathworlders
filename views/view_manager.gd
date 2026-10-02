@@ -135,7 +135,11 @@ func _on_context(pos: Vector2) -> void:
 	if level != "solar" and selected_kind == "unit":
 		var hit := map.pick(rig.camera, pos)
 		if hit[0] == "system":
-			CommandQueue.submit_new(CmdMoveUnit.TYPE, {"unit": selected_id, "to": hit[1]})
+			var u: Unit = GameState.state.units.get_or(selected_id)
+			if u != null and u.fleet != StateIO.NONE:  # warships move as their fleet (main spec 7.1)
+				CommandQueue.submit_new(CmdMoveFleet.TYPE, {"fleet": u.fleet, "to": hit[1]})
+			else:
+				CommandQueue.submit_new(CmdMoveUnit.TYPE, {"unit": selected_id, "to": hit[1]})
 			return
 	back()
 

@@ -20,6 +20,9 @@ var logistics_screen: LogisticsScreen
 var stockpile_screen: StockpileScreen
 var alerts_screen: AlertsScreen
 var colonise_screen: ColoniseScreen
+var fleets_screen: FleetsScreen
+var designer_screen: DesignerScreen
+var battles_screen: BattlesScreen
 var _screens: Array[ScreenPanel] = []
 
 var _resume_unpauses := false
@@ -60,6 +63,11 @@ func _ready() -> void:
 			view_manager.focus_on(kind, id))
 	top_bar.stockpile_requested.connect(func() -> void: toggle_screen(stockpile_screen))
 	top_bar.alerts_requested.connect(func() -> void: toggle_screen(alerts_screen))
+	context_panel.fleet_requested.connect(func(fid: int) -> void:
+		_close_screens()
+		fleets_screen.only_fleet = fid
+		fleets_screen._tab = "fleets"
+		fleets_screen.open())
 	context_panel.colonise_requested.connect(func(pid: int) -> void:
 		_close_screens()
 		colonise_screen.open_for(pid))
@@ -93,7 +101,13 @@ func _build_hud() -> void:
 	stockpile_screen = StockpileScreen.new()
 	alerts_screen = AlertsScreen.new()
 	colonise_screen = ColoniseScreen.new()
-	_screens = [sector_screen, logistics_screen, stockpile_screen, alerts_screen, colonise_screen]
+	fleets_screen = FleetsScreen.new()
+	designer_screen = DesignerScreen.new()
+	battles_screen = BattlesScreen.new()
+	designer_screen.visibility_changed.connect(func() -> void:  # full screen (F10): side panels step aside
+		outliner.visible = not designer_screen.visible
+		context_panel.visible = not designer_screen.visible)
+	_screens = [sector_screen, logistics_screen, stockpile_screen, alerts_screen, colonise_screen, fleets_screen, designer_screen, battles_screen]
 	for screen in _screens:
 		hud.add_child(screen)
 		screen.focus_requested.connect(func(kind: String, id: int) -> void:
@@ -203,6 +217,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		outliner.take_focus()
 	elif game_menu.visible:
 		return
+	elif event.is_action_pressed("open_fleets"):
+		fleets_screen.only_fleet = 0
+		toggle_screen(fleets_screen)
+	elif event.is_action_pressed("open_battles"):
+		toggle_screen(battles_screen)
+	elif event.is_action_pressed("open_designer"):
+		toggle_screen(designer_screen)
 	elif event.is_action_pressed("open_sectors"):
 		toggle_screen(sector_screen)
 	elif event.is_action_pressed("open_logistics"):

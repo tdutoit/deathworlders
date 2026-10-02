@@ -21,6 +21,18 @@
   tactical scope shows stations as diamonds by their body (hollow while building), named only for the
   selected body. Not in WP12: per-route throughput vs demand (F7 shows amount per trip and freighters
   assigned), map modes 2/5/6/8, alert muting, breakdown tooltips.
+- 2026-10-02 (M3 WP12, owner decisions): F17 gains `open_fleets` = F2, `open_designer` = F3 and
+  `open_battles` = F4. F5 is a Fleets screen (F2: every fleet with strength, hull/ammo bars, supply,
+  doctrine, task forces, patrol / escort / merge / split / rename) plus a compact fleet block in the context
+  panel when a warship is selected; right-click moves the selected warship's whole fleet. The M3 war toggle
+  lives in the Fleets screen's Empires tab until M4 diplomacy. F10's prediction runs 20 seeded headless
+  battles at equal cost on click (full visibility in M3, so no intel uncertainty); the designer is a
+  near-full-screen panel (outliner and context panel step aside). F11 shows strength over time as a text
+  chart with a range-phase row (L/M/C), losses by class, the matchup by weapon family and point defence,
+  generated key moments and the MVP; the archive is the match's report list. Not in M3: the refit picker,
+  formation/stance effects, "Set as refit", saving reports outside the match, veterancy promotions in
+  honours. Map: one large chevron per fleet (at its lead ship) and a signal ring on systems with a battle.
+  Alerts gain battles under way, recent battle results and convoys sunk by enemy warships.
 
 ---
 
@@ -328,6 +340,7 @@ Two columns: **Galaxy** (size, shape, pace, seed, crisis, fog, victory toggles, 
 | open_outliner | Tab | Y (hold) |
 | open_alerts | F12 (was A: clashed with pan_left) | Back |
 | open_sectors / open_logistics / open_stockpile | F6 / F7 / F9 | (tbd) |
+| open_fleets / open_designer / open_battles | F2 / F3 / F4 | (tbd) |
 | search | Ctrl+F | L3 |
 | ping (co-op) | Alt+Click | R3 |
 

@@ -37,8 +37,21 @@ static func collect(state: MatchState, eid: int) -> Array:
 	_freighter_alerts(state, eid, out)
 	for l: Dictionary in e.losses:
 		if state.tick - int(l["tick"]) <= LOSS_DAYS * Calendar.HOURS_PER_DAY:
-			out.append(_alert(SOON, "ALERT_CONVOY_LOST", {"system": state.galaxy.system(int(l["system"])).name},
+			out.append(_alert(SOON, "ALERT_CONVOY_LOST_FLEET" if l.get("by", "") == "fleet" else "ALERT_CONVOY_LOST",
+				{"system": state.galaxy.system(int(l["system"])).name},
 				"system", int(l["system"])))
+	# M3: battles under way and recent battle reports.
+	for bid: int in state.battles.ordered():
+		var b: Battle = state.battles.get_or(bid)
+		if eid in b.owners:
+			out.append(_alert(URGENT, "ALERT_BATTLE", {"system": state.galaxy.system(b.system_id).name}, "system", b.system_id))
+	for rid: int in state.reports.ordered():
+		var rep: BattleReport = state.reports.get_or(rid)
+		var side: int = (rep.data["owners"] as Array).find(eid)
+		if side >= 0 and state.tick - int(rep.data["end_tick"]) <= LOSS_DAYS * Calendar.HOURS_PER_DAY:
+			out.append(_alert(INFO, "ALERT_BATTLE_REPORT", {"system": state.galaxy.system(int(rep.data["system"])).name,
+				"result": TranslationServer.translate("RESULT_" + String(rep.data["results"][side]).to_upper())},
+				"system", int(rep.data["system"])))
 	var raiders := Pirates.raiders_hunting(state, eid)
 	if raiders > 0:
 		out.append(_alert(SOON, "ALERT_PIRATES", {"n": raiders}, "", 0))

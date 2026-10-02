@@ -27,6 +27,8 @@ var _clusters_mm: MultiMeshInstance3D
 var _units_mm: MultiMeshInstance3D  # chevrons: scouts, colony ships, warships
 var _freight_mm: MultiMeshInstance3D  # diamonds: freighters (F22)
 var _raider_mm: MultiMeshInstance3D  # signal chevrons: pirate raiders (owner Pirates.PIRATES)
+var _fleet_mm: MultiMeshInstance3D  # large chevrons: one per fleet, at its lead ship (M3)
+var _battle_mm: MultiMeshInstance3D  # signal rings: systems with a battle on (M3)
 var _select_mi: MeshInstance3D
 var _lanes_mat: StandardMaterial3D
 var _systems_mat: StandardMaterial3D
@@ -52,6 +54,8 @@ func build(s: MatchState) -> void:
 	_units_mm = _multimesh(DrawUtil.chevron_mesh(), DrawUtil.ink_material(UiTokens.color("ink_1")), 0)
 	_freight_mm = _multimesh(DrawUtil.diamond_mesh(), DrawUtil.ink_material(UiTokens.color("ink_2")), 0)
 	_raider_mm = _multimesh(DrawUtil.chevron_mesh(), DrawUtil.ink_material(UiTokens.color("signal")), 0)
+	_fleet_mm = _multimesh(DrawUtil.chevron_mesh(), DrawUtil.ink_material(UiTokens.color("ink_1")), 0)
+	_battle_mm = _multimesh(DrawUtil.ring_mesh(0.7, 24), DrawUtil.ink_material(UiTokens.color("signal")), 0)
 	_select_mi = MeshInstance3D.new()
 	_select_mi.mesh = DrawUtil.ring_mesh(0.8, 32)
 	_select_mi.material_override = DrawUtil.ink_material(UiTokens.color("ink_1"))
@@ -243,10 +247,15 @@ func _layout_markers(px: float) -> void:
 
 
 func _layout_units(px: float, frac: float) -> void:
-	var layers := {_units_mm: [], _freight_mm: [], _raider_mm: []}
+	var layers := {_units_mm: [], _freight_mm: [], _raider_mm: [], _fleet_mm: []}
 	for uid: int in state.units:
 		var u: Unit = state.units.get_or(uid)
 		var layer := _raider_mm if u.owner == Pirates.PIRATES else (_freight_mm if u.kind == "freighter" else _units_mm)
+		if u.fleet != StateIO.NONE:
+			var f: Fleet = state.fleets.get_or(u.fleet)
+			if f == null or Fleets.lead(state, f) != u:
+				continue  # a fleet draws once, at its lead ship
+			layer = _fleet_mm
 		layers[layer].append(u)
 	var r := UNIT_PX * px
 	for layer: MultiMeshInstance3D in layers:
@@ -258,11 +267,20 @@ func _layout_units(px: float, frac: float) -> void:
 			var u: Unit = units[i]
 			var p := ViewMath.unit_point(state, u, frac)
 			var offset := Vector3(0, 2, -r * 1.6) if not u.is_moving() else Vector3(0, 2, 0)
-			var rr := r * (0.7 if layer == _freight_mm else 1.0)
+			var rr := r * (0.7 if layer == _freight_mm else (1.5 if layer == _fleet_mm else 1.0))
 			var basis := Basis(Vector3.UP, -ViewMath.unit_heading(state, u)).scaled(Vector3(rr, 1, rr))
 			mm.set_instance_transform(i, Transform3D(basis, Vector3(p.x, 0, p.y) + offset))
 			if selected_kind == "unit" and u.id == selected_id:
 				_select_mi.transform = Transform3D(Basis.from_scale(Vector3.ONE * SELECT_PX * px), Vector3(p.x, 1, p.y) + offset)
+	# Battle markers: a signal ring around each system with a battle on.
+	var bmm := _battle_mm.multimesh
+	if bmm.instance_count != state.battles.size():
+		bmm.instance_count = state.battles.size()
+	var i := 0
+	for bid: int in state.battles.ordered():
+		var s := state.galaxy.system((state.battles.get_or(bid) as Battle).system_id)
+		bmm.set_instance_transform(i, Transform3D(Basis.from_scale(Vector3.ONE * (SELECT_PX + 6) * px), ViewMath.world(s.x, s.y) + Vector3.UP))
+		i += 1
 
 
 func _layout_labels(camera: Camera3D) -> void:

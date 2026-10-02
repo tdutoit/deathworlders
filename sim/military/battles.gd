@@ -203,7 +203,7 @@ static func _create(state: MatchState, system_id: int, owners: Array[int]) -> Ba
 	b.owners = owners
 	b.band = 0  # A3: battles open at Long range (no nebulae or ambushes in M3)
 	b.rng = DetRng.from_seed(state.match_seed ^ b.id, DetRng.COMBAT).get_state()
-	b.log = {"strength": [], "lost": [], "captured": [], "retreated": [], "events": [], "start_cost": [0, 0],
+	b.log = {"strength": [], "bands": [], "lost": [], "captured": [], "retreated": [], "events": [], "start_cost": [0, 0],
 		"lost_cost": [0, 0], "captured_cost": [0, 0], "dmg": {}, "kills": {}, "names": {},
 		"family": [{}, {}]}  # per side: family ID -> [shots, hits, intercepted, hull damage]
 	state.battles.put(b.id, b)
@@ -371,6 +371,7 @@ static func _round(state: MatchState, b: Battle) -> bool:
 		for cid in b.active(side):
 			strength[side] += int(entity(state, cid).get("hp"))
 	b.log["strength"].append(strength)
+	b.log["bands"].append(b.band)  # range phase per round, for the report chart
 	b.rng = rng.get_state()
 	# 10. End check (A12).
 	return b.active(0).is_empty() or b.active(1).is_empty() or b.round >= r.round_cap
