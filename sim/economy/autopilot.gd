@@ -40,6 +40,7 @@ static func month_tick(state: MatchState) -> void:
 	for eid: int in state.empires.ordered():
 		if is_ai(state, eid):
 			_directive(state, eid)
+			MilitaryAutopilot.month_tick(state, eid, can_expand(state, eid))  # M3 WP10
 			if not can_expand(state, eid):
 				continue  # new colonies, stations and ships all add upkeep (B13)
 			_colonise(state, eid)

@@ -76,6 +76,13 @@ const VETERANCY: Array[String] = ["green", "regular", "veteran", "elite"]
 @export var escort_raid: int  # permille of the raid chance against an escorted hub's freighters
 @export var patrol_security: int  # D9 security a patrol adds to each own system on its list
 @export var patrol_wait_hours: int  # hours a patrol stays in each system
+# Defensive autopilot for AI slots (M3 WP10 placeholders)
+@export var ai_build_classes: Array[StringName] = []  # hull classes built in turn (unbuildable ones skipped)
+@export var ai_military_share: int  # warship credit upkeep allowed, permille of the credit net before it
+@export var ai_min_ships: int  # warships kept whatever the budget (while the economy may expand)
+@export var ai_attack_ratio: int  # engage a threat with at least this battle value, permille of its own
+@export var ai_loss_months: int  # convoy losses this recent count
+@export var ai_loss_trigger: int  # recent losses that start a patrol and an escort
 # Naval hierarchy (main spec 7.1): ships auto-group into squadrons of one class, squadrons into task forces
 @export var squadron_max: int
 @export var task_force_squadrons: int
@@ -93,7 +100,8 @@ const _INTS: Array[String] = ["hit_min", "hit_max", "variance_min", "variance_ma
 	"decisive_enemy_loss", "decisive_own_loss", "victory_min_loss", "pyrrhic_own_loss", "draw_band", "salvage",
 	"xp_per_round", "xp_per_kill", "out_of_supply_accuracy", "attrition_after_days", "attrition_per_day",
 	"ammo_per_weapon", "squadron_max", "task_force_squadrons", "fleet_task_forces", "ammo_per_munition",
-	"repair_docked", "repair_field", "repair_hull_per_alloy", "escort_raid", "patrol_security", "patrol_wait_hours"]
+	"repair_docked", "repair_field", "repair_hull_per_alloy", "escort_raid", "patrol_security", "patrol_wait_hours",
+	"ai_military_share", "ai_min_ships", "ai_attack_ratio", "ai_loss_months", "ai_loss_trigger"]
 
 
 func category() -> String:
@@ -105,6 +113,7 @@ func schema() -> Dictionary:
 	for field in _INTS:
 		s[field] = {"type": "int"}
 	s["escort_classes"] = {"type": "name_list"}
+	s["ai_build_classes"] = {"type": "name_list"}
 	s["veterancy_xp"] = {"type": "int_map", "keys": VETERANCY, "min": 0}
 	s["veterancy_accuracy"] = {"type": "int_map", "keys": VETERANCY}
 	s["veterancy_morale_resist"] = {"type": "int_map", "keys": VETERANCY}

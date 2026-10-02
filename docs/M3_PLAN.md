@@ -85,6 +85,17 @@ into an ordered build plan. Builds on M2 (docs/M2_PLAN.md); same rules (CLAUDE.m
   `tools/blender/specs/` and validated (hardpoints match the hull slot layouts; all well under the C11
   budgets). The asset contract gains an `assault` budget (1,200 tris, as a frigate). Fighter wings have no
   turret model (they launch from hangar hardpoints).
+- 2026-10-02 (WP10): `MilitaryAutopilot` runs monthly for AI slots after the economic rules. It merges idle
+  fleets in one system; sends the nearest idle fleet with at least `ai_attack_ratio` (1.5x) of the battle value
+  at each threat in own systems (pirate raiders and bases, warships of empires at war); patrols the systems
+  where convoys were lost in the last `ai_loss_months` (3) and escorts the hub that lost most, once losses reach
+  `ai_loss_trigger` (2), and stands both down when losses stop; builds its standard designs in turn
+  (`ai_build_classes`) one at a time, only once it has `Autopilot.MIN_SHIPYARDS` operational shipyards and the
+  economy may expand, while warship credit upkeep is under `ai_military_share` (25%) of the credit net before
+  it or the fleet is under `ai_min_ships` (2). Placeholders in combat_rules. Convoy loss entries record their
+  hub (and, from WP12, who sank them).
+- 2026-10-02 (WP12): Fleets (F2), Ship Designer (F3), Battle Reports (F4) as recorded in Sub-spec F's change
+  log. Battle logs gain `bands` (range band per round) for the report's phase row.
 
 ---
 

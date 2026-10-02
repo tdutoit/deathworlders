@@ -28,9 +28,9 @@ func _init() -> void:
 		print("seed %d (%s, %d years, %.1f s, month tick avg %.1f ms, worst %.1f ms):" % [seed_value + 1, size, years, r["seconds"],
 				r["avg_month_ms"], r["worst_month_ms"]])
 		for e: Dictionary in r["empires"]:
-			print("  %-10s first colony m%-3s colonies %2d shipyards %d freighters %2d (busy %3d%%, year avg %3d%%, %d short) alloys/mo %4d credits %6d lost %2d  %s" % [
+			print("  %-10s first colony m%-3s colonies %2d shipyards %d freighters %2d (busy %3d%%, year avg %3d%%, %d short) alloys/mo %4d credits %6d lost %2d warships %2d  %s" % [
 				e["species"], str(e["first_colony_month"]), e["colonies"], e["shipyards"], e["freighters"], e["busy_pct"],
-				e["busy_avg"], e["short_months"], e["alloys_per_month"], e["credits"], e["lost"], "OK" if e["ok"] else "-"])
+				e["busy_avg"], e["short_months"], e["alloys_per_month"], e["credits"], e["lost"], e["warships"], "OK" if e["ok"] else "-"])
 			total += 1
 			if e["ok"]:
 				met += 1
@@ -93,6 +93,7 @@ static func run(db: DefDatabase, seed_value: int, years: int, size: String, play
 			"busy_avg": FixedMath.floor_div(sum, maxi(1, hist.size())), "short_months": short,
 			"alloys_per_month": FixedMath.floor_div(alloys, 1000),
 			"credits": FixedMath.floor_div(int(e.treasury.get("core:resource/credits", 0)), 1000), "lost": e.losses.size(),
+			"warships": s.units.values().filter(func(u: Unit) -> bool: return u.owner == eid and u.kind == "warship").size(),
 		}
 		# B20 (year 15): first colony by month 12; 6-10 colonies; 2-3 shipyards; 50-140 alloys/month (owner, 2026-10-01; was 60-120); freighters
 		# not a bottleneck (last year: average use <= 80%, at most 3 months over 95%).
