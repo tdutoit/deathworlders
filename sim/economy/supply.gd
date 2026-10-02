@@ -50,6 +50,45 @@ static func _coverage(state: MatchState, owner: int) -> Dictionary:
 	return out
 
 
+## The own holders whose supply range covers a system, as [[lanes, holder, stockpile], ...] nearest first, then
+## holder ID: the same entries and order as _coverage(...)[system_id], for one system (lane counts come from
+## the match-wide hop cache, so this is cheap per ship).
+static func sources_at(state: MatchState, points: Array, system_id: int) -> Array:
+	var hops := AutoLogistics._hops_from(state, system_id, {})
+	var out := []
+	for entry: Array in points:
+		var dist := int(hops.get(entry[1], Sectors.FAR))
+		if dist <= int(entry[2]):
+			out.append([dist, entry[0], entry[3]])
+	out.sort_custom(func(a: Array, b: Array) -> bool: return a[0] < b[0] or (a[0] == b[0] and a[1] < b[1]))
+	return out
+
+
+## {owner: own_supply_points(owner)} for every owner in one pass (same entries, same holder-ID order).
+static func all_supply_points(state: MatchState) -> Dictionary:
+	var holders := {}  # owner -> [holder IDs]
+	for pid: int in state.colonies.ordered():
+		var c: Colony = state.colonies.get_or(pid)
+		if not holders.has(c.owner):
+			holders[c.owner] = []
+		holders[c.owner].append(pid)
+	for sid: int in state.stations.ordered():
+		var s: Station = state.stations.get_or(sid)
+		if s.operational:
+			if not holders.has(s.owner):
+				holders[s.owner] = []
+			holders[s.owner].append(sid)
+	var out := {}
+	for owner: int in holders:
+		var ids: Array = holders[owner]
+		ids.sort()
+		var pts := []
+		for h: int in ids:
+			pts.append([h, Holders.system(state, h), supply_range(state, h), Holders.stockpile(state, h)])
+		out[owner] = pts
+	return out
+
+
 ## [[holder, system, supply range, stockpile], ...] for every own holder.
 static func own_supply_points(state: MatchState, owner: int) -> Array:
 	var out := []

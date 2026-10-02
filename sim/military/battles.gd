@@ -42,7 +42,7 @@ static func entity(state: MatchState, id: int) -> Object:
 
 
 static func is_armed_station(state: MatchState, s: Station) -> bool:
-	return s.operational and s.hp > 0 and (state.defs.get_def(StringName(s.def_id)) as StationDef).function == &"defence"
+	return s.hp > 0 and s.operational and (state.defs.get_def(StringName(s.def_id)) as StationDef).function == &"defence"
 
 
 ## [hull ID, component IDs] of a unit or a defence station.
@@ -143,16 +143,28 @@ static func tick(state: MatchState) -> void:
 
 
 static func _start_battles(state: MatchState) -> void:
+	# Only systems where hostile owners both have stationary combatants can start or join a battle
+	# (presence is cached per tick and usually already built by movement's interdiction checks).
+	var contested := {}
+	var pres := presence(state)
+	for system_id: int in pres:
+		var owners: Array = IdMap.sort_keys(pres[system_id].keys())
+		if owners.size() > 1 and not _hostile_pair(state, owners).is_empty():
+			contested[system_id] = true
+	for bid: int in state.battles.ordered():  # reinforcements join battles under way
+		contested[(state.battles.get_or(bid) as Battle).system_id] = true
+	if contested.is_empty():
+		return
 	var by_system := {}  # system -> [combatant ids not yet in a battle], ascending
 	for uid: int in state.units.ordered():
 		var u: Unit = state.units.get_or(uid)
-		if u.kind in COMBATANT_KINDS and not u.is_moving() and not in_battle(state, uid):
+		if contested.has(u.system_id) and u.kind in COMBATANT_KINDS and not u.is_moving() and not in_battle(state, uid):
 			if not by_system.has(u.system_id):
 				by_system[u.system_id] = []
 			by_system[u.system_id].append(uid)
 	for sid: int in state.stations.ordered():
 		var s: Station = state.stations.get_or(sid)
-		if is_armed_station(state, s) and not in_battle(state, sid):
+		if contested.has(s.system_id) and is_armed_station(state, s) and not in_battle(state, sid):
 			if not by_system.has(s.system_id):
 				by_system[s.system_id] = []
 			by_system[s.system_id].append(sid)

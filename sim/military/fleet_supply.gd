@@ -1,7 +1,7 @@
 class_name FleetSupply
 extends RefCounted
 ## Daily warship supply (Sub-spec B12, A13; owner decisions 2026-10-01), ships in ID order:
-##   - a ship is in supply when an own holder's supply range covers its system (Supply._coverage);
+##   - a ship is in supply when an own holder's supply range covers its system (Supply.sources_at);
 ##   - in supply: ammo refills from the nearest covering stockpiles, 1 munition per ammo_per_munition ammo;
 ##   - out of supply: after attrition_after_days, attrition_per_day of hull_max a day (a ship at 0 is lost);
 ##   - repair while not moving: repair_docked a day in a system with an own operational shipyard or supply
@@ -18,17 +18,23 @@ static func day_tick(state: MatchState) -> void:
 	var r := state.defs.get_def(CombatRulesDef.ID) as CombatRulesDef
 	if r == null:
 		return
-	var cover := {}  # owner -> Supply._coverage
+	var points := {}  # owner -> Supply.own_supply_points (built in one pass for every owner, on first need)
+	var sources_at := {}  # "owner:system" -> Supply.sources_at
 	var docks := {}  # owner -> {system: [stockpile of each own operational shipyard / depot there]}
+	var built := false
 	for uid: int in state.units.keys():
 		var u: Unit = state.units.get_or(uid)
 		if u == null or u.kind != "warship" or u.owner < 0 or Battles.in_battle(state, u.id):
 			continue  # no resupply or repair in battle
-		if not cover.has(u.owner):
-			cover[u.owner] = Supply._coverage(state, u.owner)
-			docks[u.owner] = _docks(state, u.owner)
+		if not built:
+			points = Supply.all_supply_points(state)
+			docks = _all_docks(state)
+			built = true
+		var key := "%d:%d" % [u.owner, u.system_id]
+		if not sources_at.has(key):
+			sources_at[key] = Supply.sources_at(state, points.get(u.owner, []), u.system_id)
 		var st := ShipStats.cached(state.defs, u.hull_id, u.components)
-		var sources: Array = cover[u.owner].get(u.system_id, [])
+		var sources: Array = sources_at[key]
 		var in_supply := not sources.is_empty() and not u.is_moving()
 		if not sources.is_empty():
 			u.unsupplied_days = 0
@@ -42,7 +48,7 @@ static func day_tick(state: MatchState) -> void:
 					continue
 		u.shield = st.shield
 		if not u.is_moving():
-			var dock: Array = docks[u.owner].get(u.system_id, [])
+			var dock: Array = docks.get(u.owner, {}).get(u.system_id, [])
 			if not dock.is_empty():
 				_repair(u, st, r.repair_docked, dock, r)
 			elif in_supply:
@@ -85,18 +91,21 @@ static func _repair(u: Unit, st: ShipStats, rate: int, stockpiles: Array, r: Com
 	u.armor = st.armor if u.hp >= st.hull else mini(st.armor, u.armor + FixedMath.floor_div((st.armor - u.armor) * heal, maxi(1, damage)))
 
 
-## {system: [stockpile]} of the owner's operational shipyards and supply depots (docked repair).
-static func _docks(state: MatchState, owner: int) -> Dictionary:
+## {owner: {system: [stockpile]}} of every owner's operational shipyards and supply depots (docked repair),
+## stations in ID order.
+static func _all_docks(state: MatchState) -> Dictionary:
 	var out := {}
 	for sid: int in state.stations.ordered():
 		var s: Station = state.stations.get_or(sid)
-		if s.owner != owner or not s.operational:
+		if not s.operational:
 			continue
 		var fn := (state.defs.get_def(StringName(s.def_id)) as StationDef).function
 		if fn == &"shipyard" or fn == &"depot":
-			if not out.has(s.system_id):
-				out[s.system_id] = []
-			out[s.system_id].append(s.stockpile)
+			if not out.has(s.owner):
+				out[s.owner] = {}
+			if not out[s.owner].has(s.system_id):
+				out[s.owner][s.system_id] = []
+			out[s.owner][s.system_id].append(s.stockpile)
 	return out
 
 
