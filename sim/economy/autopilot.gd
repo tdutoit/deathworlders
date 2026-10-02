@@ -192,9 +192,15 @@ static func _colonise(state: MatchState, eid: int) -> void:
 			return  # one is being built
 	if best_colony_target(state, eid, capital_sys) == StateIO.NONE:
 		return
+	var yards: Array[Station] = []  # shortest queue first (M3: warships may be building), then ID
 	for sid: int in state.stations.ordered():
 		var y: Station = state.stations.get_or(sid)
-		if y.owner == eid and _do(state, eid, CmdQueueShip.TYPE, {"station": y.id, "hull": "core:hull/colony_ship"}):
+		if y.owner == eid:
+			yards.append(y)
+	yards.sort_custom(func(a: Station, b: Station) -> bool:
+		return a.ship_queue.size() < b.ship_queue.size() or (a.ship_queue.size() == b.ship_queue.size() and a.id < b.id))
+	for y in yards:
+		if _do(state, eid, CmdQueueShip.TYPE, {"station": y.id, "hull": "core:hull/colony_ship"}):
 			return
 
 

@@ -132,3 +132,18 @@ func test_convoy_losses_start_patrol_and_escort() -> void:
 	MilitaryAutopilot.month_tick(s, _ai(s).id, false)
 	assert_eq(s.fleets.values().filter(func(f: Fleet) -> bool: return f.mission != "").size(), 0, "losses stopped: back to idle")
 	assert_not_null(g)
+
+
+func test_beyond_the_minimum_only_while_threatened() -> void:
+	var s := _match()
+	_second_yard(s)
+	_fleet(s, _home_sys(s), 2)  # ai_min_ships already met
+	_ai(s).credit_net = 200000  # room in the upkeep budget
+	var r: CombatRulesDef = _db.get_def(CombatRulesDef.ID)
+	assert_false(MilitaryAutopilot.threatened(s, _ai(s).id, r))
+	MilitaryAutopilot.month_tick(s, _ai(s).id, true)
+	assert_eq(_warship_queue(s), 0, "quiet frontier: the economy comes first")
+	Pirates.spawn_raider(s, _own_at(s, 3), _ai(s).id)
+	assert_true(MilitaryAutopilot.threatened(s, _ai(s).id, r))
+	MilitaryAutopilot.month_tick(s, _ai(s).id, true)
+	assert_eq(_warship_queue(s), 1, "raiders hunting: grow the fleet within budget")

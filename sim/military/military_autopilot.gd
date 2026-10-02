@@ -6,7 +6,7 @@ extends RefCounted
 ##      territory: pirate raiders and bases, and warships of empires at war with it;
 ##   3. patrol the systems where convoys were lost in the last ai_loss_months, and escort the hub that lost
 ##      most, once losses reach ai_loss_trigger; drop the patrol when the losses stop;
-##   4. once it has Autopilot.MIN_SHIPYARDS shipyards, build its species' standard designs (ai_build_classes,
+##   4. once it has Autopilot.MIN_SHIPYARDS shipyards, at an idle one (never ahead of colony ships or freighters), build its species' standard designs (ai_build_classes,
 ##      in turn) while warship credit upkeep is under ai_military_share of the credit net before it, or the
 ##      fleet is under ai_min_ships.
 ## No offensives (M4). Orders go through Commands' validate/apply, like the economic autopilot.
@@ -160,7 +160,7 @@ static func _build(state: MatchState, eid: int, r: CombatRulesDef) -> void:
 		return  # one warship at a time
 	var e := state.empire(eid)
 	var budget := FixedMath.floor_div((e.credit_net + upkeep) * r.ai_military_share, 1000)
-	if ships >= r.ai_min_ships and upkeep >= budget:
+	if ships >= r.ai_min_ships and (upkeep >= budget or not threatened(state, eid, r)):
 		return
 	var by_class := {}  # hull class -> own standard design ID
 	for did: int in state.designs.ordered():
@@ -176,5 +176,19 @@ static func _build(state: MatchState, eid: int, r: CombatRulesDef) -> void:
 			continue
 		for sid: int in state.stations.ordered():
 			var y: Station = state.stations.get_or(sid)
-			if y.owner == eid and Autopilot._do(state, eid, CmdQueueShip.TYPE, {"station": y.id, "design": by_class[cls]}):
+			if y.owner == eid and y.ship_queue.is_empty() 					and Autopilot._do(state, eid, CmdQueueShip.TYPE, {"station": y.id, "design": by_class[cls]}):
 				return
+
+
+## Raiders hunting the empire, convoys lost in the last ai_loss_months, or a war: worth more warships.
+static func threatened(state: MatchState, eid: int, r: CombatRulesDef) -> bool:
+	if Pirates.raiders_hunting(state, eid) > 0:
+		return true
+	var since := state.tick - r.ai_loss_months * Calendar.HOURS_PER_MONTH
+	for l: Dictionary in state.empire(eid).losses:
+		if int(l["tick"]) >= since:
+			return true
+	for key: String in state.wars:
+		if int(key.get_slice(":", 0)) == eid or int(key.get_slice(":", 1)) == eid:
+			return true
+	return false

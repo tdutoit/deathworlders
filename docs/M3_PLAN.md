@@ -96,6 +96,13 @@ into an ordered build plan. Builds on M2 (docs/M2_PLAN.md); same rules (CLAUDE.m
   hub (and, from WP12, who sank them).
 - 2026-10-02 (WP12): Fleets (F2), Ship Designer (F3), Battle Reports (F4) as recorded in Sub-spec F's change
   log. Battle logs gain `bands` (range band per round) for the report's phase row.
+- 2026-10-02 (WP13): AI warships build only at an idle shipyard, and colony ships go to the shortest
+  queue; beyond `ai_min_ships` the AI adds warships only while threatened (raiders hunting it, convoy losses
+  in the last `ai_loss_months`, or a war). Economy harness (20 seeds, small, 4 AIs, year 15): 65 of 80
+  empires meet B20 with 2.9 warships each on average (M2 accepted level 66; the same 10 seeds without AI
+  warships: 34 of 40 vs 33 of 40 with them; run-to-run spread about +-4). Combat harness unchanged at the A14
+  targets. Performance, huge, 8 AIs, year 15 (32 warships, 10 fleets): worst sim hour 38 ms headless,
+  8x speed 137 fps average. Battle starts and fleet supply made cheaper with identical checksums.
 
 ---
 
@@ -279,11 +286,11 @@ Size: **S** ≈ one focused session, **M** ≈ 2–3 sessions, **L** ≈ 4+ sess
       8–20 rounds; missiles dominant at standoff without PD, weak at close (WP6). "A hard counter holds to
       ~1.25× cost" is report-only (owner, 2026-10-01; revisited in M4).
 - [ ] Economy harness with AI defence fleets at least at the M2 accepted level (66 of 80 empires).
-- [ ] Huge galaxy, 8 autopilot empires with fleets, year 15: 8× speed holds ≥ 60 fps; worst hour under 50 ms
-      headless.
-- [ ] No Sub-spec A numbers in code (data only); content validation green; every `.glb` validated.
-- [ ] Sim lint green; every player-facing string uses a loc key; all M3 screens keyboard-navigable.
-- [ ] Spec change logs updated with every decision made during the build.
+- [x] Huge galaxy, 8 autopilot empires with fleets, year 15: 8× speed holds ≥ 60 fps; worst hour under 50 ms
+      headless (137 fps, 38 ms; WP13).
+- [x] No Sub-spec A numbers in code (data only); content validation green; every `.glb` validated.
+- [x] Sim lint green; every player-facing string uses a loc key; all M3 screens keyboard-navigable.
+- [x] Spec change logs updated with every decision made during the build.
 
 ## D4. Open Questions (to settle at the WP, recorded in the change logs)
 
