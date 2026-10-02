@@ -33,6 +33,16 @@ rules (CLAUDE.md), same tooling.*
   `SpeciesDef.signature_mechanic` to a script; core registers legend, precedence, brood_surge, contracts and
   sanctuary (stubs until WP9); `register` adds more (mods later, tests now). Per-empire state is
   `Empire.mechanic` (ints and strings; saved, in the checksum). An unknown mechanic name fails validation.
+- 2026-10-02 (WP3, owner decision on open question 1): first contact when an own system is within
+  `contact_lanes` (3) of the other's territory or any own unit is in a system the other owns; mutual; checked
+  monthly (month phase 5, before the signature mechanics). `Relation` per directed pair (`MatchState.relations`,
+  `diplomacy` checksum part): trust (E3 start 20, or 10 when the affinity is -20 or lower; moved only by deeds),
+  standing modifiers recomputed monthly while true (shared border = an own system one lane from theirs, -10;
+  common enemy, +20; treaties from WP4) and event modifiers (one accumulating value per type, capped, decaying
+  one point every N months: gift, fought together, rescued, denied, espionage, treaty broken (victim and
+  others), humiliated, war memory). Opinion = species affinity + standing + events, clamped to +-100, at
+  most -50 while at war. `Empire.reputation` (-500..500, E14) for every empire. All numbers in the new
+  `diplomacy_rules` Def. Pack Bonding's faster ally opinion applies once alliances exist (WP4).
 
 ---
 

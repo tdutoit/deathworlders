@@ -22,6 +22,7 @@ var designs := IdMap.new()  # id -> ShipDesign (M3)
 var fleets := IdMap.new()  # id -> Fleet (M3)
 var battles := IdMap.new()  # id -> Battle in progress (M3)
 var reports := IdMap.new()  # id -> BattleReport of finished battles (M3)
+var relations := {}  # "from:to" -> Relation, from first contact (M4); iterate with IdMap.sort_keys
 var wars := {}  # "a:b" (lower empire ID first) -> true while those empires are at war (M3 toggle)
 var pirate_bases := {}  # system ID -> months until it sends out the next raider (D9)
 var reserves := {}  # "holder:resource" -> whole units auto-logistics leaves alone (B8; default 20% of cap)
@@ -115,6 +116,7 @@ func to_dict() -> Dictionary:
 		"battles": StateIO.map_to_array(battles),
 		"reports": StateIO.map_to_array(reports),
 		"wars": wars.duplicate(),
+		"relations": _relations_array(),
 		"pirate_bases": pirate_bases.duplicate(),
 		"reserves": reserves.duplicate(),
 		"next_id": next_id,
@@ -148,6 +150,9 @@ static func from_dict(d: Dictionary) -> MatchState:
 	s.reports = StateIO.array_to_map(d.get("reports", []), BattleReport.from_dict)
 	for k: Variant in d.get("wars", {}):
 		s.wars[String(k)] = true
+	for rd: Dictionary in d.get("relations", []):
+		var rel := Relation.from_dict(rd)
+		s.relations["%d:%d" % [rel.from, rel.to]] = rel
 	for k: Variant in d.get("pirate_bases", {}):
 		s.pirate_bases[int(k)] = int(d["pirate_bases"][k])
 	s.reserves = StateIO.int_map(d.get("reserves", {}))
@@ -157,6 +162,13 @@ static func from_dict(d: Dictionary) -> MatchState:
 	for entry: Dictionary in d["command_log"]:
 		s.command_log.append(entry.duplicate(true))
 	return s
+
+
+func _relations_array() -> Array:
+	var out := []
+	for k: String in IdMap.sort_keys(relations.keys()):
+		out.append((relations[k] as Relation).to_dict())
+	return out
 
 
 ## Per-subsystem hashes, so a desync report can say where states diverged. "meta" covers the
@@ -173,6 +185,7 @@ func checksum() -> Dictionary:
 		"logistics": DetHash.hash_value([d["routes"], d["demands"], d["reserves"]]),
 		"military": DetHash.hash_value([d["designs"], d["fleets"]]),
 		"combat": DetHash.hash_value([d["battles"], d["reports"], d["wars"]]),
+		"diplomacy": DetHash.hash_value(d["relations"]),
 		"rng": DetHash.hash_value(d["rng_streams"]),
 	}
 	parts["total"] = DetHash.hash_value(parts)

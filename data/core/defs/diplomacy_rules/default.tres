@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="DiplomacyRulesDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/diplomacy_rules_def.gd" id="1_dipl"]
+
+[resource]
+script = ExtResource("1_dipl")
+contact_lanes = 3
+opinion_min = -100
+opinion_max = 100
+opinion_border = -10
+opinion_common_enemy = 20
+war_opinion_cap = -50
+event_cap = {
+&"denied": -15,
+&"espionage": -30,
+&"fought_together": 25,
+&"gift": 25,
+&"humiliated": -40,
+&"rescued": 20,
+&"treaty_broken": -50,
+&"treaty_broken_other": -15,
+&"war_memory": -50
+}
+event_decay_months = {
+&"denied": 1,
+&"espionage": 1,
+&"fought_together": 2,
+&"gift": 1,
+&"humiliated": 2,
+&"rescued": 3,
+&"treaty_broken": 1,
+&"treaty_broken_other": 1,
+&"war_memory": 1
+}
+trust_start = 20
+trust_start_wary = 10
+wary_affinity = -20
+trust_max = 100
+reputation_min = -500
+reputation_max = 500
+id = &"core:diplomacy_rules/default"
+name_key = "DIPLOMACY_RULES_DEFAULT"

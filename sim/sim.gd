@@ -79,7 +79,7 @@ static func _month_tick(state: MatchState) -> void:
 
 
 ## The rest of the monthly work runs in the hours after the boundary, one system per hour, so no single hour
-## carries it all (M2 perf pass): 1 fuel supply, 2 pirates, 3 governors, 4 AI autopilot, 5 signature mechanics (M4).
+## carries it all (M2 perf pass): 1 fuel supply, 2 pirates, 3 governors, 4 AI autopilot, 5 relations and signature mechanics (M4).
 static func _month_phase(state: MatchState, hour: int) -> void:
 	if state.defs == null:
 		return
@@ -93,6 +93,7 @@ static func _month_phase(state: MatchState, hour: int) -> void:
 		4:
 			Autopilot.month_tick(state)
 		5:
+			Relations.month_tick(state)  # M4: contacts, opinion standing and decay
 			SignatureMechanics.month_tick(state)
 
 
