@@ -10,11 +10,12 @@ var contact_tick := 0
 var trust := 0  # E3: 0..trust_max, moved only by deeds
 var standing := {}  # modifier type -> value while true (border, common_enemy; treaties from WP4)
 var events := {}  # event type -> [value, months since its last decay step]
+var refusals := {}  # treaty Def ID -> tick this empire last refused it (E5 recent refusal)
 
 
 func to_dict() -> Dictionary:
 	return {"from": from, "to": to, "contact_tick": contact_tick, "trust": trust, "standing": standing.duplicate(),
-		"events": events.duplicate(true)}
+		"events": events.duplicate(true), "refusals": refusals.duplicate()}
 
 
 static func from_dict(d: Dictionary) -> Relation:
@@ -25,4 +26,5 @@ static func from_dict(d: Dictionary) -> Relation:
 	r.trust = int(d["trust"])
 	r.standing = StateIO.ints_deep(d.get("standing", {}))
 	r.events = StateIO.ints_deep(d.get("events", {}))
+	r.refusals = StateIO.ints_deep(d.get("refusals", {}))
 	return r

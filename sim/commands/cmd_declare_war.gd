@@ -12,8 +12,12 @@ func validate(state: MatchState) -> bool:
 		return reject("empire %d is not another empire" % other)
 	if state.wars.has(Battles.war_key(player_id, other)):
 		return reject("already at war")
+	var treaty_reason := Treaties.check_war(state, player_id, other)
+	if treaty_reason != "":
+		return reject(treaty_reason)
 	return true
 
 
 func apply(state: MatchState) -> void:
 	state.wars[Battles.war_key(player_id, p_int("empire"))] = true
+	Treaties.on_war_declared(state, player_id, p_int("empire"))  # M4: treaties broken, partners called

@@ -43,6 +43,24 @@ rules (CLAUDE.md), same tooling.*
   others), humiliated, war memory). Opinion = species affinity + standing + events, clamped to +-100, at
   most -50 while at war. `Empire.reputation` (-500..500, E14) for every empire. All numbers in the new
   `diplomacy_rules` Def. Pack Bonding's faster ally opinion applies once alliances exist (WP4).
+- 2026-10-02 (WP4 part 1, owner decisions on open questions 7 and 8): six `treaty` Defs (E4 numbers;
+  E5 thresholds placeholders: non-aggression 0, trade 5, access 10, protectorate 20, defence pact 30,
+  alliance 40). `propose_treaty`: an AI answers at once (E4 opinion/trust gates, then E5 score >= 0: opinion/2
+  + trust/2 - threshold + shared threat 20 + fear (power ratio above 1:1, 2:1 = +25) + personality (E11 note,
+  species weights until WP10) - recent refusal 10; deal balance from WP5); a player answers within 30 days
+  (`answer_proposal`; declining is "denied", -15). The proposer pays the influence. `cancel_treaty`: after 5
+  years it ends cleanly (non-aggression: 12 months' notice, war blocked until then); earlier it is broken:
+  the victim's opinion (the treaty's break value) and trust (to 0 for non-aggression, defence pact, alliance
+  and protectorate, per E4's column), everyone else in contact -15 opinion and -20 trust, Reputation -50.
+  Treaty opinion (trade +10, defence pact +15, alliance +25, protectorate +30 for the protected) is standing;
+  trust +1 a month per treaty, at most +3 per pair. Declaring war breaks the declarer's treaties with the
+  target and calls the target's defence pact, alliance and protectorate partners (`answer_call`: join = war
+  and +5 trust; refuse or 30 days = -30 trust; AI partners answer by an Honour roll until WP10). Military
+  access lets a fleet resupply from the granting empire's stockpiles. Protectorate (E8 adapted): the protected
+  proposes when under 40% of a hostile neighbour's power, the guardian within 6 lanes; tribute 10% of the
+  protected's credit net; when the protected is attacked, a guardian warship in one of its systems within 60
+  days earns "rescued" +20, trust +10, Reputation +25, otherwise the protectorate fails (trust 0, Reputation
+  -75). Pack Bonding scales allies' positive opinion events toward humans by 1.5.
 
 ---
 

@@ -68,11 +68,13 @@ static func change_trust(state: MatchState, a: int, b: int, delta: int) -> void:
 
 
 ## An E2 event modifier on A's view of B: `amount` points (sign = direction), capped by the type's total.
-## The decay clock restarts. Pack Bonding (humans) scales positive events toward an ally from WP4 on.
+## The decay clock restarts. Pack Bonding (humans): an ally's positive events toward them grow faster.
 static func add_event(state: MatchState, a: int, b: int, type: String, amount: int) -> void:
 	var rel := of(state, a, b)
 	if rel == null or amount == 0:
 		return
+	if amount > 0 and Treaties.allied(state, a, b):
+		amount = FixedMath.mul_permille(amount, 1000 + SpeciesTraits.empire_permille(state, b, "empire.ally_opinion"))  # Pack Bonding
 	var cap := int(rules(state).event_cap.get(StringName(type), amount))
 	var cur := int(rel.events.get(type, [0, 0])[0])
 	var v := cur + amount
@@ -105,8 +107,8 @@ static func month_tick(state: MatchState) -> void:
 	var borders := _borders(state)
 	for k: String in IdMap.sort_keys(state.relations.keys()):
 		var rel: Relation = state.relations[k]
-		rel.standing.erase("border")
-		rel.standing.erase("common_enemy")
+		rel.standing.clear()
+		rel.standing.merge(Treaties.standing(state, rel.from, rel.to))  # E2 treaty bonuses (WP4)
 		if borders.has(Battles.war_key(rel.from, rel.to)):
 			rel.standing["border"] = r.opinion_border
 		for enemy: int in at_war.get(rel.from, []):

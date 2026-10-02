@@ -94,6 +94,7 @@ static func _month_phase(state: MatchState, hour: int) -> void:
 			Autopilot.month_tick(state)
 		5:
 			Relations.month_tick(state)  # M4: contacts, opinion standing and decay
+			Treaties.month_tick(state)  # trust from treaties, notice, tribute, obligations, calls
 			SignatureMechanics.month_tick(state)
 
 

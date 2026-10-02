@@ -22,6 +22,9 @@ var designs := IdMap.new()  # id -> ShipDesign (M3)
 var fleets := IdMap.new()  # id -> Fleet (M3)
 var battles := IdMap.new()  # id -> Battle in progress (M3)
 var reports := IdMap.new()  # id -> BattleReport of finished battles (M3)
+var treaties := IdMap.new()  # id -> Treaty (M4)
+var proposals := IdMap.new()  # id -> Proposal waiting for a player
+var calls := IdMap.new()  # id -> CallToArms
 var relations := {}  # "from:to" -> Relation, from first contact (M4); iterate with IdMap.sort_keys
 var wars := {}  # "a:b" (lower empire ID first) -> true while those empires are at war (M3 toggle)
 var pirate_bases := {}  # system ID -> months until it sends out the next raider (D9)
@@ -117,6 +120,9 @@ func to_dict() -> Dictionary:
 		"reports": StateIO.map_to_array(reports),
 		"wars": wars.duplicate(),
 		"relations": _relations_array(),
+		"treaties": StateIO.map_to_array(treaties),
+		"proposals": StateIO.map_to_array(proposals),
+		"calls": StateIO.map_to_array(calls),
 		"pirate_bases": pirate_bases.duplicate(),
 		"reserves": reserves.duplicate(),
 		"next_id": next_id,
@@ -150,6 +156,9 @@ static func from_dict(d: Dictionary) -> MatchState:
 	s.reports = StateIO.array_to_map(d.get("reports", []), BattleReport.from_dict)
 	for k: Variant in d.get("wars", {}):
 		s.wars[String(k)] = true
+	s.treaties = StateIO.array_to_map(d.get("treaties", []), Treaty.from_dict)
+	s.proposals = StateIO.array_to_map(d.get("proposals", []), Proposal.from_dict)
+	s.calls = StateIO.array_to_map(d.get("calls", []), CallToArms.from_dict)
 	for rd: Dictionary in d.get("relations", []):
 		var rel := Relation.from_dict(rd)
 		s.relations["%d:%d" % [rel.from, rel.to]] = rel
@@ -185,7 +194,7 @@ func checksum() -> Dictionary:
 		"logistics": DetHash.hash_value([d["routes"], d["demands"], d["reserves"]]),
 		"military": DetHash.hash_value([d["designs"], d["fleets"]]),
 		"combat": DetHash.hash_value([d["battles"], d["reports"], d["wars"]]),
-		"diplomacy": DetHash.hash_value(d["relations"]),
+		"diplomacy": DetHash.hash_value([d["relations"], d["treaties"], d["proposals"], d["calls"]]),
 		"rng": DetHash.hash_value(d["rng_streams"]),
 	}
 	parts["total"] = DetHash.hash_value(parts)

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TreatyDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/treaty_def.gd" id="1_trty"]
+
+[resource]
+script = ExtResource("1_trty")
+influence = 30
+min_opinion = 20
+min_trust = 20
+threshold = 20
+opinion = 30
+min_years = 5
+notice_months = 0
+break_opinion = -30
+break_trust_zero = true
+kind = &"defensive"
+effects = Array[StringName]([&"protectorate", &"access"])
+id = &"core:treaty/protectorate"
+name_key = "TREATY_PROTECTORATE"

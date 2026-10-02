@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TreatyDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/treaty_def.gd" id="1_trty"]
+
+[resource]
+script = ExtResource("1_trty")
+influence = 10
+min_opinion = 0
+min_trust = 15
+threshold = 5
+opinion = 10
+min_years = 5
+notice_months = 0
+break_opinion = -25
+break_trust_zero = false
+kind = &"trade"
+effects = Array[StringName]([&"trade"])
+id = &"core:treaty/trade"
+name_key = "TREATY_TRADE"

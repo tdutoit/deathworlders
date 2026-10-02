@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TreatyDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/treaty_def.gd" id="1_trty"]
+
+[resource]
+script = ExtResource("1_trty")
+influence = 10
+min_opinion = -20
+min_trust = 10
+threshold = 0
+opinion = 0
+min_years = 5
+notice_months = 12
+break_opinion = -15
+break_trust_zero = true
+kind = &""
+effects = Array[StringName]([&"no_war"])
+id = &"core:treaty/nonaggression"
+name_key = "TREATY_NONAGGRESSION"

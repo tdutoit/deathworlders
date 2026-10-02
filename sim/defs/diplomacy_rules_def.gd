@@ -24,12 +24,40 @@ const EVENTS: Array[String] = ["gift", "fought_together", "rescued", "denied", "
 @export var trust_start_wary: int  # when the base affinity is at or below wary_affinity
 @export var wary_affinity: int
 @export var trust_max: int
+# Treaties (E3-E5, E8; M4 WP4)
+@export var shared_threat: int  # E5: +20 if a common enemy
+@export var fear_max: int  # E5: largest fear bonus
+@export var fear_ratio_step: int  # E5: permille of power ratio above 1:1 per fear point (2:1 = +25)
+@export var refusal_months: int  # E5: recent-refusal window
+@export var refusal_penalty: int  # E5
+@export var trust_per_treaty: int  # E3: per active treaty a month
+@export var trust_treaty_max: int  # E3: per pair a month
+@export var break_others_opinion: int  # E2: everyone else's view of a treaty breaker
+@export var break_others_trust: int  # E3
+@export var break_reputation: int  # E14 half of Respect -100
+@export var call_days: int  # days to answer a call to arms
+@export var call_answered_trust: int  # E3
+@export var call_ignored_trust: int  # E3
+@export var proposal_days: int  # a player's proposal waits this long
+@export var protectorate_power: int  # E8: protected power under 40% of a hostile neighbour's
+@export var protectorate_hostile_opinion: int  # E8 adapted: hostile = at war or opinion at most this
+@export var protectorate_lanes: int  # E8
+@export var protectorate_tribute: int  # permille of the protected's credit net (owner 2026-10-02)
+@export var protectorate_days: int  # E8: guardian response time
+@export var protectorate_success_trust: int  # E8
+@export var protectorate_success_reputation: int  # E14 half of Respect +50
+@export var protectorate_fail_reputation: int  # E14 half of Respect -150
 # E14 Reputation (every empire; Legend for humans comes with WP9)
 @export var reputation_min: int
 @export var reputation_max: int
 
 const _INTS: Array[String] = ["contact_lanes", "opinion_min", "opinion_max", "opinion_border", "opinion_common_enemy",
-	"war_opinion_cap", "trust_start", "trust_start_wary", "wary_affinity", "trust_max", "reputation_min", "reputation_max"]
+	"war_opinion_cap", "trust_start", "trust_start_wary", "wary_affinity", "trust_max", "reputation_min", "reputation_max",
+	"shared_threat", "fear_max", "fear_ratio_step", "refusal_months", "refusal_penalty", "trust_per_treaty",
+	"trust_treaty_max", "break_others_opinion", "break_others_trust", "break_reputation", "call_days",
+	"call_answered_trust", "call_ignored_trust", "proposal_days", "protectorate_power",
+	"protectorate_hostile_opinion", "protectorate_lanes", "protectorate_tribute", "protectorate_days",
+	"protectorate_success_trust", "protectorate_success_reputation", "protectorate_fail_reputation"]
 
 
 func category() -> String:

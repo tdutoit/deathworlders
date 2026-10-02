@@ -32,7 +32,11 @@ static func day_tick(state: MatchState) -> void:
 			built = true
 		var key := "%d:%d" % [u.owner, u.system_id]
 		if not sources_at.has(key):
-			sources_at[key] = Supply.sources_at(state, points.get(u.owner, []), u.system_id)
+			var pts: Array = (points.get(u.owner, []) as Array).duplicate()
+			for other: int in state.empires.ordered():
+				if other != u.owner and Treaties.has_effect(state, u.owner, other, "access"):
+					pts.append_array(points.get(other, []))  # military access: their stockpiles supply us (E4)
+			sources_at[key] = Supply.sources_at(state, pts, u.system_id)
 		var st := ShipStats.cached(state.defs, u.hull_id, u.components, SpeciesTraits.species_of(state, u.owner))
 		var sources: Array = sources_at[key]
 		var in_supply := not sources.is_empty() and not u.is_moving()
