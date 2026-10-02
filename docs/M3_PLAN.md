@@ -285,7 +285,8 @@ Size: **S** ≈ one focused session, **M** ≈ 2–3 sessions, **L** ≈ 4+ sess
 - [x] Combat harness meets the A14 targets: mirror 45–55%; hard counter at equal cost 70–85%; typical battles
       8–20 rounds; missiles dominant at standoff without PD, weak at close (WP6). "A hard counter holds to
       ~1.25× cost" is report-only (owner, 2026-10-01; revisited in M4).
-- [ ] Economy harness with AI defence fleets at least at the M2 accepted level (66 of 80 empires).
+- [x] Economy harness with AI defence fleets at least at the M2 accepted level (66 of 80 empires): 65 of 80,
+      accepted by the owner 2026-10-02 (within run-to-run noise; AI production planning revisited in M4).
 - [x] Huge galaxy, 8 autopilot empires with fleets, year 15: 8× speed holds ≥ 60 fps; worst hour under 50 ms
       headless (137 fps, 38 ms; WP13).
 - [x] No Sub-spec A numbers in code (data only); content validation green; every `.glb` validated.
