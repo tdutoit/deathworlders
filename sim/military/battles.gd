@@ -769,6 +769,7 @@ static func _finish(state: MatchState, b: Battle) -> void:
 	rep.data["salvage"] = salvage
 	state.reports.put(rep.id, rep)
 	state.battles.erase(b.id)
+	SignatureMechanics.battle_resolved(state, rep)
 
 
 ## A12 result for a side from both sides' cost-weighted loss shares (permille).

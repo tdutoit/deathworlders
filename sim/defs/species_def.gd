@@ -33,3 +33,10 @@ func schema() -> Dictionary:
 		"affinity": {"type": "int_map", "key_ref": "species", "min": -100, "max": 100},
 		"signature_mechanic": {"type": "name"},
 	}
+
+
+func validate(_db: DefDatabase) -> Array[String]:
+	var errors: Array[String] = []
+	if signature_mechanic != &"" and not SignatureMechanics.has(signature_mechanic):
+		errors.append("unknown signature_mechanic '%s' (registered: %s)" % [signature_mechanic, SignatureMechanics.names()])
+	return errors

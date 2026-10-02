@@ -62,6 +62,7 @@ static func _do(state: MatchState, eid: int, type_id: StringName, payload: Dicti
 	if not cmd.validate(state):
 		return false
 	cmd.apply(state)
+	SignatureMechanics.command_applied(state, cmd)
 	return true
 
 

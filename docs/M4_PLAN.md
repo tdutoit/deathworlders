@@ -27,6 +27,12 @@ rules (CLAUDE.md), same tooling.*
   (ocean 800, desert 600; was 5 of 20). Thessari miss the species floor: most failing empires stop at exactly
   5 colonies, which points at the AI's expansion gates rather than the species data. Carried to WP10 (the
   strategic loop reworks expansion) and WP14 (economy targets), together with the neutral 60 vs 65.
+- 2026-10-02 (WP2): `SignatureMechanic` (sim/species) with deterministic hooks: `init_state` (match start),
+  `month_tick` (new month phase 5, after the AI), `battle_resolved`, `command_applied` (player commands and
+  the AI's), `treaty_event` (from WP4) and `meter` for the UI. `SignatureMechanics` maps
+  `SpeciesDef.signature_mechanic` to a script; core registers legend, precedence, brood_surge, contracts and
+  sanctuary (stubs until WP9); `register` adds more (mods later, tests now). Per-empire state is
+  `Empire.mechanic` (ints and strings; saved, in the checksum). An unknown mechanic name fails validation.
 
 ---
 

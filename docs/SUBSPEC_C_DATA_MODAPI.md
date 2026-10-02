@@ -38,6 +38,10 @@
   `empire.pursuit_accuracy`, `empire.salvage`, `empire.war_exhaustion`, `empire.ally_opinion`,
   `planet.food_upkeep`, `job.output.clerk`. `planet.stability` (declared since M2) is now read by the
   stability rule.
+- 2026-10-02 (M4 WP2) C9: signature mechanics are `SignatureMechanic` scripts registered by name
+  (`SignatureMechanics.register(name, script)`, the first slice of `register_signature_mechanic`), with sim
+  hooks init_state, month_tick, battle_resolved, command_applied and treaty_event; their state is the
+  empire's `mechanic` dictionary (ints and strings), saved and checksummed.
 
 ---
 

@@ -29,6 +29,9 @@ static func apply(state: MatchState, db: DefDatabase) -> void:
 			e.treasury[String(res)] = e.treasury.get(String(res), 0) + int(start.treasury[res]) * Stockpile.MILLI
 		c.stage = String(start.stage)
 		Designs.give_standard(state, e.id)  # M3: the species' standard warship designs
+		var mech := SignatureMechanics.of(state, e)  # M4: the species' signature mechanic state
+		if mech != null:
+			mech.init_state(state, e)
 		# Homeworlds are established worlds: past the young-colony bonus (B17) and Developed's age rule (D2).
 		var r := Economy.rules(db)
 		c.founded_tick = state.tick - maxi(r.new_colony_growth_years, r.developed_years) * Calendar.HOURS_PER_YEAR

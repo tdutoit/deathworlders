@@ -7,7 +7,7 @@ extends RefCounted
 
 const DAY := 1  # advance() flags
 const MONTH := 2
-const MONTH_PHASES := 4  # hours after the month boundary that carry monthly work (_month_phase)
+const MONTH_PHASES := 5  # hours after the month boundary that carry monthly work (_month_phase)
 
 
 ## Validates and applies commands in order. Applied ones go to state.command_log; rejected ones
@@ -18,6 +18,7 @@ static func execute(state: MatchState, commands: Array[Command]) -> Array[Comman
 	for cmd in commands:
 		if cmd.validate(state):
 			cmd.apply(state)
+			SignatureMechanics.command_applied(state, cmd)
 			state.command_log.append({
 				"tick": state.tick, "type_id": String(cmd.type_id), "player": cmd.player_id,
 				"payload": cmd.payload.duplicate(true),
@@ -78,7 +79,7 @@ static func _month_tick(state: MatchState) -> void:
 
 
 ## The rest of the monthly work runs in the hours after the boundary, one system per hour, so no single hour
-## carries it all (M2 perf pass): 1 fuel supply, 2 pirates, 3 governors, 4 AI autopilot.
+## carries it all (M2 perf pass): 1 fuel supply, 2 pirates, 3 governors, 4 AI autopilot, 5 signature mechanics (M4).
 static func _month_phase(state: MatchState, hour: int) -> void:
 	if state.defs == null:
 		return
@@ -91,6 +92,8 @@ static func _month_phase(state: MatchState, hour: int) -> void:
 			Governor.month_tick(state)
 		4:
 			Autopilot.month_tick(state)
+		5:
+			SignatureMechanics.month_tick(state)
 
 
 ## Rebuilds a match from its seed and settings plus a command log (main spec 18.4 debug replay).
