@@ -23,6 +23,7 @@ var colonise_screen: ColoniseScreen
 var fleets_screen: FleetsScreen
 var designer_screen: DesignerScreen
 var battles_screen: BattlesScreen
+var diplomacy_screen: DiplomacyScreen
 var _screens: Array[ScreenPanel] = []
 
 var _resume_unpauses := false
@@ -104,10 +105,14 @@ func _build_hud() -> void:
 	fleets_screen = FleetsScreen.new()
 	designer_screen = DesignerScreen.new()
 	battles_screen = BattlesScreen.new()
+	diplomacy_screen = DiplomacyScreen.new()
+	diplomacy_screen.visibility_changed.connect(func() -> void:  # full screen (F14): side panels step aside
+		outliner.visible = not diplomacy_screen.visible
+		context_panel.visible = not diplomacy_screen.visible)
 	designer_screen.visibility_changed.connect(func() -> void:  # full screen (F10): side panels step aside
 		outliner.visible = not designer_screen.visible
 		context_panel.visible = not designer_screen.visible)
-	_screens = [sector_screen, logistics_screen, stockpile_screen, alerts_screen, colonise_screen, fleets_screen, designer_screen, battles_screen]
+	_screens = [sector_screen, logistics_screen, stockpile_screen, alerts_screen, colonise_screen, fleets_screen, designer_screen, battles_screen, diplomacy_screen]
 	for screen in _screens:
 		hud.add_child(screen)
 		screen.focus_requested.connect(func(kind: String, id: int) -> void:
@@ -220,6 +225,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("open_fleets"):
 		fleets_screen.only_fleet = 0
 		toggle_screen(fleets_screen)
+	elif event.is_action_pressed("open_diplomacy"):
+		toggle_screen(diplomacy_screen)
 	elif event.is_action_pressed("open_battles"):
 		toggle_screen(battles_screen)
 	elif event.is_action_pressed("open_designer"):

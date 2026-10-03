@@ -32,7 +32,8 @@ WP1–WP12 are implemented (see `docs/M1_PLAN.md` and its change log). Start the
 | Right-click | Send the selected unit to a system (otherwise back out) |
 | Space, + / − | Pause, speed 1×–8× |
 | Tab, F10 | Outliner, command menu (save / load / exit) |
-| F2 / F3 / F4 | Fleets (and war toggle), Ship Designer, Battle Reports (M3) |
+| F2 / F3 / F4 | Fleets, Ship Designer, Battle Reports (M3) |
+| F5 | Diplomacy: empires, treaties and deals, war and peace, Council, inbox (M4) |
 | F6 / F7 / F9 / F12 | Sectors, Logistics, Stockpiles, Alerts (M2) |
 
 ## M2 status (economy & logistics)

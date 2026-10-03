@@ -164,6 +164,16 @@ rules (CLAUDE.md), same tooling.*
   start (`Empire.ai_output`, `ai_actions`); Admiral's +1 intel level and Deathworld wait for intel (M5).
   Match setup also offers a founding Council seat per slot and shows the selected species' personality, traits
   and signature mechanic; the difficulty tooltip lists every bonus from the data.
+- 2026-10-03 (WP13, owner decision: F5): the Diplomacy screen (near full screen) with Empires (their view of you
+  with the opinion breakdown, trust, both fleets, treaties with age and notice, cancel/break, the proposal
+  builder: a treaty and deal items you give / they give with amounts and months, the live E5 breakdown and
+  verdict, claims, declaring war with or without a casus belli), War (each war's casus belli, score and
+  exhaustion, a terms builder showing the cost against what they would accept, demand / white peace, the war
+  footing), Council (members, next session, your votes, resolutions in force with repeal, the next session's
+  proposals with your vote and the Precedence veto, proposing, the last session's results) and Inbox
+  (proposals, peace offers and calls to arms with their answers). The header shows the signature meter,
+  Reputation and exhaustion (and Hire mercenaries for the Ohlan); the planet panel offers Brood Surge. Alerts
+  for proposals, peace offers and calls to arms. The M3 Empires tab is gone from the Fleets screen.
 
 ---
 

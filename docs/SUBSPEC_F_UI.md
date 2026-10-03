@@ -33,6 +33,9 @@
   formation/stance effects, "Set as refit", saving reports outside the match, veterancy promotions in
   honours. Map: one large chevron per fleet (at its lead ship) and a signal ring on systems with a battle.
   Alerts gain battles under way, recent battle results and convoys sunk by enemy warships.
+- 2026-10-03 (M4 WP13, owner decision): F17 gains `open_diplomacy` = F5. F14 is built as Empires, War, Council
+  and Inbox tabs (see the M4 plan); intel ranges and minors wait for M5/M7, so power is shown exactly. The
+  HUD hint groups the keys (F2-F4 military, F5 diplomacy, F6-F9 economy).
 
 ---
 

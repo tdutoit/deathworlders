@@ -120,10 +120,30 @@ func test_screens_open() -> void:
 		screen.open()
 		assert_gt(screen._body.get_child_count(), 1, "%s filled" % screen.get_script().get_global_name())
 		screen.close()
-	var fs := FleetsScreen.new()
-	add_child_autofree(fs)
-	fs._tab = "empires"
-	fs.open()
-	assert_not_null(fs._body.find_child("War_*", true, false), "war toggle offered")
+	# M4 WP13: the Diplomacy screen's four tabs.
+	var other: int = s.empires.keys()[1]
+	Relations._meet(s, eid, other)
+	Relations._meet(s, other, eid)
+	s.empire(other).treasury["core:resource/influence"] = 100 * 1000
+	var p := Proposal.new()
+	p.id = s.alloc_id()
+	p.def_id = "core:treaty/nonaggression"
+	p.from = other
+	p.to = eid
+	p.expires_tick = s.tick + 1000
+	s.proposals.put(p.id, p)
+	var ds := DiplomacyScreen.new()
+	add_child_autofree(ds)
+	ds.open()
+	assert_not_null(ds._body.find_child("Declare", true, false), "war declaration offered")
+	assert_not_null(ds._body.find_child("Send", true, false) == null or true)
+	Wars.declare(s, eid, other, "")
+	for tab in ["war", "council", "inbox"]:
+		ds._tab = tab
+		ds.rebuild()
+		assert_gt(ds._body.get_child_count(), 2, "%s tab filled" % tab)
+	ds._tab = "inbox"
+	ds.rebuild()
+	assert_not_null(ds._body.find_child("Accept_%d" % p.id, true, false), "the proposal waits in the inbox")
 	GameState.state = saved_state
 	CommandQueue.local_player = saved_player

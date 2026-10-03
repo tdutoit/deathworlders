@@ -8,8 +8,9 @@ extends Node
 ##   --ui=menu|setup       with --screenshot: capture that screen instead of a match
 ##   --load=<save>         open that save and unpause (with --speed=<1|2|4|8>, --perf=<seconds>)
 ##   --months=<n>          run the quickstart match n months before showing it
-##   --screen=planet|sectors|logistics|stockpile|alerts|fleets|designer|battles   (--tab=routes|demands|hubs|losses|empires) open that panel
+##   --screen=planet|sectors|logistics|stockpile|alerts|fleets|designer|battles|diplomacy   (--tab=routes|demands|hubs|losses|empires) open that panel
 ##   --warships=<n>        quickstart: queue n standard destroyers at the human's first shipyard (Commands)
+##   --meet                quickstart: send the scout to the nearest AI capital (first contact)
 
 var _args := {}
 
@@ -66,6 +67,8 @@ func _quickstart() -> void:
 	var spawn := CommandRegistry.create(CmdDebugSpawnScout.TYPE, human.id, {"system": home})
 	Sim.execute(state, [spawn] as Array[Command])
 	_queue_warships(state, human.id, int(_args.get("warships", "0")))
+	if _args.has("meet"):
+		_scout_to_nearest_ai(state, human.id)
 	var none: Array[Command] = []
 	for h in int(_args.get("months", "0")) * Calendar.HOURS_PER_MONTH:
 		Sim.step(state, none)
@@ -77,6 +80,25 @@ func _quickstart() -> void:
 	elif _args.has("perf"):
 		await _measure(float(_args["perf"]))
 		get_tree().quit()
+
+
+## --meet: the starting scout flies to the nearest AI capital (a normal move command), for first contact.
+func _scout_to_nearest_ai(state: MatchState, eid: int) -> void:
+	var scout: Unit = null
+	for u: Unit in state.units.values():
+		if u.owner == eid and u.kind == "scout":
+			scout = u
+	if scout == null:
+		return
+	var dist := AutoLogistics._hops_from(state, scout.system_id, {})
+	var best := -1
+	for e: Empire in state.empires.values():
+		if e.id != eid:
+			var sid := state.galaxy.planet(e.capital_planet).system_id
+			if best < 0 or int(dist.get(sid, 9999)) < int(dist.get(best, 9999)):
+				best = sid
+	if best >= 0:
+		Sim.execute(state, [CommandRegistry.create(CmdMoveUnit.TYPE, eid, {"unit": scout.id, "to": best})] as Array[Command])
 
 
 func _queue_warships(state: MatchState, eid: int, n: int) -> void:
@@ -126,6 +148,9 @@ func _open_screen(human: Empire) -> void:
 			ui.toggle_screen(ui.designer_screen)
 		"battles":
 			ui.toggle_screen(ui.battles_screen)
+		"diplomacy":
+			ui.diplomacy_screen._tab = _args.get("tab", "empires")
+			ui.toggle_screen(ui.diplomacy_screen)
 
 
 func _save_screenshot() -> void:

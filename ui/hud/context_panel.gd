@@ -108,6 +108,8 @@ func _fill() -> void:
 			var colony := state.colony(p.id)
 			if colony != null:
 				_colony_section(state, colony)
+				if colony.owner == CommandQueue.local_player and BroodSurgeMechanic.check(state, colony.owner, colony.id) == "":
+					_button("CTX_BROOD_SURGE", func() -> void: CommandQueue.submit_new(CmdBroodSurge.TYPE, {"colony": colony.id}))
 			elif Colonisation.check_colonise(state, CommandQueue.local_player, idle_colony_ship(state, p.id), p.id) == "":
 				_button("CTX_COLONISE", func() -> void: colonise_requested.emit(p.id))
 			_stations_section(state, p.id)

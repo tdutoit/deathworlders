@@ -52,6 +52,19 @@ static func collect(state: MatchState, eid: int) -> Array:
 			out.append(_alert(INFO, "ALERT_BATTLE_REPORT", {"system": state.galaxy.system(int(rep.data["system"])).name,
 				"result": TranslationServer.translate("RESULT_" + String(rep.data["results"][side]).to_upper())},
 				"system", int(rep.data["system"])))
+	# M4: diplomacy waiting for an answer.
+	for pid: int in state.proposals.ordered():
+		var p: Proposal = state.proposals.get_or(pid)
+		if p.to == eid:
+			out.append(_alert(SOON, "ALERT_PROPOSAL", {"from": UiNames.owner(state, p.from)}, "", 0))
+	for oid: int in state.peace_offers.ordered():
+		var o: PeaceOffer = state.peace_offers.get_or(oid)
+		if o.to == eid:
+			out.append(_alert(URGENT, "ALERT_PEACE_OFFER", {"from": UiNames.owner(state, o.from)}, "", 0))
+	for cid: int in state.calls.ordered():
+		var c: CallToArms = state.calls.get_or(cid)
+		if c.to == eid:
+			out.append(_alert(URGENT, "ALERT_CALL_TO_ARMS", {"from": UiNames.owner(state, c.from), "enemy": UiNames.owner(state, c.enemy)}, "", 0))
 	var raiders := Pirates.raiders_hunting(state, eid)
 	if raiders > 0:
 		out.append(_alert(SOON, "ALERT_PIRATES", {"n": raiders}, "", 0))

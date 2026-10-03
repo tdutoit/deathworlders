@@ -2,10 +2,10 @@ class_name FleetsScreen
 extends ScreenPanel
 ## Fleets (F2; Sub-spec F5, owner decision 2026-10-02: a screen plus the context panel). Each own fleet with
 ## strength, condition, supply, doctrine and composition by task force, and its orders: patrol, escort,
-## merge, split, rename (moves: right-click on the map with a warship selected). The Empires tab holds the
-## M3 war toggle until M4 diplomacy. Every control submits a Command.
+## merge, split, rename (moves: right-click on the map with a warship selected). War and peace moved to the
+## Diplomacy screen (F5, M4). Every control submits a Command.
 
-const TABS: Array[String] = ["fleets", "empires"]
+const TABS: Array[String] = ["fleets"]
 const PATROL_LANES := 2  # "Patrol nearby": own systems within this many lanes
 
 var _tab := "fleets"
@@ -24,9 +24,6 @@ func _fill(state: MatchState, eid: int) -> void:
 			rebuild.call_deferred(), tabs)
 		b.toggle_mode = true
 		b.set_pressed_no_signal(t == _tab)
-	if _tab == "empires":
-		_empires(state, eid)
-		return
 	var fleets: Array[Fleet] = []
 	for fid: int in state.fleets.ordered():
 		var f: Fleet = state.fleets.get_or(fid)
@@ -129,21 +126,3 @@ static func _nearby_own(state: MatchState, eid: int, system_id: int) -> Array:
 			ids.append(sid)
 	ids.sort_custom(func(a: int, b: int) -> bool: return dist[a] < dist[b] or (dist[a] == dist[b] and a < b))
 	return ids.slice(0, CmdSetPatrol.MAX_SYSTEMS)
-
-
-## The M3 war toggle (owner decision 2026-10-02): unilateral war and peace with each other empire.
-func _empires(state: MatchState, eid: int) -> void:
-	heading("FLEETS_WAR_NOTE")
-	var g := table(["FLEETS_COL_EMPIRE", "FLEETS_COL_RELATION", ""])
-	for other: int in state.empires.ordered():
-		if other == eid:
-			continue
-		var at_war := state.wars.has(Battles.war_key(eid, other))
-		cell(g, UiNames.owner(state, other))
-		cell(g, TranslationServer.translate("FLEETS_AT_WAR" if at_war else "FLEETS_AT_PEACE"))
-		if at_war:
-			button(TranslationServer.translate("FLEETS_MAKE_PEACE"), "Peace_%d" % other, func() -> void:
-				CommandQueue.submit_new(CmdMakePeace.TYPE, {"empire": other}), g)
-		else:
-			button(TranslationServer.translate("FLEETS_DECLARE_WAR"), "War_%d" % other, func() -> void:
-				CommandQueue.submit_new(CmdDeclareWar.TYPE, {"empire": other}), g)
