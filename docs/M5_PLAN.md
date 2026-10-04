@@ -95,6 +95,19 @@ with the workflow change below.*
   A refitting ship holds position (move_fleet rejects); in battle it fights with its old parts and the
   countdown pauses; when done it takes the new hull and parts fully repaired. Numbers in combat_rules
   (`refit_*`). The AI starts refitting in WP11; the refit picker UI comes in WP12.
+- 2026-10-04 (WP8, owner decisions): salvage fragments are kept per species (`Empire.fragments`; the
+  losing side's lead species; pirates and own species only count in `tech_fragments`); Captured Tech Study
+  adds `empire.captured_fragments` on the captured-ship share. With the Reverse Engineering tech, 100
+  fragments of a species (humans 70: Improvisers `empire.reverse_fragments` -30) buy one tech any empire of
+  that species has researched and the buyer lacks (`reverse_engineer {species, tech}`): it joins the queue at
+  50% cost (Adaptive Integration 40%) and skips the tier rule, prereqs and species locks, not exclusive
+  picks. At most 3 unlocks per species (+1 Xeno Synthesis). Each unlock gives that species' empires in
+  contact an opinion event: `tech_admired` +10 (cap 20) when their xenophilia is 60+, else `tech_stolen` -15
+  (cap -30). Human-adapted parts (`ComponentDef.hybrid_of`; need Hybrid Technology, or Field Improvisation
+  for humans, and one unlock from that species): Overclocked Lance (Vess'kar; energy M, Heavy Laser +30%
+  damage, -100 accuracy), Swarm Cannon (Krothi; Autocannon +2 shots), Smuggler's Baffles (Ohlan; defence S,
+  signature -30), Bastion Projector (Thessari; Shield Generator +50%). AI: spends fragments on the cheapest
+  copyable tech of each species (WP11 refines).
 
 ## Goal of M5
 

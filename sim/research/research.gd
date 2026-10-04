@@ -52,7 +52,7 @@ static func blocked(state: MatchState, eid: int, tech: String) -> String:
 		return "unknown tech %s" % tech
 	if e.techs.has(tech):
 		return "already researched"
-	if not t.species_only.is_empty() and not StringName(e.species) in t.species_only:
+	if not t.species_only.is_empty() and not StringName(e.species) in t.species_only and not e.reversed.has(tech):
 		return "not for this species"
 	for x in t.exclusive_with:
 		if e.techs.has(String(x)):
@@ -67,6 +67,8 @@ static func not_ready(state: MatchState, eid: int, tech: String) -> String:
 		return why
 	var e := state.empire(eid)
 	var t := state.defs.get_def(StringName(tech)) as TechDef
+	if e.reversed.has(tech):
+		return ""  # WP8: a reverse-engineered tech skips the tier rule and prereqs
 	for p in t.prereqs:
 		if not e.techs.has(String(p)):
 			return "needs %s" % p
@@ -95,7 +97,11 @@ static func cost(state: MatchState, eid: int, tech: String) -> int:
 	for m: ModifierDef in SpeciesTraits.modifiers(state.defs, SpeciesTraits.source_of(state, eid), ModifierDef.Scope.EMPIRE):
 		if String(m.key) == "tech.cost" and m.mode == ModifierDef.Mode.PERMILLE and StringName(tech) in (m.condition.get("tech", []) as Array):
 			per += m.value
-	return maxi(1, FixedMath.mul_permille(Pace.scale(t.cost, BuildRules.pace(state)), maxi(0, 1000 + per)))
+	var base := FixedMath.mul_permille(Pace.scale(t.cost, BuildRules.pace(state)), maxi(0, 1000 + per))
+	var e := state.empire(eid)
+	if e != null and e.reversed.has(tech):  # WP8: reverse-engineered at half cost (Adaptive Integration 40%)
+		base = FixedMath.mul_permille(base, maxi(0, rules(state).reverse_cost_permille + SpeciesTraits.empire_add(state, eid, "empire.reverse_cost")))
+	return maxi(1, base)
 
 
 ## The techs being worked on now: the first researchable entries of the queue, up to the slot count.

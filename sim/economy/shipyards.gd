@@ -239,6 +239,8 @@ static func design_tech(state: MatchState, empire_id: int, d: ShipDesign) -> Str
 		var c := state.defs.get_def(StringName(cid)) as ComponentDef if String(cid) != "" else null
 		if c != null:
 			why = Research.missing(state, empire_id, c.requires_tech)
+			if why == "":
+				why = ReverseEngineering.hybrid_missing(state, empire_id, c)  # M5 WP8
 			if why != "":
 				return why
 	return ""

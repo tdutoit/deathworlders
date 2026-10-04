@@ -14,6 +14,7 @@ static var _types := {  # class refs are not constant expressions
 	CmdMoveConstruction.TYPE: CmdMoveConstruction,
 	CmdSetResearch.TYPE: CmdSetResearch,
 	CmdRefitFleet.TYPE: CmdRefitFleet,
+	CmdReverseEngineer.TYPE: CmdReverseEngineer,
 	CmdSetFocus.TYPE: CmdSetFocus,
 	CmdQueueShip.TYPE: CmdQueueShip,
 	CmdRebaseFreighter.TYPE: CmdRebaseFreighter,

@@ -18,6 +18,7 @@ const SIZES: Array[String] = ["S", "M", "L"]
 @export var cost: Dictionary = {}  # resource ID -> amount
 @export var model: String  # turret / module model for the hardpoint (C11)
 @export var requires_tech: Array[StringName] = []  # techs needed to fit it (M5); empty = free
+@export var hybrid_of: StringName  # M5: a human-adapted part of this species' tech (ReverseEngineering.hybrid_missing)
 
 
 func category() -> String:
@@ -26,6 +27,7 @@ func category() -> String:
 
 func schema() -> Dictionary:
 	return {
+		"hybrid_of": {"type": "id", "ref": "species"},
 		"requires_tech": {"type": "id_list", "ref": "tech"},
 		"slot_type": {"type": "enum", "values": Array(SlotDef.type_names()), "required": true},
 		"slot_size": {"type": "enum", "values": SIZES, "required": true},

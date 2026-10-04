@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ComponentDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_hy40e"]
+[ext_resource type="Script" path="res://sim/defs/component_def.gd" id="2_cinyt"]
+
+[resource]
+script = ExtResource("2_cinyt")
+hybrid_of = &"core:species/vesskar"
+model = "assets/models/turrets/heavy_laser_m.glb"
+slot_type = &"weapon"
+slot_size = &"M"
+family = &"core:weapon_family/energy"
+damage = 130
+shots = 1
+accuracy = Array[int]([250, 700, 750])
+cost = {
+&"core:resource/alloys": 40,
+&"core:resource/components": 15
+}
+id = &"core:component/overclocked_lance_m"
+name_key = "COMP_OVERCLOCKED_LANCE_M"

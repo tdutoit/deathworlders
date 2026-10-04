@@ -7,7 +7,8 @@ const ID := &"core:diplomacy_rules/default"
 ## Event modifiers (E2): one accumulating modifier per type and directed pair, decaying 1 point toward 0
 ## every `event_decay_months[type]` months (0 = never).
 const EVENTS: Array[String] = ["gift", "fought_together", "rescued", "denied", "espionage", "treaty_broken",
-	"treaty_broken_other", "humiliated", "war_memory", "deal_failed", "warmonger", "defiance"]
+	"treaty_broken_other", "humiliated", "war_memory", "deal_failed", "warmonger", "defiance",
+	"tech_admired", "tech_stolen"]  # tech_*: M5 reverse engineering
 
 # Contact (owner decision 2026-10-02): territory within contact_lanes, or a ship in the other's space.
 @export var contact_lanes: int

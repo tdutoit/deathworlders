@@ -10,9 +10,15 @@ mode = 1
 value = 500
 scope = 1
 
+[sub_resource type="Resource" id="Mod_reverse"]
+script = ExtResource("1_046xs")
+key = &"empire.reverse_fragments"
+value = -30
+scope = 1
+
 [resource]
 script = ExtResource("2_y32no")
 id = &"core:trait/human_improvisers"
 name_key = "TRAIT_HUMAN_IMPROVISERS"
 desc_key = "TRAIT_HUMAN_IMPROVISERS_DESC"
-modifiers = Array[ExtResource("1_046xs")]([SubResource("Resource_cxx18")])
+modifiers = Array[ExtResource("1_046xs")]([SubResource("Resource_cxx18"), SubResource("Mod_reverse")])

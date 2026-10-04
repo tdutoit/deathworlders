@@ -773,8 +773,9 @@ static func _finish(state: MatchState, b: Battle) -> void:
 		var other := 1 - side
 		if String(results[side]).ends_with("victory") and b.owners[side] != Pirates.PIRATES:
 			var destroyed := int(b.log["lost_cost"][other]) - int(b.log["captured_cost"][side])
-			salvage[side] = FixedMath.floor_div(destroyed * r.salvage + int(b.log["captured_cost"][side]) * r.salvage * r.capture_salvage_mult, 1000)
-			_share_salvage(state, b, side, salvage[side])
+			var captured := FixedMath.floor_div(int(b.log["captured_cost"][side]) * r.salvage * r.capture_salvage_mult, 1000)
+			salvage[side] = FixedMath.floor_div(destroyed * r.salvage, 1000) + captured
+			_share_salvage(state, b, side, salvage[side], captured)
 	# Veterancy for survivors; defeat marks for the loser's fleets; captured ships join the captor's reserve.
 	for side in 2:
 		for cid in b.active(side):
@@ -808,7 +809,8 @@ static func _finish(state: MatchState, b: Battle) -> void:
 
 ## Salvage to each empire on the winning side by its share of the hull damage the side dealt (coalitions,
 ## owner decision 2026-10-02); Improvisers scale each owner's own share.
-static func _share_salvage(state: MatchState, b: Battle, side: int, total: int) -> void:
+static func _share_salvage(state: MatchState, b: Battle, side: int, total: int, captured := 0) -> void:
+	var loser := SpeciesTraits.species_name(state, b.owners[1 - side])  # M5: fragments of the losing lead's species
 	var dmg := {}  # owner -> damage
 	var side_dmg := 0
 	for cid: String in IdMap.sort_keys(b.log["dmg"].keys()):
@@ -822,7 +824,13 @@ static func _share_salvage(state: MatchState, b: Battle, side: int, total: int) 
 		if e == null:
 			continue
 		var share := FixedMath.floor_div(total * int(dmg.get(owner, 0)), side_dmg) if side_dmg > 0 else (total if owner == b.owners[side] else 0)
-		e.tech_fragments += FixedMath.mul_permille(share, 1000 + SpeciesTraits.empire_permille(state, owner, "empire.salvage"))  # Improvisers
+		var got := FixedMath.mul_permille(share, 1000 + SpeciesTraits.empire_permille(state, owner, "empire.salvage"))  # Improvisers
+		var cap_share := FixedMath.floor_div(captured * int(dmg.get(owner, 0)), side_dmg) if side_dmg > 0 else (captured if owner == b.owners[side] else 0)
+		got += FixedMath.mul_permille(cap_share, SpeciesTraits.empire_permille(state, owner, "empire.captured_fragments"))  # Captured Tech Study
+		if loser != "" and loser != e.species:
+			ReverseEngineering.add_fragments(state, owner, loser, got)
+		else:
+			e.tech_fragments += got  # pirates or own species: counted, nothing to reverse-engineer
 
 
 ## A12 result for a side from both sides' cost-weighted loss shares (permille).

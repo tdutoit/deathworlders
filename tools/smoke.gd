@@ -39,6 +39,7 @@ func _init() -> void:
 				var f := String((loader.db.get_def(StringName(s.def_id)) as StationDef).function) + ("" if s.operational else "(building)")
 				funcs[f] = int(funcs.get(f, 0)) + 1
 		print("  stations ", funcs)
+		print("  fragments ", e.fragments, " reversed ", e.reversed)
 		var k: Knowledge = state.knowledge.get_or(eid)
 		if k != null:
 			print("  fog: %d explored, %d covered of %d systems, %d foreign units seen, %d ghosts" % [k.explored.size(),
@@ -49,6 +50,7 @@ func _init() -> void:
 					lv[o] = Intel.level(state, eid, o)
 			print("  intel levels ", lv)
 	_try_refits(state)
+	_try_reverse(state)
 	print("smoke OK: %d months in %d ms, checksum %d" % [months, Time.get_ticks_msec() - t0, state.checksum()["total"]])
 	quit(0)
 
@@ -84,3 +86,16 @@ func _try_refits(state: MatchState) -> void:
 		if not (state.units.get_or(uid) as Unit).refit.is_empty():
 			refitting += 1
 	print("  refits: %d fleets tried, %d started, %d ships still refitting after 40 days" % [tried, started, refitting])
+
+
+## Exercises reverse engineering (M5 WP8): the first empire gets the tech and fragments of the second's species.
+func _try_reverse(state: MatchState) -> void:
+	var ids := state.empires.ordered()
+	var a := state.empire(ids[0])
+	var b := state.empire(ids[1])
+	Research.complete(state, a.id, "core:tech/xeno_reverse_engineering")
+	Research.complete(state, b.id, "core:tech/physics_ancient_archives")  # identical AI research until WP11
+	ReverseEngineering.add_fragments(state, a.id, b.species, 100)
+	var opts := ReverseEngineering.options(state, a.id, b.species)
+	ReverseEngineering.auto(state, a.id)
+	print("  reverse: %d options from %s, reversed %s, queue %s" % [opts.size(), b.species, a.reversed, a.research_queue])

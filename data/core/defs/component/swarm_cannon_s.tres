@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ComponentDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_w11h7"]
+[ext_resource type="Script" path="res://sim/defs/component_def.gd" id="2_htwwi"]
+
+[resource]
+script = ExtResource("2_htwwi")
+hybrid_of = &"core:species/krothi"
+model = "assets/models/turrets/autocannon_s.glb"
+slot_type = &"weapon"
+family = &"core:weapon_family/kinetic"
+damage = 30
+shots = 5
+accuracy = Array[int]([100, 650, 800])
+penetration = 20
+cost = {
+&"core:resource/alloys": 10,
+&"core:resource/components": 5
+}
+id = &"core:component/swarm_cannon_s"
+name_key = "COMP_SWARM_CANNON_S"

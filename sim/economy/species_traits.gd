@@ -13,6 +13,12 @@ static func source_of(state: MatchState, owner: int) -> String:
 	return e.source() if e != null else ""
 
 
+## The species ID an owner plays ("" for pirates or nobody).
+static func species_name(state: MatchState, owner: int) -> String:
+	var e := state.empire(owner) if owner >= 0 else null
+	return e.species if e != null else ""
+
+
 ## Trait then tech modifiers of one scope: [ModifierDef, ...] in trait order, then tech ID order.
 static func modifiers(db: DefDatabase, source: String, scope: ModifierDef.Scope) -> Array:
 	var key := [db, source, scope]

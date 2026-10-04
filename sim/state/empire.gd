@@ -9,7 +9,9 @@ var capital_planet: int = StateIO.NONE
 var color: String  # "#rrggbb", cosmetic
 var treasury := {}  # global resource ID (credits, research, influence) -> milli-units (B0, B13-B16)
 var deficit_months := 0  # consecutive months that upkeep couldn't be paid (B13)
-var tech_fragments := 0  # battle salvage (A12), spent in M5
+var tech_fragments := 0  # battle salvage (A12): every fragment ever gained (M5 spends Empire.fragments)
+var fragments := {}  # M5: species ID -> tech fragments of that species (reverse engineering)
+var reversed := {}  # M5: tech ID -> species it was reverse-engineered from
 var credit_net := 0  # last month: credits produced (jobs, buildings, taxes) minus upkeep due, milli
 var losses: Array[Dictionary] = []  # convoy losses, newest last (B9; kept to LOSS_LOG entries)
 var mechanic := {}  # signature mechanic state (M4 WP2): string keys, int or string values
@@ -40,7 +42,7 @@ func to_dict() -> Dictionary:
 		"prewar_fleet": prewar_fleet, "exhausted_since": exhausted_since, "disarm_until": disarm_until, "disarm_cap": disarm_cap,
 		"footing": footing, "footing_until": footing_until, "demob_until": demob_until,
 		"personality": personality.duplicate(), "ai_actions": ai_actions, "ai_output": ai_output,
-		"intel_bonus": intel_bonus, "full_vision": full_vision, "techs": techs.duplicate(), "research_queue": research_queue.duplicate(), "research_progress": research_progress.duplicate()}
+		"intel_bonus": intel_bonus, "full_vision": full_vision, "fragments": fragments.duplicate(), "reversed": reversed.duplicate(), "techs": techs.duplicate(), "research_queue": research_queue.duplicate(), "research_progress": research_progress.duplicate()}
 
 
 static func from_dict(d: Dictionary) -> Empire:
@@ -70,6 +72,9 @@ static func from_dict(d: Dictionary) -> Empire:
 	e.intel_bonus = int(d.get("intel_bonus", 0))
 	e.full_vision = d.get("full_vision", false) == true
 	e.techs = StateIO.int_map(d.get("techs", {}))
+	e.fragments = StateIO.int_map(d.get("fragments", {}))
+	for t: Variant in d.get("reversed", {}):
+		e.reversed[String(t)] = String(d["reversed"][t])
 	for t: Variant in d.get("research_queue", []):
 		e.research_queue.append(String(t))
 	e.research_progress = StateIO.int_map(d.get("research_progress", {}))

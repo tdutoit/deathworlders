@@ -22,7 +22,9 @@ event_cap = {
 &"treaty_broken_other": -15,
 &"war_memory": -50,
 &"warmonger": -20,
-&"defiance": -30
+&"defiance": -30,
+&"tech_admired": 20,
+&"tech_stolen": -30
 }
 event_decay_months = {
 &"deal_failed": 1,
@@ -36,7 +38,9 @@ event_decay_months = {
 &"treaty_broken_other": 1,
 &"war_memory": 1,
 &"warmonger": 1,
-&"defiance": 1
+&"defiance": 1,
+&"tech_admired": 2,
+&"tech_stolen": 1
 }
 trust_start = 20
 trust_start_wary = 10

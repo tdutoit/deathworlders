@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ComponentDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/component_def.gd" id="2_comp"]
+
+[sub_resource type="Resource" id="Mod_0"]
+script = ExtResource("1_mod")
+key = &"ship.signature"
+value = -30
+scope = 5
+
+[resource]
+script = ExtResource("2_comp")
+hybrid_of = &"core:species/ohlan"
+slot_type = &"defence"
+cost = {
+&"core:resource/alloys": 20,
+&"core:resource/components": 20
+}
+id = &"core:component/smugglers_baffles"
+name_key = "COMP_SMUGGLERS_BAFFLES"
+modifiers = Array[ExtResource("1_mod")]([SubResource("Mod_0")])
