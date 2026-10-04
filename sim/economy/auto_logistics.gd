@@ -17,6 +17,11 @@ static func day_tick(state: MatchState) -> void:
 		_assign(state, eid)
 
 
+## One empire's daily assignment (the sim staggers empires over the day's first hours, Sim._logistics_hour).
+static func empire_day(state: MatchState, eid: int) -> void:
+	_assign(state, eid)
+
+
 ## What auto-logistics must leave at a holder: the player's reserve, or the default share of the cap.
 static func reserve_milli(state: MatchState, holder: int, res: String, mods_cache: Variant = null) -> int:
 	var key := "%d:%s" % [holder, res]

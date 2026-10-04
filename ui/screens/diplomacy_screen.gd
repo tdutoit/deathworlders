@@ -386,6 +386,9 @@ func _council(state: MatchState, eid: int) -> void:
 		"date": Calendar.format(c.next_session), "votes": Councils.votes(state, eid) if member else 0}), "Subtitle")
 	if not member:
 		line(TranslationServer.translate("DIPLO_NOT_MEMBER"), "Caption")
+		if Councils.check_propose(state, eid, "core:resolution/recognition", eid, -1) == "":
+			button(TranslationServer.translate("DIPLO_APPLY"), "ApplyRecognition", func() -> void:
+				CommandQueue.submit_new(CmdCouncilPropose.TYPE, {"resolution": "core:resolution/recognition", "target": eid, "repeal": -1}))
 	heading("DIPLO_RESOLUTIONS")
 	if c.active.is_empty():
 		line(TranslationServer.translate("DIPLO_NONE"), "Caption")

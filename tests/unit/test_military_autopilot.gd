@@ -147,3 +147,34 @@ func test_beyond_the_minimum_only_while_threatened() -> void:
 	assert_true(MilitaryAutopilot.threatened(s, _ai(s).id, r))
 	MilitaryAutopilot.month_tick(s, _ai(s).id, true)
 	assert_eq(_warship_queue(s), 1, "raiders hunting: grow the fleet within budget")
+
+
+func test_stalled_civilian_build_holds_warships_at_peace() -> void:
+	var s := _match()
+	_second_yard(s)
+	_fleet(s, _home_sys(s), 1)  # past half the minimum fleet, under the minimum
+	var col: Colony = s.colonies.get_or(_ai(s).capital_planet)
+	var farm := Construction.new()
+	farm.kind = "building"
+	farm.def_id = "core:building/farm"
+	farm.cost = {"core:resource/alloys": 50000}
+	farm.stalled_days = 31
+	col.queue.append(farm)
+	MilitaryAutopilot.month_tick(s, _ai(s).id, true)
+	assert_eq(_warship_queue(s), 0, "a farm waiting for alloys comes first (WP14)")
+	farm.stalled_days = 0
+	MilitaryAutopilot.month_tick(s, _ai(s).id, true)
+	assert_eq(_warship_queue(s), 1, "then the fleet")
+
+
+func test_idle_scout_seeks_an_unmet_empire() -> void:
+	var settings := MatchSettings.new()
+	settings.add_player(0, "core:species/human", "ai")
+	settings.add_player(1, "core:species/krothi", "ai")
+	var errors: Array[String] = []
+	var s := GalaxyGenerator.new_match(settings, 3, _db, errors)
+	var me: Empire = s.empires.values()[0]
+	var scouts := s.units.values().filter(func(u: Unit) -> bool: return u.owner == me.id and u.kind == "scout")
+	assert_eq(scouts.size(), 1, "every empire starts with a scout")
+	MilitaryAutopilot.month_tick(s, me.id, false)
+	assert_true((scouts[0] as Unit).is_moving(), "off to find the neighbours (first contact, WP14)")

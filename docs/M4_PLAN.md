@@ -174,6 +174,40 @@ rules (CLAUDE.md), same tooling.*
   (proposals, peace offers and calls to arms with their answers). The header shows the signature meter,
   Reputation and exhaustion (and Hire mercenaries for the Ohlan); the planet panel offers Brood Surge. Alerts
   for proposals, peace offers and calls to arms. The M3 Empires tab is gone from the Fleets screen.
+- 2026-10-04 (WP14, owner decisions 2026-10-03): balance and performance pass.
+  Owner decisions: trust recovers +1 every 18 months at peace up to 20 (`trust_recovery_*`); battle reports keep
+  the newest 100 (`combat_rules.report_keep`); breaking a treaty also ends the pair's other treaties cleanly
+  (no penalty to the victim), so trust rebuilds from 0; until research and intel pacts exist the defence pact
+  needs opinion 30 and the alliance 40 (E4, was 40/50; trust gates unchanged); a non-member with the goodwill
+  of most Council members (opinion 0 or more) may apply for its own Recognition (30 influence), as AI empires
+  do and players can from the Council tab. Player build controls (stations, shipyard queues) are WP15, after
+  WP14: the sim had them since M2/M3 but no milestone gave the player the UI.
+  Economy AI: freighters serve the largest deficit first, so warship builds took every alloy and farms, mining
+  sites and outposts stalled for years; at peace and past half the minimum fleet the AI starts no warship while
+  a civilian build has stalled over `combat_rules.ai_civilian_stall_days` (30; raided systems don't count),
+  only starts one it can pay for in full, and never ahead of a civilian ship. Mining queues deposit miners
+  first, and an empire short of rare earths (< 100) builds a rare earths mine on a deposit colony even while a
+  mining station is unfinished (without rare earths Fabricators make no components and shipyards stall).
+  Diplomacy AI: idle scouts fly to the nearest system of an empire not met yet (AI empires many lanes apart
+  never met, so AI diplomacy never started); treaties and Council proposals keep a system claim's worth of
+  influence while the empire expands (early treaties held first colonies back to month 15-32); an AI proposes
+  only treaties its own E4 gates allow (no pact offered to a betrayer); no new war while its war exhaustion is
+  above `ai_rules.war_max_exhaustion` (25; one AI declared and white-peaced the same neighbours monthly); a
+  refused applicant waits `council_reapply_months` (72) before applying again.
+  Performance: each AI empire's monthly turn (autopilot, military autopilot, strategic AI) runs in its own hour
+  after the diplomacy hour (`Sim.AI_PHASE`, `EMPIRE_HOURS` 8) and each empire's daily auto-logistics in its own
+  hour of the day; fleet supply builds each owner's supply points (with military access) once a day; freighters
+  idle at home skip planning; colony production hoists empire-wide modifiers. Huge, 8 AIs, year 15 with a war:
+  worst sim hour 121 -> 41 ms headless, 8x 61 fps average (60.8-61.6 over three runs; worst frame ~185 ms).
+  `tools/perf_huge.gd` runs it and saves the match for the FPS check.
+  Results: `tools/diplomacy_harness.gd` (all-AI, and a scripted honourable player that courts one AI with
+  gifts of credits and surplus goods, proposes only what the AI would accept and breaks its first alliance
+  once): medium, 6 empires, 30 years: no unprovoked AI war on a human-species neighbour (first AI war year
+  15); Council resolutions 8 of 16 passed (50%); bot alliance in year 9, trust rebuilt in 15 years
+  (small, 50 years: alliances in years 5 and 7, rebuilt in 16 and 18). Economy harness (20 seeds, small,
+  4 AIs): neutral 69 of 80 (accepted 65), species 70 of 80 (humans 19, Vess'kar 18, Thessari 17, Krothi 16 of
+  20). Remaining B20 misses are mostly the alloy band's top (strong economies over 140 a month). Combat harness
+  unchanged at A14 and the species target.
 
 ---
 
@@ -341,6 +375,16 @@ No research tree, intel or fog of war (M5), ground war or occupation (M6), event
 - E16 targets; economy and combat harnesses still at their accepted levels; huge-galaxy performance bars.
 - Battle report retention rule.
 
+### WP15: Player Build Controls · M
+**Spec:** F4 (planet panel: buildings and orbitals), F12 ("Shipyard idle [Queue]"), main spec 5 (build stations,
+shipyard queues). Added 2026-10-03 (owner decision): the sim has built stations and ships since M2/M3 and the AI
+uses them, but no milestone gave the player the controls, so a human could only watch.
+- Planet panel: queue any allowed building (not only the governor's suggestion); an Orbitals list with every
+  station the planet's free slots allow (cost, build days, the reason when blocked) and upgrades.
+- Shipyard panel: the queue with civilian hulls (freighter, colony ship, scout) and the empire's saved designs,
+  reorder and cancel; "Build at..." from the Ship Designer; the "Shipyard idle" alert opens it.
+- All through the existing Commands; keyboard-navigable; loc keys.
+
 ---
 
 ## D2. Dependency Order
@@ -360,6 +404,7 @@ No research tree, intel or fog of war (M5), ground war or occupation (M6), event
 | WP12 | WP10 |
 | WP13 | grows alongside: relations with WP3, treaties and deals with WP4/WP5, war with WP6, Council with WP8 |
 | WP14 | everything |
+| WP15 | WP13 (after WP14, owner decision) |
 
 ## D3. M4 Definition of Done
 

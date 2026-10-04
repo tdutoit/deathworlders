@@ -64,7 +64,7 @@ func test_ai_answers_by_e5_and_proposer_pays() -> void:
 	assert_eq(Treaties.between(s, ids[0], ids[1], NAP).size(), 1, "human AI accepts a non-aggression pact")
 	assert_eq(int(s.empire(ids[0]).treasury["core:resource/influence"]), 490 * 1000, "proposer pays 10 influence")
 	var alliance := Treaties.acceptance(s, ids[0], ids[1], "core:treaty/alliance")
-	assert_ne(alliance["blocked"], "", "alliance needs opinion +50 and trust 60 (E4 gates)")
+	assert_ne(alliance["blocked"], "", "alliance needs opinion +40 and trust 60 (E4 gates, M4 owner 2026-10-03)")
 
 
 func test_nonaggression_blocks_war_and_breaking_costs() -> void:
@@ -79,6 +79,33 @@ func test_nonaggression_blocks_war_and_breaking_costs() -> void:
 	assert_eq(Relations.trust(s, ids[2], ids[0]), 0, "everyone else -20 trust (from 20)")
 	assert_eq(s.empire(ids[0]).reputation, -50)
 	assert_lt(Relations.opinion(s, ids[1], ids[0]), 0, "treaty broken: -15")
+
+
+func test_betrayal_voids_the_pairs_other_treaties() -> void:
+	var s := _match()
+	var ids := _ids(s)
+	var nap := Treaties.sign(s, ids[0], ids[1], NAP)
+	Treaties.sign(s, ids[0], ids[1], TRADE)
+	Treaties.sign(s, ids[1], ids[0], ACCESS)
+	Treaties.sign(s, ids[0], ids[2], TRADE)
+	Treaties.cancel(s, nap, ids[0])
+	assert_true(Treaties.between(s, ids[0], ids[1]).is_empty(), "the betrayal ends every treaty of the pair (owner 2026-10-03)")
+	assert_eq(Treaties.between(s, ids[0], ids[2]).size(), 1, "treaties with others stand")
+	assert_eq(s.empire(ids[0]).reputation, -50, "one break, one penalty")
+	assert_eq(s.empire(ids[1]).reputation, 0, "the victim isn't penalised for the voided treaties")
+
+
+func test_ai_proposes_only_what_its_own_gates_allow() -> void:
+	var s := _match()
+	var ids := _ids(s)
+	var out := []
+	StrategicAI._treaty_candidates(s, ids[1], StrategicAI.rules(s), out)
+	var to_player := func(c: Array) -> bool: return int(c[3]["to"]) == ids[0] and c[3]["treaty"] == NAP
+	assert_true(out.any(to_player), "a non-aggression pact on offer")
+	Relations.of(s, ids[1], ids[0]).trust = 0  # it was betrayed
+	out = []
+	StrategicAI._treaty_candidates(s, ids[1], StrategicAI.rules(s), out)
+	assert_false(out.any(to_player), "no pact it would refuse itself (E4 gates both ways)")
 
 
 func test_notice_after_minimum_duration() -> void:

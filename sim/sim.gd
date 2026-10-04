@@ -7,7 +7,9 @@ extends RefCounted
 
 const DAY := 1  # advance() flags
 const MONTH := 2
-const MONTH_PHASES := 5  # hours after the month boundary that carry monthly work (_month_phase)
+const EMPIRE_HOURS := 8  # M4 WP14: each empire's AI turn (and daily logistics) gets its own hour, by ID order
+const AI_PHASE := 5  # month hour of the first empire's AI turn (AI_PHASE + k for the k-th empire, mod EMPIRE_HOURS)
+const MONTH_PHASES := AI_PHASE + EMPIRE_HOURS  # hours after the month boundary that carry monthly work (_month_phase)
 
 
 ## Validates and applies commands in order. Applied ones go to state.command_log; rejected ones
@@ -48,7 +50,19 @@ static func advance(state: MatchState) -> int:
 		_month_tick(state)
 	elif state.tick > Calendar.HOURS_PER_MONTH and state.tick % Calendar.HOURS_PER_MONTH <= MONTH_PHASES:
 		_month_phase(state, state.tick % Calendar.HOURS_PER_MONTH)
+	if state.defs != null and state.tick > 0:
+		_logistics_hour(state, state.tick % Calendar.HOURS_PER_DAY)
 	return flags
+
+
+## Auto-logistics (B8) once a day per empire, the k-th empire (ID order) k hours after the day start, so no
+## hour carries every empire's assignment (M4 WP14 perf; the first runs right after the day tick).
+static func _logistics_hour(state: MatchState, hour: int) -> void:
+	var k := 0
+	for eid: int in state.empires.ordered():
+		if k % EMPIRE_HOURS == hour:
+			AutoLogistics.empire_day(state, eid)
+		k += 1
 
 
 static func step(state: MatchState, commands: Array[Command]) -> int:
@@ -66,8 +80,7 @@ static func _day_tick(state: MatchState) -> void:
 	StationOps.day_tick(state, day)
 	Builder.day_tick(state)
 	Shipyards.day_tick(state)
-	Deals.day_tick(state)  # M4: deal goods claim idle freighters before auto-logistics
-	AutoLogistics.day_tick(state)
+	Deals.day_tick(state)  # M4: deal goods claim idle freighters before auto-logistics (_logistics_hour)
 	FleetSupply.day_tick(state)
 	SignatureMechanics.day_tick(state)  # M4: Brood Surge and other daily mechanics
 
@@ -80,8 +93,9 @@ static func _month_tick(state: MatchState) -> void:
 	Sectors.update_membership(state)
 
 
-## The rest of the monthly work runs in the hours after the boundary, one system per hour, so no single hour
-## carries it all (M2 perf pass): 1 fuel supply, 2 pirates, 3 governors, 4 AI autopilot, 5 relations and signature mechanics (M4).
+## The rest of the monthly work runs in the hours after the boundary, so no single hour carries it all (M2
+## perf pass): 1 fuel supply, 2 pirates, 3 governors, 4 diplomacy (M4), then each AI empire's turn in its own
+## hour (economic and military autopilot, then the strategic AI; M4 WP14), then the signature mechanics.
 static func _month_phase(state: MatchState, hour: int) -> void:
 	if state.defs == null:
 		return
@@ -93,16 +107,22 @@ static func _month_phase(state: MatchState, hour: int) -> void:
 		3:
 			Governor.month_tick(state)
 		4:
-			Autopilot.month_tick(state)
-		5:
 			Relations.month_tick(state)  # M4: contacts, opinion standing and decay
 			Treaties.month_tick(state)  # trust from treaties, notice, tribute, obligations, calls
 			Deals.month_tick(state)  # recurring deal payments
 			Wars.month_tick(state)  # blockades, exhaustion, forced peace
 			WarFooting.month_tick(state)  # Total War exhaustion
 			Councils.month_tick(state)  # Galactic Council sessions
-			StrategicAI.month_tick(state)  # E12: AI diplomacy and war decisions
+		MONTH_PHASES:
 			SignatureMechanics.month_tick(state)
+		_:
+			if hour >= AI_PHASE:
+				var k := 0
+				for eid: int in state.empires.ordered():
+					if AI_PHASE + k % EMPIRE_HOURS == hour:
+						Autopilot.empire_month(state, eid)
+						StrategicAI.empire_month(state, eid)  # E12: AI diplomacy and war decisions
+					k += 1
 
 
 ## Rebuilds a match from its seed and settings plus a command log (main spec 18.4 debug replay).

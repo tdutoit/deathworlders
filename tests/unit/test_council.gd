@@ -56,7 +56,7 @@ func test_recognition_vote() -> void:
 	var s := _match()
 	var ids := _ids(s)
 	assert_ne(_do(s, ids[0], CmdCouncilPropose.TYPE, {"resolution": "core:resolution/recognition", "target": ids[0]}).error, "",
-		"non-members can't propose")
+		"no application without most members' goodwill (the Vess'kar start at -20 toward humans)")
 	_do(s, ids[1], CmdCouncilPropose.TYPE, {"resolution": "core:resolution/recognition", "target": ids[2]})
 	assert_eq(s.council.proposals.size(), 1)
 	assert_eq(int(s.empire(ids[1]).treasury["core:resource/influence"]), 470 * 1000, "30 influence")
@@ -68,6 +68,20 @@ func test_recognition_vote() -> void:
 
 func after_each() -> void:
 	SignatureMechanics.register(&"precedence", PrecedenceMechanic)
+
+
+func test_application_for_recognition() -> void:
+	var s := _match()
+	var ids := _ids(s)
+	assert_true(Councils.can_apply(s, ids[2]), "the Vess'kar think well of the Thessari (affinity +10)")
+	assert_ne(_do(s, ids[2], CmdCouncilPropose.TYPE, {"resolution": "core:resolution/sanctions", "target": ids[3]}).error, "",
+		"a non-member may only apply for its own Recognition")
+	assert_eq(_do(s, ids[2], CmdCouncilPropose.TYPE, {"resolution": "core:resolution/recognition", "target": ids[2]}).error, "")
+	assert_eq(int(s.empire(ids[2]).treasury["core:resource/influence"]), 470 * 1000, "the applicant pays 30 influence")
+	Councils.session(s)
+	var voted := s.council.last_session.filter(func(x: Dictionary) -> bool: return int(x["proposer"]) == ids[2])
+	assert_eq(voted.size(), 1, "the application goes to the session's vote (owner decision 2026-10-03)")
+	assert_eq(voted[0]["passed"], ids[2] in s.council.members, "members decide")
 
 
 func test_resolution_effects_and_repeal() -> void:

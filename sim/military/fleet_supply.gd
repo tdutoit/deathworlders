@@ -20,6 +20,7 @@ static func day_tick(state: MatchState) -> void:
 		return
 	var points := {}  # owner -> Supply.own_supply_points (built in one pass for every owner, on first need)
 	var sources_at := {}  # "owner:system" -> Supply.sources_at
+	var usable := {}  # owner -> its supply points plus those of empires granting it military access (once a day)
 	var docks := {}  # owner -> {system: [stockpile of each own operational shipyard / depot there]}
 	var built := false
 	for uid: int in state.units.keys():
@@ -32,11 +33,13 @@ static func day_tick(state: MatchState) -> void:
 			built = true
 		var key := "%d:%d" % [u.owner, u.system_id]
 		if not sources_at.has(key):
-			var pts: Array = (points.get(u.owner, []) as Array).duplicate()
-			for other: int in state.empires.ordered():
-				if other != u.owner and Treaties.has_effect(state, u.owner, other, "access"):
-					pts.append_array(points.get(other, []))  # military access: their stockpiles supply us (E4)
-			sources_at[key] = Supply.sources_at(state, pts, u.system_id)
+			if not usable.has(u.owner):
+				var pts: Array = (points.get(u.owner, []) as Array).duplicate()
+				for other: int in state.empires.ordered():
+					if other != u.owner and Treaties.has_effect(state, u.owner, other, "access"):
+						pts.append_array(points.get(other, []))  # military access: their stockpiles supply us (E4)
+				usable[u.owner] = pts
+			sources_at[key] = Supply.sources_at(state, usable[u.owner], u.system_id)
 		var st := ShipStats.cached(state.defs, u.hull_id, u.components, SpeciesTraits.species_of(state, u.owner))
 		var sources: Array = sources_at[key]
 		var in_supply := not sources.is_empty() and not u.is_moving()

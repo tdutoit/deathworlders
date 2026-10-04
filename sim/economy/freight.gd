@@ -20,6 +20,9 @@ static func tick(state: MatchState) -> void:
 				continue
 			_wait_done(state, u)
 		elif not u.is_moving():
+			if u.phase == "" and u.route == StateIO.NONE and u.job.is_empty() \
+					and (u.home == StateIO.NONE or u.body == Holders.body(state, u.home)):
+				continue  # idle at home (the common case; same as _decide's first test, without building a plan)
 			_decide(state, u)
 
 

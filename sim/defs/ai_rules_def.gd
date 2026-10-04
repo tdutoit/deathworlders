@@ -17,12 +17,14 @@ const ID := &"core:ai_rules/default"
 @export var claim_aggression: int  # AIs at least this aggressive claim neighbours' systems
 @export var claim_influence_cushion: int  # influence kept back
 @export var claim_opinion: int  # claim only empires it likes no more than this
+@export var war_max_exhaustion: int  # milli: no new war while own war exhaustion is above this (E12, WP14)
 @export var peace_exhaustion: int  # E7: at 75 the AI strongly seeks peace
 @export var peace_losing_score: int  # offers white peace at or below this war score
 @export var peace_winning_score: int  # demands terms at or above this war score
 @export var peace_utility: int
 @export var treaty_divisor: int  # personality weight / this = a treaty's base utility
 @export var treaty_threat_bonus: int  # defensive treaties when a stronger hostile neighbour exists
+@export var council_reapply_months: int  # a refused applicant waits this long before applying again (WP14)
 @export var council_ambition: int  # members at least this ambitious propose resolutions
 @export var sanction_opinion: int  # propose sanctions on empires it likes no more than this
 @export var protectorate_utility: int
@@ -33,8 +35,9 @@ const ID := &"core:ai_rules/default"
 
 const _INTS: Array[String] = ["personality_spread", "actions_per_month", "peace_years", "war_lanes",
 	"war_ratio_base", "war_ratio_per_caution", "war_no_cb_aggression", "war_cb_bonus", "war_opportunity_bonus",
-	"claim_aggression", "claim_influence_cushion", "claim_opinion", "peace_exhaustion", "peace_losing_score",
-	"peace_winning_score", "peace_utility", "treaty_divisor", "treaty_threat_bonus", "council_ambition",
+	"claim_aggression", "claim_influence_cushion", "claim_opinion", "peace_exhaustion", "war_max_exhaustion",
+	"peace_losing_score", "peace_winning_score", "peace_utility", "treaty_divisor", "treaty_threat_bonus",
+	"council_ambition", "council_reapply_months",
 	"sanction_opinion", "protectorate_utility", "reserve_per_caution", "repair_hull"]
 
 

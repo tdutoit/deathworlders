@@ -60,7 +60,7 @@ static func trust(state: MatchState, a: int, b: int) -> int:
 	return rel.trust if rel != null else 0
 
 
-## E3 deeds: trust moves only by these.
+## E3 deeds: trust moves by these (and, owner 2026-10-03, recovers slowly at peace up to trust_recovery_cap).
 static func change_trust(state: MatchState, a: int, b: int, delta: int) -> void:
 	var rel := of(state, a, b)
 	if rel != null:
@@ -105,8 +105,12 @@ static func month_tick(state: MatchState) -> void:
 		at_war[a] = at_war.get(a, []) + [b]
 		at_war[b] = at_war.get(b, []) + [a]
 	var borders := _borders(state)
+	var months := FixedMath.floor_div(state.tick, Calendar.HOURS_PER_MONTH)
+	var recover := r.trust_recovery_months > 0 and months > 0 and months % r.trust_recovery_months == 0
 	for k: String in IdMap.sort_keys(state.relations.keys()):
 		var rel: Relation = state.relations[k]
+		if recover and rel.trust < r.trust_recovery_cap and not state.wars.has(Battles.war_key(rel.from, rel.to)):
+			rel.trust += 1  # slow recovery at peace (owner 2026-10-03)
 		rel.standing.clear()
 		rel.standing.merge(Treaties.standing(state, rel.from, rel.to))  # E2 treaty bonuses (WP4)
 		if not Wars.claims_on(state, rel.from, rel.to).is_empty() or not Wars.claims_on(state, rel.to, rel.from).is_empty():

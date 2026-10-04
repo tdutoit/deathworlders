@@ -207,7 +207,7 @@ static func cancel(state: MatchState, t: Treaty, by: int) -> void:
 
 
 ## E3/E4 break: the victim's opinion and trust (to 0 where the treaty says), every other empire in contact
-## -15 opinion and -20 trust toward the breaker, and Reputation.
+## -15 opinion and -20 trust toward the breaker, and Reputation; the pair's other treaties end.
 static func break_treaty(state: MatchState, t: Treaty, breaker: int) -> void:
 	var r := rules(state)
 	var d := def_of(state, t.def_id)
@@ -223,6 +223,12 @@ static func break_treaty(state: MatchState, t: Treaty, breaker: int) -> void:
 	for eid: int in [breaker, victim]:
 		SignatureMechanics.treaty_event(state, eid, {"type": "treaty_broken", "treaty": t.id, "def": t.def_id, "breaker": breaker})
 	state.treaties.erase(t.id)
+	# Owner 2026-10-03 (E16): the betrayal voids the pair's other treaties, ended cleanly (no penalty to the victim),
+	# so trust rebuilds from 0 by slow recovery until a non-aggression pact can be signed again.
+	for tid: int in state.treaties.ordered():
+		var other: Treaty = state.treaties.get_or(tid)
+		if (other.a == breaker and other.b == victim) or (other.a == victim and other.b == breaker):
+			_end(state, other)
 
 
 static func _end(state: MatchState, t: Treaty) -> void:

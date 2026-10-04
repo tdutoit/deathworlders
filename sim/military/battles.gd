@@ -793,6 +793,8 @@ static func _finish(state: MatchState, b: Battle) -> void:
 	rep.data["results"] = results
 	rep.data["salvage"] = salvage
 	state.reports.put(rep.id, rep)
+	while r.report_keep > 0 and state.reports.size() > r.report_keep:
+		state.reports.erase(state.reports.ordered()[0])  # oldest first (owner 2026-10-03)
 	state.battles.erase(b.id)
 	Wars.battle_resolved(state, b)  # M4: war score and exhaustion
 	SignatureMechanics.battle_resolved(state, rep)

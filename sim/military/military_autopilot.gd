@@ -22,6 +22,7 @@ static func month_tick(state: MatchState, eid: int, may_build: bool) -> void:
 		return
 	_merge(state, eid)
 	_footing(state, eid)
+	_scout(state, eid)
 	var idle := _idle_fleets(state, eid)
 	idle = _answer_threats(state, eid, idle, r)
 	idle = _repair(state, eid, idle)
@@ -29,6 +30,26 @@ static func month_tick(state: MatchState, eid: int, may_build: bool) -> void:
 	_convoys(state, eid, idle, r)
 	if may_build:
 		_build(state, eid, r)
+
+
+## Idle scouts fly to the nearest system of an empire not met yet (first contact, E1), as a player would; nearest
+## by lanes, then system ID. M4 WP14: without it, AI empires many lanes apart never met.
+static func _scout(state: MatchState, eid: int) -> void:
+	var hops := {}
+	for uid: int in state.units.ordered():
+		var u: Unit = state.units.get_or(uid)
+		if u.owner != eid or u.kind != "scout" or u.is_moving():
+			continue
+		var dist := AutoLogistics._hops_from(state, u.system_id, hops)
+		var best := StateIO.NONE
+		for sid: int in state.galaxy.systems.ordered():
+			var o := state.galaxy.system(sid).owner
+			if o == StateIO.NONE or o == eid or not state.empires.has(o) or Relations.has_contact(state, eid, o) or not dist.has(sid):
+				continue
+			if best == StateIO.NONE or int(dist[sid]) < int(dist[best]):
+				best = sid
+		if best != StateIO.NONE and best != u.system_id:
+			Autopilot._do(state, eid, CmdMoveUnit.TYPE, {"unit": u.id, "to": best})
 
 
 ## Damaged fleets head for the nearest own shipyard system to repair (A13 docked repair).
@@ -138,6 +159,41 @@ static func _targets(state: MatchState, enemies: Array[int]) -> Array:
 			out.append([sid, defended, 1])
 			value[sid] = defended
 	return out
+
+
+static func _at_war(state: MatchState, eid: int) -> bool:
+	for k: String in state.wars.keys():  # any order: only a yes/no
+		if int(k.get_slice(":", 0)) == eid or int(k.get_slice(":", 1)) == eid:
+			return true
+	return false
+
+
+## True when a colony building or station site of the empire has waited for materials over ai_civilian_stall_days.
+## Freighters serve the largest deficit first, so a warship build would otherwise take every alloy (WP14).
+## Sites in raided systems don't count: freighters skip them until warships clear the raiders.
+static func _civilian_stalled(state: MatchState, eid: int, r: CombatRulesDef) -> bool:
+	var raided := Pirates.raided_systems(state, eid)
+	for pid: int in state.colonies.ordered():
+		var c: Colony = state.colonies.get_or(pid)
+		if c.owner == eid and not c.queue.is_empty() and (c.queue[0] as Construction).stalled_days > r.ai_civilian_stall_days \
+				and not raided.has(state.galaxy.planet(pid).system_id):
+			return true
+	for sid: int in state.stations.ordered():
+		var st: Station = state.stations.get_or(sid)
+		if st.owner == eid and st.build != null and st.build.stalled_days > r.ai_civilian_stall_days and not raided.has(st.system_id):
+			return true
+	return false
+
+
+## True when the empire holds the design's whole cost in stock (alloys, components...), so the build won't stall
+## the shipyard queue in front of freighters and colony ships.
+static func _can_afford(state: MatchState, eid: int, design_id: int) -> bool:
+	var d: ShipDesign = state.designs.get_or(design_id)
+	var cost := ShipStats.cost(state.defs, d.hull, d.components)
+	for res: String in cost:
+		if Deals.total_stock(state, eid, res) < int(cost[res]) * Stockpile.MILLI:
+			return false
+	return true
 
 
 ## D7 for AI slots (until the strategic AI, WP10): Peace when at peace; at war Mobilised, or Total War when an
@@ -294,9 +350,11 @@ static func _build(state: MatchState, eid: int, r: CombatRulesDef) -> void:
 	for sid: int in state.stations.ordered():
 		var y: Station = state.stations.get_or(sid)
 		if y.owner == eid:
-			queued += y.ship_queue.filter(func(q: Construction) -> bool: return q.design != 0).size()
+			queued += y.ship_queue.size()  # warships, and civilian ships (colony ships, freighters) come first (WP14)
 	if queued > 0:
-		return  # one warship at a time
+		return  # one at a time, and never ahead of a civilian ship
+	if ships * 2 >= r.ai_min_fleet_value and not _at_war(state, eid) and _civilian_stalled(state, eid, r):
+		return  # past half the minimum fleet, at peace, a stalled farm, outpost or mining site gets the alloys first (WP14)
 	var e := state.empire(eid)
 	var budget := FixedMath.floor_div((e.credit_net + upkeep) * r.ai_military_share, 1000)
 	if ships >= r.ai_min_fleet_value and (upkeep >= budget or not threatened(state, eid, r)):
@@ -311,11 +369,12 @@ static func _build(state: MatchState, eid: int, r: CombatRulesDef) -> void:
 	var n := r.ai_build_classes.size()
 	for i in n:
 		var cls := String(r.ai_build_classes[posmod(count + i, n)])
-		if not by_class.has(cls):
-			continue
+		if not by_class.has(cls) or not _can_afford(state, eid, by_class[cls]):
+			continue  # M4 WP14: never start a warship the empire can't pay for (it would stall the yard for years)
 		for sid: int in state.stations.ordered():
 			var y: Station = state.stations.get_or(sid)
-			if y.owner == eid and y.ship_queue.is_empty() 					and Autopilot._do(state, eid, CmdQueueShip.TYPE, {"station": y.id, "design": by_class[cls]}):
+			if y.owner == eid and y.ship_queue.is_empty() \
+					and Autopilot._do(state, eid, CmdQueueShip.TYPE, {"station": y.id, "design": by_class[cls]}):
 				return
 
 

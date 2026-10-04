@@ -78,8 +78,13 @@ static func in_force(state: MatchState, effect: String, target := -2) -> Array:
 ## "" if `eid` may put this proposal to the next session, else why.
 static func check_propose(state: MatchState, eid: int, def_id: String, target: int, repeal: int) -> String:
 	var c := state.council
-	if c == null or not eid in c.members:
-		return "only Council members propose resolutions"
+	if c == null:
+		return "no Council"
+	if not eid in c.members:
+		if repeal >= 0 or target != eid or def_of(state, def_id) == null or String(def_of(state, def_id).effect) != "recognition":
+			return "only Council members propose resolutions (others may apply for their own Recognition)"
+		if not can_apply(state, eid):
+			return "applying needs the goodwill of most members (opinion of you 0 or more)"
 	if c.proposals.any(func(p: Dictionary) -> bool: return int(p["proposer"]) == eid):
 		return "one proposal a session"
 	if int(state.empire(eid).treasury.get("core:resource/influence", 0)) < rules(state).council_proposal_influence * Stockpile.MILLI:
@@ -98,6 +103,29 @@ static func check_propose(state: MatchState, eid: int, def_id: String, target: i
 	if not d.needs_target and not in_force(state, String(d.effect)).is_empty():
 		return "already in force"
 	return ""
+
+
+## E9 recognition "requires opinion >= 0 with a majority of members"; owner decision 2026-10-03: an empire that
+## meets it may apply, which puts its Recognition to the next session (it pays the proposal's influence).
+static func can_apply(state: MatchState, eid: int) -> bool:
+	var c := state.council
+	if c == null or eid in c.members or c.members.is_empty():
+		return false
+	var willing := 0
+	for m: int in c.members:
+		if Relations.has_contact(state, m, eid) and Relations.opinion(state, m, eid) >= 0:
+			willing += 1
+	return willing * 2 > c.members.size()
+
+
+## Ticks since a member last voted down `eid`'s application, or -1 if none did (Relation.refusals).
+static func refused_since(state: MatchState, eid: int, def_id: String) -> int:
+	var last := -1
+	for m: int in state.council.members:
+		var rel := Relations.of(state, m, eid)
+		if rel != null and rel.refusals.has(def_id):
+			last = maxi(last, int(rel.refusals[def_id]))
+	return -1 if last < 0 else state.tick - last
 
 
 static func propose(state: MatchState, eid: int, def_id: String, target: int, repeal: int) -> void:
@@ -184,6 +212,11 @@ static func session(state: MatchState) -> void:
 			elif v < 0:
 				no += votes(state, m)
 		var passed := yes > no
+		if not passed and int(p["proposer"]) == int(p["target"]) and not int(p["proposer"]) in c.members:
+			for m: int in c.members:  # a refused application: each member that voted no remembers it (WP14)
+				var rel := Relations.of(state, m, int(p["proposer"]))
+				if rel != null and int(p["votes"].get(str(m), 0) if not Autopilot.is_ai(state, m) else ai_vote(state, m, p)) < 0:
+					rel.refusals[String(p["def"])] = state.tick
 		var vetoed := passed and SignatureMechanics.council_veto(state, p)
 		if passed and not vetoed:
 			_enact(state, p, voted_for)

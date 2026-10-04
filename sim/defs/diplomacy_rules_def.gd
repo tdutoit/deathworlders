@@ -24,6 +24,8 @@ const EVENTS: Array[String] = ["gift", "fought_together", "rescued", "denied", "
 @export var trust_start_wary: int  # when the base affinity is at or below wary_affinity
 @export var wary_affinity: int
 @export var trust_max: int
+@export var trust_recovery_months: int  # trust +1 per this many months at peace (owner 2026-10-03; E16 15-25 years)
+@export var trust_recovery_cap: int  # ... up to this (the first-contact level)
 # Treaties (E3-E5, E8; M4 WP4)
 @export var shared_threat: int  # E5: +20 if a common enemy
 @export var fear_max: int  # E5: largest fear bonus
@@ -114,7 +116,7 @@ const _INTS: Array[String] = ["influence_value", "deal_target_months", "scarcity
 	"reparations_cost", "reparations_months", "humiliation_cost", "humiliation_influence", "disarmament_cost",
 	"disarmament_years", "peace_days", "footing_transition_days", "demob_months", "demob_stability",
 	"council_session_months", "council_proposal_influence", "votes_influence_step", "defiance_opinion",
-	"defiance_trust"]
+	"defiance_trust", "trust_recovery_months", "trust_recovery_cap"]
 
 
 func category() -> String:

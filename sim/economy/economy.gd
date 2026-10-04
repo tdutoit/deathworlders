@@ -96,6 +96,8 @@ static func job_order(db: DefDatabase) -> Array:
 static func _produce(state: MatchState, c: Colony, db: DefDatabase, day: int, order: Array, orbit: Array = []) -> void:
 	var mods := PlanetMods.of(c, db)
 	var e := state.empire(c.owner)
+	# Empire-wide output modifiers, the same for every job and resource of this colony today.
+	var empire_extra := SignatureMechanics.output_permille(state, c.owner) + e.ai_output  # WP9 stagnation, E13
 	for job_id: String in order:
 		var n: int = c.jobs.get(job_id, 0)
 		if n <= 0:
@@ -123,9 +125,7 @@ static func _produce(state: MatchState, c: Colony, db: DefDatabase, day: int, or
 		var out_permille := output_permille(c, job_id, db, mods)
 		for res: StringName in _sorted(job.outputs):
 			var total := FixedMath.mul_permille(int(job.outputs[res]) * n * MILLI, out_permille)
-			var extra := WarFooting.output_permille(state, e, String(res))  # D7
-			extra += SignatureMechanics.output_permille(state, c.owner)  # Precedence stagnation (WP9)
-			extra += e.ai_output  # E13 difficulty (AI slots)
+			var extra := WarFooting.output_permille(state, e, String(res)) + empire_extra  # D7
 			if job_id == "core:job/clerk" and res == &"core:resource/credits":
 				extra += Councils.clerk_credits_permille(state, c.owner)  # E9 Trade Standards
 			total = FixedMath.mul_permille(total, 1000 + extra)
@@ -134,7 +134,7 @@ static func _produce(state: MatchState, c: Colony, db: DefDatabase, day: int, or
 		if i == c.offline_building:
 			continue
 		var b: BuildingDef = db.get_def(StringName(c.buildings[i]))
-		for res: StringName in IdMap.sort_keys(b.outputs.keys()):
+		for res: StringName in _sorted(b.outputs):
 			_deliver(state, c, e, db, mods, String(res), share(int(b.outputs[res]) * MILLI, day))
 	# Pops eat daily; running out at any point this month marks the colony as starving (B17).
 	var food := "core:resource/food"

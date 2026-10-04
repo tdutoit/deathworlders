@@ -59,9 +59,11 @@ The Vess'kar starting at −20 toward humans is the HFY arc in one number.
 - Starts at **20** (first contact) for most pairs; **10** for species with base affinity ≤ −20.
 - **+1 per month per active treaty** honoured, max **+3/month**.
 - +5 when you fulfil an obligation (answer an alliance call, defend a protectorate in time).
-- **Breaking a treaty:** victim's trust → 0; all other empires −20 trust toward you.
+- **Breaking a treaty:** victim's trust → 0; all other empires −20 trust toward you. The pair's other treaties end
+  cleanly (owner decision 2026-10-03), so trust rebuilds from 0 by slow recovery until a pact is possible again.
+- **Slow recovery at peace** (owner decision 2026-10-03): +1 every 18 months, up to 20.
 - **Ignoring an alliance call-to-arms:** −30 trust with that ally.
-- Trust never decays on its own; it only moves by deeds.
+- Trust never decays on its own; it moves by deeds and the slow recovery above.
 
 ## E4. Treaties
 
@@ -72,8 +74,8 @@ The Vess'kar starting at −20 toward humans is the HFY arc in one number.
 | Research pact | 20 | +20 | 25 | +10% research for both in shared branches | −25 opinion |
 | Intel sharing | 20 | +30 | 40 | Share sensor coverage (D12) + intel levels | −30 opinion, intel purge |
 | Military access | 15 | +10 | 25 | Pass through, resupply in their space (B12) | −20 opinion |
-| Defence pact | 30 | +40 | 50 | Automatic call-to-arms when attacked | Trust 0, −50 opinion |
-| Alliance | 50 | +50 | 60 | Full call-to-arms, shared vision, joint fleets, shared war goals | Trust 0, −60 opinion |
+| Defence pact | 30 | +40 (+30 until research and intel pacts exist, M4) | 50 | Automatic call-to-arms when attacked | Trust 0, −50 opinion |
+| Alliance | 50 | +50 (+40 until research and intel pacts exist, M4) | 60 | Full call-to-arms, shared vision, joint fleets, shared war goals | Trust 0, −60 opinion |
 | Protectorate | 30 | +20 (protected's view) | 20 | See E8 | Legend −Respect, trust 0 with all minors |
 | Federation (late) | 100 | +70 | 80 | Shared Council bloc vote, shared tech trickle | Trust 0 w/ all members |
 

@@ -5,6 +5,8 @@ extends RefCounted
 ## `actions_per_month` (difficulty sets it, WP12) as Commands. The operational layer (governors, logistics,
 ## the defensive military autopilot) runs as before. Numbers: ai_rules. Randomness: the `ai` stream only.
 
+const RECOGNITION := "core:resolution/recognition"
+
 
 static func rules(state: MatchState) -> AiRulesDef:
 	return state.defs.get_def(AiRulesDef.ID) as AiRulesDef
@@ -40,12 +42,15 @@ static func apply_difficulty(state: MatchState) -> void:
 
 
 static func month_tick(state: MatchState) -> void:
-	var r := rules(state)
-	if r == null:
-		return
 	for eid: int in state.empires.ordered():
-		if Autopilot.is_ai(state, eid):
-			_think(state, eid, r)
+		empire_month(state, eid)
+
+
+## One AI empire's strategic turn (the sim runs it right after that empire's autopilot, Sim._month_phase).
+static func empire_month(state: MatchState, eid: int) -> void:
+	var r := rules(state)
+	if r != null and Autopilot.is_ai(state, eid):
+		_think(state, eid, r)
 
 
 ## Scores every candidate and acts on the best `actions_per_month` (ties: candidate order).
@@ -108,11 +113,14 @@ static func _treaty_candidates(state: MatchState, eid: int, r: AiRulesDef, out: 
 			continue
 		for def in state.defs.defs("treaty"):
 			var d: TreatyDef = def
-			if d.has("protectorate") or Treaties.check_propose(state, eid, other, String(d.id)) != "":
+			if d.has("protectorate") or Treaties.check_propose(state, eid, other, String(d.id)) != "" \
+					or not _keeps_claim(state, eid, d.influence * Stockpile.MILLI):
 				continue
 			var acc := Treaties.acceptance(state, eid, other, String(d.id))
 			if acc["blocked"] != "" or int(acc["total"]) < 0:
 				continue  # they would say no (players are asked anyway only when the score allows it)
+			if Treaties.acceptance(state, other, eid, String(d.id))["blocked"] != "":
+				continue  # nor what its own opinion and trust would refuse (E4 gates both ways; WP14: no pact with a betrayer)
 			var weight: int
 			if d.has("no_war"):
 				weight = _p(state, eid, "caution")
@@ -129,6 +137,8 @@ static func _treaty_candidates(state: MatchState, eid: int, r: AiRulesDef, out: 
 static func _war_candidates(state: MatchState, eid: int, r: AiRulesDef, out: Array) -> void:
 	if state.tick < r.peace_years * Calendar.HOURS_PER_YEAR:
 		return  # E16: no AI wars in the first years
+	if state.empire(eid).war_exhaustion > r.war_max_exhaustion:
+		return  # E12 assesses war exhaustion: a worn-out empire rebuilds before the next war (WP14)
 	var mine := Treaties.power(state, eid)
 	var need := r.war_ratio_base + _p(state, eid, "caution") * r.war_ratio_per_caution
 	for other in _contacts(state, eid):
@@ -216,8 +226,30 @@ static func _claim_candidates(state: MatchState, eid: int, r: AiRulesDef, out: A
 			return  # one claim a month at most
 
 
+## True when spending `cost_milli` influence still leaves a system claim's worth while the empire expands
+## (M4 WP14: early treaties used to hold the first colonies back for years).
+static func _keeps_claim(state: MatchState, eid: int, cost_milli: int) -> bool:
+	var owned := 0
+	for pid: int in state.colonies.ordered():
+		if (state.colonies.get_or(pid) as Colony).owner == eid:
+			owned += 1
+	if owned >= Autopilot.MAX_COLONIES:
+		return true
+	var have := int(state.empire(eid).treasury.get("core:resource/influence", 0))
+	return have - cost_milli >= Colonisation.claim_cost_milli(state, eid)
+
+
 static func _council_candidates(state: MatchState, eid: int, r: AiRulesDef, out: Array) -> void:
-	if not Councils.is_member(state, eid) or _p(state, eid, "ambition") < r.council_ambition:
+	if not _keeps_claim(state, eid, Relations.rules(state).council_proposal_influence * Stockpile.MILLI):
+		return
+	if not Councils.is_member(state, eid):
+		var refused := Councils.refused_since(state, eid, RECOGNITION)
+		if Councils.check_propose(state, eid, RECOGNITION, eid, -1) == "" \
+				and (refused < 0 or refused >= r.council_reapply_months * Calendar.HOURS_PER_MONTH):  # apply; not straight after a no
+			out.append([maxi(1, FixedMath.floor_div(_p(state, eid, "ambition"), 5)), 0, CmdCouncilPropose.TYPE,
+				{"resolution": RECOGNITION, "target": eid, "repeal": -1}])
+		return
+	if _p(state, eid, "ambition") < r.council_ambition:
 		return
 	var u := FixedMath.floor_div(_p(state, eid, "ambition"), 5)
 	var worst := -1
@@ -229,7 +261,7 @@ static func _council_candidates(state: MatchState, eid: int, r: AiRulesDef, out:
 		out.append([u, 0, CmdCouncilPropose.TYPE, {"resolution": "core:resolution/sanctions", "target": worst, "repeal": -1}])
 	for other in _contacts(state, eid):
 		if not Councils.is_member(state, other) and Relations.opinion(state, eid, other) >= 20:
-			out.append([u, 0, CmdCouncilPropose.TYPE, {"resolution": "core:resolution/recognition", "target": other, "repeal": -1}])
+			out.append([u, 0, CmdCouncilPropose.TYPE, {"resolution": RECOGNITION, "target": other, "repeal": -1}])
 			break
 	if _p(state, eid, "greed") >= 60:
 		out.append([u - 1, 0, CmdCouncilPropose.TYPE, {"resolution": "core:resolution/trade_standards", "target": -1, "repeal": -1}])

@@ -5,7 +5,7 @@ extends RefCounted
 ## controller is "ai":
 ##   1. settle idle colony ships on the best target; queue a colony ship when a target exists and none is busy;
 ##   2. claim the best nearby unclaimed system with an outpost when influence allows (one site at a time);
-##   3. build mining stations on own belts, moons and gas giants (one site at a time);
+##   3. build mining stations on own belts, moons and gas giants (one site at a time; deposit miners first);
 ##   4. add a freighter when berthed freighters are over 60% busy and a berth is free;
 ##   5. grow logistics: upgrade a hub, or add one at a colony, when no berth is free anywhere;
 ##   6. keep MIN_SHIPYARDS shipyards (B20: 2-3 by year 15);
@@ -26,6 +26,9 @@ const HAB_GOOD := 500  # colony targets: habitability permille the AI prefers
 const HAB_FALLBACK := 300  # ... and the least it accepts when nothing better is in reach
 const MAX_COLONIES := 10  # the AI stops sending colony ships here (B20 mid-game empire: 6-10 colonies)
 const CREDIT_CUSHION := 100000  # milli-credits kept before taking on new upkeep
+const RARE_EARTHS := "core:resource/rare_earths"
+const RE_MINE := "core:building/re_mine"
+const RARE_EARTHS_LOW := 100  # below this stock (whole units) the AI builds a rare earths mine (M4 WP14)
 
 
 static func is_ai(state: MatchState, eid: int) -> bool:
@@ -38,17 +41,23 @@ static func is_ai(state: MatchState, eid: int) -> bool:
 
 static func month_tick(state: MatchState) -> void:
 	for eid: int in state.empires.ordered():
-		if is_ai(state, eid):
-			_directive(state, eid)
-			MilitaryAutopilot.month_tick(state, eid, can_expand(state, eid))  # M3 WP10
-			if not can_expand(state, eid):
-				continue  # new colonies, stations and ships all add upkeep (B13)
-			_colonise(state, eid)
-			_outpost(state, eid)
-			_mining(state, eid)
-			_freighters(state, eid)
-			_logistics(state, eid)
-			_shipyards(state, eid)
+		empire_month(state, eid)
+
+
+## One AI empire's monthly turn (the sim gives each empire its own hour, Sim._month_phase).
+static func empire_month(state: MatchState, eid: int) -> void:
+	if not is_ai(state, eid):
+		return
+	_directive(state, eid)
+	MilitaryAutopilot.month_tick(state, eid, can_expand(state, eid))  # M3 WP10
+	if not can_expand(state, eid):
+		return  # new colonies, stations and ships all add upkeep (B13)
+	_colonise(state, eid)
+	_outpost(state, eid)
+	_mining(state, eid)
+	_freighters(state, eid)
+	_logistics(state, eid)
+	_shipyards(state, eid)
 
 
 ## Expansion adds upkeep: only with a positive credit net, a cushion and no deficit.
@@ -245,6 +254,7 @@ static func _outpost(state: MatchState, eid: int) -> void:
 
 
 static func _mining(state: MatchState, eid: int) -> void:
+	_rare_earths_mine(state, eid)  # a colony building: not held up by an unfinished mining station
 	if _has_site(state, eid, &"mining"):
 		return
 	var mining: Array = state.defs.defs("station").filter(func(d: StationDef) -> bool: return d.function == &"mining" and d.tier == 1)
@@ -252,20 +262,42 @@ static func _mining(state: MatchState, eid: int) -> void:
 	for sid: int in state.stations.ordered():
 		var pid := (state.stations.get_or(sid) as Station).planet_id
 		used[pid] = int(used.get(pid, 0)) + 1
-	for sys_id: int in state.galaxy.systems.ordered():
-		if state.galaxy.system(sys_id).owner != eid:
-			continue
-		for pid in state.galaxy.system(sys_id).planet_ids:
-			var p := state.galaxy.planet(pid)
-			if int(used.get(pid, 0)) >= p.orbital_slots:
+	# M4 WP14: deposit miners first, across every system (a rare earths belt gets the rare earths miner, not an
+	# ore one): without rare earths, Fabricators make no components and shipyards stall. Then the rest.
+	for deposit_pass in [true, false]:
+		for sys_id: int in state.galaxy.systems.ordered():
+			if state.galaxy.system(sys_id).owner != eid:
 				continue
-			for def: StationDef in mining:
-				if not def.placement.is_empty() and not StringName(p.planet_type) in def.placement:
+			for pid in state.galaxy.system(sys_id).planet_ids:
+				var p := state.galaxy.planet(pid)
+				if int(used.get(pid, 0)) >= p.orbital_slots:
 					continue
-				if def.requires_deposit != &"" and int(p.deposits.get(String(def.requires_deposit), 0)) <= 0:
-					continue
-				if _do(state, eid, CmdQueueStation.TYPE, {"planet": pid, "station": String(def.id)}):
-					return
+				for def: StationDef in mining:
+					if (def.requires_deposit != &"") != deposit_pass:
+						continue
+					if not def.placement.is_empty() and not StringName(p.planet_type) in def.placement:
+						continue
+					if def.requires_deposit != &"" and int(p.deposits.get(String(def.requires_deposit), 0)) <= 0:
+						continue
+					if _do(state, eid, CmdQueueStation.TYPE, {"planet": pid, "station": String(def.id)}):
+						return
+
+
+## M4 WP14: short of rare earths, a colony on a rare earths deposit builds a mine (governor templates don't).
+static func _rare_earths_mine(state: MatchState, eid: int) -> void:
+	if Deals.total_stock(state, eid, RARE_EARTHS) >= RARE_EARTHS_LOW * Stockpile.MILLI:
+		return
+	var is_mine := func(q: Construction) -> bool: return q.def_id == RE_MINE
+	for pid: int in state.colonies.ordered():
+		var c: Colony = state.colonies.get_or(pid)
+		if c.owner == eid and c.queue.any(is_mine):
+			return  # one at a time
+	for pid: int in state.colonies.ordered():
+		var c: Colony = state.colonies.get_or(pid)
+		if c.owner != eid or c.buildings.has(RE_MINE):
+			continue
+		if _do(state, eid, CmdQueueBuilding.TYPE, {"planet": pid, "building": RE_MINE}):
+			return
 
 
 # --- freighters ---

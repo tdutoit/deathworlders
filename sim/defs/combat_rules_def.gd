@@ -62,6 +62,8 @@ const VETERANCY: Array[String] = ["green", "regular", "veteran", "elite"]
 @export var out_of_supply_accuracy: int
 @export var attrition_after_days: int
 @export var attrition_per_day: int  # permille of hull_max
+@export var ai_civilian_stall_days: int  # at peace, no new warship while a civilian build has stalled this long (M4 WP14)
+@export var report_keep: int  # battle reports kept per match, newest (M4 WP14, owner 2026-10-03)
 # Last Stand (A10; species with empire.last_stand): outnumbered by outnumbered_ratio and morale below the trigger
 @export var last_stand_trigger_morale: int
 @export var last_stand_damage: int  # permille damage bonus while it lasts
@@ -107,7 +109,8 @@ const _INTS: Array[String] = ["hit_min", "hit_max", "variance_min", "variance_ma
 	"ammo_per_weapon", "squadron_max", "task_force_squadrons", "fleet_task_forces", "ammo_per_munition",
 	"repair_docked", "repair_field", "repair_hull_per_alloy", "escort_raid", "patrol_security", "patrol_wait_hours",
 	"ai_military_share", "ai_min_fleet_value", "ai_attack_ratio", "ai_loss_months", "ai_loss_trigger",
-	"last_stand_trigger_morale", "last_stand_damage", "last_stand_morale_floor", "last_stand_rounds"]
+	"last_stand_trigger_morale", "last_stand_damage", "last_stand_morale_floor", "last_stand_rounds",
+	"report_keep", "ai_civilian_stall_days"]
 
 
 func category() -> String:

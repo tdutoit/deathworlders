@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_trty")
 influence = 50
-min_opinion = 50
+min_opinion = 40
 min_trust = 60
 threshold = 40
 opinion = 25
