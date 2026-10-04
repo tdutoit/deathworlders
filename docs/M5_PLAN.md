@@ -60,6 +60,19 @@ with the workflow change below.*
   Neptune in Sol, B19). AI rule (Autopilot, one station a month): a Research Station in the capital system,
   then a Listening Post in each own system next to a foreign or pirate-held system, then upgrades. Governors
   don't build these (stations are the autopilot's job; Deep Space Array waits for Core building AI).
+- 2026-10-04 (WP5, owner decision on detection): a contact in a covered system is detected when sensor
+  strength + signature - stealth >= 60 (D12 as written reads the other way round, which contradicts its own
+  warp charge-up rule). Numbers in the new `fog_rules` Def: own systems (owned planet or outpost) strength 40,
+  any own unit 40, scouts 50 and +1 lane, listening posts their own strength (+ `empire.sensor_strength`)
+  over 2/3/4 lanes, Deep Space Array colonies 40 over +3 lanes; signatures S 20, M 40, L 70, XL 100,
+  freighters 30, plus `ship.signature` (components, techs, traits) and `freighter.signature`; innate stealth
+  pirates 10, Ohlan 10. Alliances share vision (both empires' sources). Knowledge per empire (saved,
+  `knowledge` checksum part): explored systems with owner as last seen and when, covered systems (strength),
+  foreign units seen, ghosts (last system, owner, kind, size, tick; 90 days; at most 400, oldest dropped).
+  Recomputed daily in each empire's own hour (with its auto-logistics) and at match start; starting knowledge
+  is what the start's coverage reveals. Match setting `fog` off / standard (default) / hardcore (no ghosts);
+  Off answers every query as full visibility. Nothing reads the model yet: the UI (WP12) and the AI (WP11)
+  switch to it, intel levels (WP6) build on it.
 
 ## Goal of M5
 

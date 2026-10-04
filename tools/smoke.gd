@@ -39,5 +39,9 @@ func _init() -> void:
 				var f := String((loader.db.get_def(StringName(s.def_id)) as StationDef).function) + ("" if s.operational else "(building)")
 				funcs[f] = int(funcs.get(f, 0)) + 1
 		print("  stations ", funcs)
+		var k: Knowledge = state.knowledge.get_or(eid)
+		if k != null:
+			print("  fog: %d explored, %d covered of %d systems, %d foreign units seen, %d ghosts" % [k.explored.size(),
+				k.covered.size(), state.galaxy.systems.size(), k.visible.size(), k.ghosts.size()])
 	print("smoke OK: %d months in %d ms, checksum %d" % [months, Time.get_ticks_msec() - t0, state.checksum()["total"]])
 	quit(0)

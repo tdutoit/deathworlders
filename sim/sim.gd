@@ -62,6 +62,7 @@ static func _logistics_hour(state: MatchState, hour: int) -> void:
 	for eid: int in state.empires.ordered():
 		if k % EMPIRE_HOURS == hour:
 			AutoLogistics.empire_day(state, eid)
+			Fog.empire_day(state, eid)  # M5: the empire's knowledge model (D12), daily
 		k += 1
 
 

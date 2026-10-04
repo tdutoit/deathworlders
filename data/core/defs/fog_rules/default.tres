@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="FogRulesDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/fog_rules_def.gd" id="1_fog"]
+
+[resource]
+script = ExtResource("1_fog")
+threshold = 60
+owned_strength = 40
+unit_strength = 40
+scout_strength = 50
+scout_range = 1
+signature_by_size = {
+&"S": 20,
+&"M": 40,
+&"L": 70,
+&"XL": 100
+}
+freighter_signature = 30
+pirate_stealth = 10
+species_stealth = {
+&"core:species/ohlan": 10
+}
+ghost_days = 90
+ghost_cap = 400
+id = &"core:fog_rules/default"
+name_key = "FOG_RULES"

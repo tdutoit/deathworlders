@@ -1,6 +1,9 @@
 # DEATHWORLDERS — Sub-spec D: Scale, Expansion & World Mechanics
 
 **Change log**
+- 2026-10-04 (M5 WP5, owner decision) D12: detected if sensor_strength + signature - stealth >= 60
+  (threshold in `fog_rules`), so larger and charging ships are easier to see and stealth hides. Coverage
+  strengths: own systems and units 40, scouts 50, listening posts 40/70/100.
 - 2026-10-01 (M2 WP12): D6 alerts are derived from the state when shown (`ui/alerts.gd`), with no alert
   history, so the time-based triggers use what the state records: Starvation = food runs out within 90 days
   at last month's rate (fix: a Critical food demand for 3 months of the shortfall); Construction stalled =
