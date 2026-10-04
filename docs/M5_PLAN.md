@@ -85,6 +85,16 @@ with the workflow change below.*
   seeded offset within half the width so the true value stays inside (`Intel.estimate`). Difficulty:
   Admiral +1 intel level (`DifficultyDef.intel_bonus`); new Deathworld level (+500 output, 3 actions,
   `full_vision`: sees every system and unit, labelled cheat in setup).
+- 2026-10-04 (WP7, owner decisions): `refit_fleet {fleet, design}` refits every ship of the fleet with the
+  design's hull class and species and a Mk up to the design's (Mk upgrades I->II->III allowed) when the
+  fleet is stopped and out of battle in a system with an own operational shipyard or supply depot (a Mk
+  upgrade needs a shipyard of the new hull's size) and the design's techs are researched. Time: 3 days + 2
+  per changed slot, + half the new hull's build days for a Mk upgrade; pace, then `empire.refit_time`
+  (Field Improvisation -50%). Cost, paid up front from the empire's stockpiles in that system (else
+  rejected): the added parts in full plus half the hull cost difference (pace); removed parts refund 50%.
+  A refitting ship holds position (move_fleet rejects); in battle it fights with its old parts and the
+  countdown pauses; when done it takes the new hull and parts fully repaired. Numbers in combat_rules
+  (`refit_*`). The AI starts refitting in WP11; the refit picker UI comes in WP12.
 
 ## Goal of M5
 

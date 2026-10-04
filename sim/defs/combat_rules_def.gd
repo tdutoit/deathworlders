@@ -97,6 +97,10 @@ const VETERANCY: Array[String] = ["green", "regular", "veteran", "elite"]
 # Who pirates fly (B9 raiders, D9 bases)
 @export var pirate_raider_design: StringName
 @export var pirate_base_design: StringName
+@export var refit_base_days: int  # M5 WP7 refits (owner 2026-10-04): 3 days
+@export var refit_days_per_slot: int  # + 2 per changed slot
+@export var refit_refund_permille: int  # removed parts refund 50%
+@export var refit_hull_permille: int  # Mk upgrade: 50% of the hull cost difference and of the new hull's build days
 
 const _INTS: Array[String] = ["hit_min", "hit_max", "variance_min", "variance_max", "shield_regen", "armor_k",
 	"ablation_divisor", "crippled_hull", "crippled_accuracy", "round_cap", "range_step_rounds", "screen_escort_share",
@@ -127,6 +131,8 @@ func schema() -> Dictionary:
 	s["veterancy_accuracy"] = {"type": "int_map", "keys": VETERANCY}
 	s["veterancy_morale_resist"] = {"type": "int_map", "keys": VETERANCY}
 	s["crew_by_size"] = {"type": "int_map", "keys": SIZES, "min": 0}
+	for f in ["refit_base_days", "refit_days_per_slot", "refit_refund_permille", "refit_hull_permille"]:
+		s[f] = {"type": "int", "min": 0}
 	s["fuel_moving_milli"] = {"type": "int_map", "keys": SIZES, "min": 0}
 	s["fuel_idle_milli"] = {"type": "int_map", "keys": SIZES, "min": 0}
 	s["pirate_raider_design"] = {"type": "id", "ref": "design"}

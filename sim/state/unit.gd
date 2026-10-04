@@ -37,6 +37,7 @@ var marines := 0
 var xp := 0  # veterancy (A12, A13)
 var moved := false  # moved on a lane this month (B12 fuel: moving vs idle); reset by the monthly fuel draw
 var unsupplied_days := 0  # warships: consecutive days outside supply range (A13 attrition)
+var refit := {}  # M5 refit in progress: {design, hull, components, days left}; empty when none
 
 
 func is_moving() -> bool:
@@ -58,7 +59,7 @@ func to_dict() -> Dictionary:
 		"cargo": cargo.duplicate(), "job": job.duplicate(), "target_planet": target_planet, "out_of_fuel": out_of_fuel, "raid_checked": raid_checked,
 		"target_owner": target_owner, "months_left": months_left, "design": design, "components": components.duplicate(),
 		"fleet": fleet, "hp": hp, "armor": armor, "shield": shield, "ammo": ammo, "crew": crew, "marines": marines,
-		"xp": xp, "moved": moved, "unsupplied_days": unsupplied_days,
+		"xp": xp, "moved": moved, "unsupplied_days": unsupplied_days, "refit": refit.duplicate(true),
 	}
 
 
@@ -96,6 +97,12 @@ static func from_dict(d: Dictionary) -> Unit:
 	u.xp = int(d.get("xp", 0))
 	u.moved = d.get("moved", false) == true
 	u.unsupplied_days = int(d.get("unsupplied_days", 0))
+	var rf: Dictionary = d.get("refit", {})
+	if not rf.is_empty():
+		var comps: Array[String] = []
+		for c: Variant in rf["components"]:
+			comps.append(String(c))
+		u.refit = {"design": int(rf["design"]), "hull": String(rf["hull"]), "components": comps, "days": int(rf["days"])}
 	u.job = {}
 	var j: Dictionary = d.get("job", {})
 	if not j.is_empty():

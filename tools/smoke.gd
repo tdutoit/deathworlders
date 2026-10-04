@@ -48,5 +48,39 @@ func _init() -> void:
 				if o != eid:
 					lv[o] = Intel.level(state, eid, o)
 			print("  intel levels ", lv)
+	_try_refits(state)
 	print("smoke OK: %d months in %d ms, checksum %d" % [months, Time.get_ticks_msec() - t0, state.checksum()["total"]])
 	quit(0)
+
+
+## Exercises refits (M5 WP7): each empire refits its first fleet at a shipyard to another design of the same
+## class (designs' parts may be unresearched: then a mirror of the current parts with one slot emptied).
+func _try_refits(state: MatchState) -> void:
+	var started := 0
+	var tried := 0
+	for fid: int in state.fleets.ordered():
+		var f: Fleet = state.fleets.get_or(fid)
+		var lead := Fleets.lead(state, f)
+		if lead == null or not Refits.facilities(state, f.owner, lead.system_id)[1]:
+			continue
+		var comps := lead.components.duplicate()
+		for i in comps.size():
+			if comps[i] != "":
+				comps[i] = ""
+				break
+		var d := Designs.save(state, f.owner, 0, "smoke refit", lead.hull_id, comps)
+		var cmd := CommandRegistry.create(CmdRefitFleet.TYPE, f.owner, {"fleet": f.id, "design": d.id})
+		tried += 1
+		if cmd.validate(state):
+			cmd.apply(state)
+			started += 1
+		else:
+			print("  refit rejected: ", cmd.error)
+	var t := state.tick + 40 * Calendar.HOURS_PER_DAY
+	var refitting := 0
+	while state.tick < t:
+		Sim.step(state, [])
+	for uid: int in state.units.ordered():
+		if not (state.units.get_or(uid) as Unit).refit.is_empty():
+			refitting += 1
+	print("  refits: %d fleets tried, %d started, %d ships still refitting after 40 days" % [tried, started, refitting])

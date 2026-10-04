@@ -9,8 +9,8 @@ const MILLI := 1000
 static func tick(state: MatchState) -> void:
 	for id: int in state.units.ordered():
 		var u: Unit = state.units.get_or(id)
-		if not u.is_moving():
-			continue
+		if not u.is_moving() or not u.refit.is_empty():
+			continue  # M5: a refitting ship holds position
 		u.moved = true
 		if u.fleet != StateIO.NONE:
 			u.progress += Fleets.move_speed(state, u.fleet)  # the fleet moves as one (its slowest ship, fuel)

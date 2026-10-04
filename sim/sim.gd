@@ -81,6 +81,7 @@ static func _day_tick(state: MatchState) -> void:
 	StationOps.day_tick(state, day)
 	Builder.day_tick(state)
 	Shipyards.day_tick(state)
+	Refits.day_tick(state)  # M5: refit countdowns
 	Deals.day_tick(state)  # M4: deal goods claim idle freighters before auto-logistics (_logistics_hour)
 	FleetSupply.day_tick(state)
 	SignatureMechanics.day_tick(state)  # M4: Brood Surge and other daily mechanics
