@@ -3,7 +3,7 @@
 ## What this is
 HFY 4X space strategy game in Godot 4.7.2 (GDScript). Specs live in /docs:
 - GAME_DESIGN_SPEC.md (main), SUBSPEC_A_COMBAT.md, SUBSPEC_B_ECONOMY.md, SUBSPEC_C_DATA_MODAPI.md,
-  SUBSPEC_D_SCALE.md, SUBSPEC_E_DIPLOMACY.md, SUBSPEC_F_UI.md, M1_PLAN.md, M2_PLAN.md, M3_PLAN.md and M4_PLAN.md (done).
+  SUBSPEC_D_SCALE.md, SUBSPEC_E_DIPLOMACY.md, SUBSPEC_F_UI.md, M1_PLAN.md, M2_PLAN.md, M3_PLAN.md and M4_PLAN.md (done), M5_PLAN.md (current milestone).
 - Read the relevant spec section before starting a task. Pinned versions: docs/ENGINE_VERSION.md.
 
 ## Hard rules (sim/)
@@ -30,8 +30,10 @@ HFY 4X space strategy game in Godot 4.7.2 (GDScript). Specs live in /docs:
   assets/models/. Follow docs/SUBSPEC_C_DATA_MODAPI.md §C11. Validate every .glb before committing.
 
 ## Workflow
-- Tests: tools/run_tests.sh (GUT 9.7.0, headless). Must pass before a task is done.
-- Determinism: tools/determinism_test.gd for any sim change (once WP11 exists).
+- Tests: tools/run_tests.sh (GUT 9.7.0, headless). From M5 on (owner decision 2026-10-04), feature WPs run only
+  a compile check + tools/lint_sim.gd (+ validate_content after data edits); unit tests, harnesses, balance and
+  the determinism run happen in the milestone's final testing WP and must pass before the milestone is done.
+- Determinism: tools/determinism_test.gd in the final testing WP of each milestone.
 - Content: tools/validate_content.gd after editing data/ (once WP3 exists).
 - Small commits, one work-package task per commit.
 - If a spec is ambiguous, ask before inventing. Record decisions in the spec's change log.
