@@ -240,11 +240,12 @@ static func _create(state: MatchState, system_id: int, owners: Array[int]) -> Ba
 	b.start_tick = state.tick
 	b.owners = owners
 	b.sides = [[owners[0]] as Array[int], [owners[1]] as Array[int]]
-	b.band = 0  # A3: battles open at Long range (no nebulae or ambushes in M3)
+	b.band = 0  # A3: battles open at Long range (no nebulae in M5)
 	b.rng = DetRng.from_seed(state.match_seed ^ b.id, DetRng.COMBAT).get_state()
 	b.log = {"strength": [], "bands": [], "lost": [], "captured": [], "retreated": [], "events": [], "start_cost": [0, 0],
 		"lost_cost": [0, 0], "captured_cost": [0, 0], "dmg": {}, "kills": {}, "names": {},
-		"family": [{}, {}]}  # per side: family ID -> [shots, hits, intercepted, hull damage]
+		"family": [{}, {}],  # per side: family ID -> [shots, hits, intercepted, hull damage]
+		"ambush": Intel.ambush_side(state, owners)}  # A3 step 3 (M5): this side fires alone in round 1, -1 = none
 	state.battles.put(b.id, b)
 	return b
 
@@ -324,10 +325,13 @@ static func _round(state: MatchState, b: Battle) -> bool:
 		if int(f.get("last_stand", 0)) > 0:
 			for m: int in f["members"]:
 				last_stand[m] = true
+	var ambushed := 1 - int(b.log.get("ambush", -1)) if int(b.log.get("ambush", -1)) >= 0 and b.round == 1 else -1
 	for cid in b.active():
 		if disengaging.has(cid):
 			continue
 		var side := b.side_of(cid)
+		if side == ambushed:
+			continue  # A3: caught by an ambush, holds fire in the opening round
 		var shooter: Object = entity(state, cid)
 		var st := stats(state, cid)
 		var bonus := _accuracy_bonus(state, b, cid, shooter, st, r)
@@ -619,6 +623,7 @@ static func _capture(state: MatchState, b: Battle, t: Unit, side: int, r: Combat
 	b.log["captured_cost"][side] += cost
 	b.log["lost_cost"][1 - side] += cost
 	Fleets.remove_ship(state, t)
+	Intel.ship_captured(state, captor, t.owner)  # M5: a captured ship reveals its builder
 	t.owner = captor
 	t.path.clear()
 	var key := "c:%d" % t.owner
@@ -797,6 +802,7 @@ static func _finish(state: MatchState, b: Battle) -> void:
 		state.reports.erase(state.reports.ordered()[0])  # oldest first (owner 2026-10-03)
 	state.battles.erase(b.id)
 	Wars.battle_resolved(state, b)  # M4: war score and exhaustion
+	Intel.battle_fought(state, b)  # M5: intel from fighting
 	SignatureMechanics.battle_resolved(state, rep)
 
 

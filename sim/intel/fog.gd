@@ -37,7 +37,7 @@ static func knowledge(state: MatchState, eid: int) -> Knowledge:
 # --- queries ---
 
 static func level(state: MatchState, eid: int, system_id: int) -> int:
-	if not enabled(state) or state.empire(eid) == null:
+	if not enabled(state) or state.empire(eid) == null or state.empire(eid).full_vision:
 		return COVERED
 	var k: Knowledge = state.knowledge.get_or(eid)
 	if k == null:
@@ -52,7 +52,7 @@ static func sees(state: MatchState, eid: int, unit_id: int) -> bool:
 	var u: Unit = state.units.get_or(unit_id)
 	if u == null:
 		return false
-	if not enabled(state) or u.owner == eid:
+	if not enabled(state) or u.owner == eid or (state.empire(eid) != null and state.empire(eid).full_vision):
 		return true
 	var k: Knowledge = state.knowledge.get_or(eid)
 	return k != null and k.visible.has(unit_id)
@@ -98,6 +98,7 @@ static func empire_day(state: MatchState, eid: int) -> void:
 		if int(cov[u.system_id]) + signature(state, u, r) >= r.threshold:
 			k.visible[uid] = true
 	_ghosts(state, k, was, r)
+	Intel.empire_day(state, eid, r)  # WP6
 
 
 static func _ghosts(state: MatchState, k: Knowledge, was: Dictionary, r: FogRulesDef) -> void:

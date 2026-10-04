@@ -6,6 +6,8 @@ extends Def
 @export var output_permille: int
 @export var actions: int
 @export var order: int
+@export var intel_bonus: int  # E13: Admiral +1 intel level (M5)
+@export var full_vision: bool  # E13: Deathworld sees everything (labelled cheat, M5)
 
 
 func category() -> String:
@@ -17,4 +19,6 @@ func schema() -> Dictionary:
 		"output_permille": {"type": "int"},
 		"actions": {"type": "int", "min": 1},
 		"order": {"type": "int", "min": 0},
+		"intel_bonus": {"type": "int", "min": 0, "max": 4},
+		"full_vision": {"type": "bool"},
 	}

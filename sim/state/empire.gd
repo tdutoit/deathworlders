@@ -26,6 +26,8 @@ var personality := {}  # E11 weight -> 0..100 (species defaults +-15, rolled at 
 var ai_actions := 0  # E13 strategic actions a month (0 = ai_rules default; difficulty sets it, WP12)
 var ai_output := 0  # E13 difficulty output bonus on job output, permille (AI slots)
 var techs := {}  # M5: researched tech ID -> tick researched (starting techs: 0)
+var intel_bonus := 0  # E13: intel levels added to every reading (Admiral +1; M5 WP6)
+var full_vision := false  # E13 Deathworld: sees everything (labelled cheat; M5 WP6)
 var research_queue: Array[String] = []  # M5: tech IDs in order; the first researchable ones take the slots
 var research_progress := {}  # M5: tech ID -> research points put in, milli
 var _source := ""  # runtime: modifier source key (species + techs), see source()
@@ -38,7 +40,7 @@ func to_dict() -> Dictionary:
 		"prewar_fleet": prewar_fleet, "exhausted_since": exhausted_since, "disarm_until": disarm_until, "disarm_cap": disarm_cap,
 		"footing": footing, "footing_until": footing_until, "demob_until": demob_until,
 		"personality": personality.duplicate(), "ai_actions": ai_actions, "ai_output": ai_output,
-		"techs": techs.duplicate(), "research_queue": research_queue.duplicate(), "research_progress": research_progress.duplicate()}
+		"intel_bonus": intel_bonus, "full_vision": full_vision, "techs": techs.duplicate(), "research_queue": research_queue.duplicate(), "research_progress": research_progress.duplicate()}
 
 
 static func from_dict(d: Dictionary) -> Empire:
@@ -65,6 +67,8 @@ static func from_dict(d: Dictionary) -> Empire:
 	e.personality = StateIO.ints_deep(d.get("personality", {}))
 	e.ai_actions = int(d.get("ai_actions", 0))
 	e.ai_output = int(d.get("ai_output", 0))
+	e.intel_bonus = int(d.get("intel_bonus", 0))
+	e.full_vision = d.get("full_vision", false) == true
 	e.techs = StateIO.int_map(d.get("techs", {}))
 	for t: Variant in d.get("research_queue", []):
 		e.research_queue.append(String(t))

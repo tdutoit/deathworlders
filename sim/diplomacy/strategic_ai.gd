@@ -39,6 +39,8 @@ static func apply_difficulty(state: MatchState) -> void:
 			if e.player_slot == int(p["slot"]) and d != null:
 				e.ai_actions = d.actions
 				e.ai_output = d.output_permille
+				e.intel_bonus = d.intel_bonus  # M5
+				e.full_vision = d.full_vision
 
 
 static func month_tick(state: MatchState) -> void:

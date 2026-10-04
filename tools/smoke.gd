@@ -43,5 +43,10 @@ func _init() -> void:
 		if k != null:
 			print("  fog: %d explored, %d covered of %d systems, %d foreign units seen, %d ghosts" % [k.explored.size(),
 				k.covered.size(), state.galaxy.systems.size(), k.visible.size(), k.ghosts.size()])
+			var lv := {}
+			for o: int in state.empires.ordered():
+				if o != eid:
+					lv[o] = Intel.level(state, eid, o)
+			print("  intel levels ", lv)
 	print("smoke OK: %d months in %d ms, checksum %d" % [months, Time.get_ticks_msec() - t0, state.checksum()["total"]])
 	quit(0)

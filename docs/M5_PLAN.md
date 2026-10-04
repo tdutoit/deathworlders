@@ -73,6 +73,18 @@ with the workflow change below.*
   is what the start's coverage reveals. Match setting `fog` off / standard (default) / hardcore (no ghosts);
   Off answers every query as full visibility. Nothing reads the model yet: the UI (WP12) and the AI (WP11)
   switch to it, intel levels (WP6) build on it.
+- 2026-10-04 (WP6, owner decisions): intel per directed empire pair as points (1000 per level, levels 0-4,
+  in Knowledge; numbers in `fog_rules`): sensors (its units seen or its systems covered that day) +30 a day
+  up to level 2, up to level 3 where the covering strength is 70+ (Listening Post T2); a battle against it
+  +1000 up to level 3; a captured ship +2000 up to level 4; decay 10 a day without a sensor source, never
+  below level 1 once the empires have fought; Xenolinguistics lifts every contact to level 1; Signal Analysis
+  scales gains; Deception Networks shows an empire one level lower. Tracked per empire, not per fleet.
+  A3 ambush: a battle's side gets a free opening round when its lead has intel >= 3 on the other lead and
+  the other has <= 1 on it (Battle log `ambush`; the ambushed side holds fire in round 1). Estimates
+  (owner decision): error bars of +-50% / 25% / 10% / exact at levels 1-4 (unknown at 0), around a fixed
+  seeded offset within half the width so the true value stays inside (`Intel.estimate`). Difficulty:
+  Admiral +1 intel level (`DifficultyDef.intel_bonus`); new Deathworld level (+500 output, 3 actions,
+  `full_vision`: sees every system and unit, labelled cheat in setup).
 
 ## Goal of M5
 

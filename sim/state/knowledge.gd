@@ -8,6 +8,8 @@ var explored := {}  # system ID -> [owner as last seen, tick last covered]
 var covered := {}  # system ID -> sensor strength covering it now (own and allied sources)
 var visible := {}  # foreign unit ID -> true, detected now
 var ghosts := {}  # unit ID -> {"system", "owner", "kind", "size", "tick"} last seen; fade after ghost_days
+var intel := {}  # other empire ID -> intel points (Intel, WP6)
+var fought := {}  # other empire ID -> true once they met in battle (intel floor: level 1)
 
 
 func to_dict() -> Dictionary:
@@ -21,7 +23,8 @@ func to_dict() -> Dictionary:
 	var c := []
 	for sid: int in IdMap.sort_keys(covered.keys()):
 		c.append([sid, covered[sid]])
-	return {"id": id, "explored": e, "covered": c, "visible": IdMap.sort_keys(visible.keys()), "ghosts": g}
+	return {"id": id, "explored": e, "covered": c, "visible": IdMap.sort_keys(visible.keys()), "ghosts": g,
+		"intel": intel.duplicate(), "fought": IdMap.sort_keys(fought.keys())}
 
 
 static func from_dict(d: Dictionary) -> Knowledge:
@@ -33,6 +36,9 @@ static func from_dict(d: Dictionary) -> Knowledge:
 		k.covered[int(row[0])] = int(row[1])
 	for uid: Variant in d.get("visible", []):
 		k.visible[int(uid)] = true
+	k.intel = StateIO.int_map(d.get("intel", {}))
+	for o: Variant in d.get("fought", []):
+		k.fought[int(o)] = true
 	for row: Array in d.get("ghosts", []):
 		k.ghosts[int(row[0])] = {"system": int(row[1]), "owner": int(row[2]), "kind": String(row[3]),
 			"size": String(row[4]), "tick": int(row[5])}

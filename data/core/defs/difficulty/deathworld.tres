@@ -4,10 +4,10 @@
 
 [resource]
 script = ExtResource("1_diff")
-output_permille = 300
+output_permille = 500
 actions = 3
-order = 3
-intel_bonus = 1
-id = &"core:difficulty/admiral"
-name_key = "DIFFICULTY_ADMIRAL"
-desc_key = "DIFFICULTY_ADMIRAL_DESC"
+order = 4
+full_vision = true
+id = &"core:difficulty/deathworld"
+name_key = "DIFFICULTY_DEATHWORLD"
+desc_key = "DIFFICULTY_DEATHWORLD_DESC"

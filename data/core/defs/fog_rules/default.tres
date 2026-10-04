@@ -22,5 +22,16 @@ species_stealth = {
 }
 ghost_days = 90
 ghost_cap = 400
+intel_level_points = 1000
+intel_sensor_gain = 30
+intel_sensor_cap = 2000
+intel_strong_sensor = 70
+intel_strong_cap = 3000
+intel_decay = 10
+intel_battle_gain = 1000
+intel_battle_cap = 3000
+intel_capture_gain = 2000
+intel_capture_cap = 4000
+intel_estimate_width = Array[int]([500, 250, 100, 0])
 id = &"core:fog_rules/default"
 name_key = "FOG_RULES"
