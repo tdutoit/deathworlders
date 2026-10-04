@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="EspionageRulesDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/espionage_rules_def.gd" id="1_esp"]
+
+[resource]
+script = ExtResource("1_esp")
+max_agents = 3
+recruit_influence = 40
+upkeep_credits = 2
+insert_days = 30
+success_permille = 350
+caught_permille = 80
+caught_opinion = -30
+caught_reputation = -10
+core_lanes = 1
+core_strength = 40
+intel_points = 500
+intel_cap = 3000
+fragments = 15
+unrest_stability = 10
+ai_influence_reserve = 80
+id = &"core:espionage_rules/default"
+name_key = "ESPIONAGE_RULES"

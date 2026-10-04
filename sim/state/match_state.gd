@@ -34,6 +34,7 @@ var council: Council = null  # the Galactic Council (E9; M4 WP8)
 var relations := {}  # "from:to" -> Relation, from first contact (M4); iterate with IdMap.sort_keys
 var wars := {}  # "a:b" (lower empire ID first) -> true while those empires are at war (M3 toggle)
 var pirate_bases := {}  # system ID -> months until it sends out the next raider (D9)
+var agents := IdMap.new()  # id -> Agent (M5 espionage)
 var knowledge := IdMap.new()  # empire id -> Knowledge (M5 fog of war, D12)
 var reserves := {}  # "holder:resource" -> whole units auto-logistics leaves alone (B8; default 20% of cap)
 var next_id := 1
@@ -139,6 +140,7 @@ func to_dict() -> Dictionary:
 		"pirate_bases": pirate_bases.duplicate(),
 		"reserves": reserves.duplicate(),
 		"knowledge": StateIO.map_to_array(knowledge),
+		"agents": StateIO.map_to_array(agents),
 		"next_id": next_id,
 		"paused": paused,
 		"speed": speed,
@@ -186,6 +188,7 @@ static func from_dict(d: Dictionary) -> MatchState:
 		s.pirate_bases[int(k)] = int(d["pirate_bases"][k])
 	s.reserves = StateIO.int_map(d.get("reserves", {}))
 	s.knowledge = StateIO.array_to_map(d.get("knowledge", []), Knowledge.from_dict)
+	s.agents = StateIO.array_to_map(d.get("agents", []), Agent.from_dict)
 	s.next_id = int(d["next_id"])
 	s.paused = d["paused"] == true
 	s.speed = int(d["speed"])
@@ -217,7 +220,7 @@ func checksum() -> Dictionary:
 		"combat": DetHash.hash_value([d["battles"], d["reports"], d["wars"]]),
 		"diplomacy": DetHash.hash_value([d["relations"], d["treaties"], d["proposals"], d["calls"], d["deals"], d["deliveries"], d["war_info"], d["peace_offers"], d["claims"], d["council"]]),
 		"rng": DetHash.hash_value(d["rng_streams"]),
-		"knowledge": DetHash.hash_value(d["knowledge"]),  # M5 fog of war
+		"knowledge": DetHash.hash_value([d["knowledge"], d["agents"]]),  # M5 fog of war, intel, espionage
 	}
 	parts["total"] = DetHash.hash_value(parts)
 	return parts

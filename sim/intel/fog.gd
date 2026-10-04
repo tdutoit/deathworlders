@@ -159,6 +159,7 @@ static func coverage(state: MatchState, eid: int, r: FogRulesDef) -> Dictionary:
 			_spread(state, cov, u.system_id, r.scout_range, r.scout_strength)
 		else:
 			_cover(cov, u.system_id, r.unit_strength)
+	Espionage.add_coverage(state, eid, cov)  # WP9: gather_intel agents
 	return cov
 
 

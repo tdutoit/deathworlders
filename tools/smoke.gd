@@ -40,6 +40,10 @@ func _init() -> void:
 				funcs[f] = int(funcs.get(f, 0)) + 1
 		print("  stations ", funcs)
 		print("  fragments ", e.fragments, " reversed ", e.reversed)
+		var ag := []
+		for a in Espionage.agents_of(state, eid):
+			ag.append("%s->%d" % [a.mission, a.target])
+		print("  agents ", ag)
 		var k: Knowledge = state.knowledge.get_or(eid)
 		if k != null:
 			print("  fog: %d explored, %d covered of %d systems, %d foreign units seen, %d ghosts" % [k.explored.size(),

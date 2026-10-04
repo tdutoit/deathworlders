@@ -108,6 +108,16 @@ with the workflow change below.*
   damage, -100 accuracy), Swarm Cannon (Krothi; Autocannon +2 shots), Smuggler's Baffles (Ohlan; defence S,
   signature -30), Bastion Projector (Thessari; Shield Generator +50%). AI: spends fragments on the cheapest
   copyable tech of each species (WP11 refines).
+- 2026-10-04 (WP9, owner decisions): espionage (`espionage_rules`): up to 3 agents per empire, 40 influence
+  each, 2 credits a month, against an empire in contact; 30 days to get in place; then each month 8% caught
+  (x `empire.agent_detection`, Counter-Intelligence; agent lost, the target's `espionage` opinion -30,
+  Reputation -10) and 35% success (x `empire.agent_success`, Xenopsychology). Missions: gather_intel (the
+  target's capital system and its neighbours count as covered at strength 40, D12; success +500 intel points
+  up to level 3), steal_fragments (+15 of the target's species), sabotage_convoys (one loaded freighter of
+  the target loses its cargo), incite_unrest (the target's least stable colony -10 stability). Commands
+  `recruit_agent`, `set_agent_mission`, `recall_agent`; agents saved (checksum part `knowledge`). AI until
+  WP11: one agent on its strongest contact (an enemy first; sabotage at war, intel otherwise) once it holds
+  80 influence.
 
 ## Goal of M5
 

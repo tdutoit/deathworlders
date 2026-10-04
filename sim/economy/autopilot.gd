@@ -52,6 +52,7 @@ static func empire_month(state: MatchState, eid: int) -> void:
 		return
 	_directive(state, eid)
 	ReverseEngineering.auto(state, eid)  # M5 WP8
+	Espionage.auto(state, eid)  # M5 WP9
 	Research.auto_queue(state, eid)  # M5 WP2: cheapest first until WP11's research priorities
 	MilitaryAutopilot.month_tick(state, eid, can_expand(state, eid))  # M3 WP10
 	if not can_expand(state, eid):
