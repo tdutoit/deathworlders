@@ -4,6 +4,7 @@ extends PanelContainer
 ## Planets with a colony show the F4 colony block (stage, focus, autonomy, pops, jobs, stockpile, buildings).
 
 signal colonise_requested(planet_id: int)
+signal construction_requested(planet_id: int)  # M4 WP15: the Construction screen
 signal fleet_requested(fleet_id: int)
 
 const AUTONOMY: Array[String] = ["automated", "assisted", "manual"]
@@ -100,6 +101,8 @@ func _fill() -> void:
 			_line("CTX_IN_SYSTEM", "", {"name": g.system(p.system_id).name})
 			_line("CTX_SLOTS", "", {"n": p.orbital_slots})
 			_owner_line(p.owner)
+			if can_build_at(state, CommandQueue.local_player, p.id):
+				_button("CTX_BUILD", func() -> void: construction_requested.emit(p.id))  # M4 WP15
 			_line("CTX_DEPOSITS", "Caption")
 			if p.deposits.is_empty():
 				_line("CTX_NO_DEPOSITS")
@@ -250,6 +253,18 @@ func _stations_section(state: MatchState, planet_id: int) -> void:
 		if s.owner != CommandQueue.local_player:
 			text += "  (" + _owner_name(s.owner) + ")"
 		_text(text)
+
+
+## True when the player can build or manage something at this planet: its own colony, a body in an own
+## system, an own station there, or an outpost it could claim (M4 WP15).
+static func can_build_at(state: MatchState, eid: int, planet_id: int) -> bool:
+	var p := state.galaxy.planet(planet_id)
+	var c := state.colony(planet_id)
+	if (c != null and c.owner == eid) or state.galaxy.system(p.system_id).owner == eid:
+		return true
+	if BuildRules.stations_at(state, planet_id).any(func(s: Station) -> bool: return s.owner == eid):
+		return true
+	return BuildRules.check_station(state, eid, planet_id, "core:station/outpost") == ""
 
 
 ## The local player's colony ship best placed to settle this planet: idle ones first, then lowest ID.

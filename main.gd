@@ -8,7 +8,7 @@ extends Node
 ##   --ui=menu|setup       with --screenshot: capture that screen instead of a match
 ##   --load=<save>         open that save and unpause (with --speed=<1|2|4|8>, --perf=<seconds>)
 ##   --months=<n>          run the quickstart match n months before showing it
-##   --screen=planet|sectors|logistics|stockpile|alerts|fleets|designer|battles|diplomacy   (--tab=routes|demands|hubs|losses|empires) open that panel
+##   --screen=planet|sectors|logistics|stockpile|alerts|fleets|designer|battles|diplomacy|construction   (--tab=routes|demands|hubs|losses|empires) open that panel
 ##   --warships=<n>        quickstart: queue n standard destroyers at the human's first shipyard (Commands)
 ##   --meet                quickstart: send the scout to the nearest AI capital (first contact)
 
@@ -151,6 +151,8 @@ func _open_screen(human: Empire) -> void:
 		"diplomacy":
 			ui.diplomacy_screen._tab = _args.get("tab", "empires")
 			ui.toggle_screen(ui.diplomacy_screen)
+		"construction":
+			ui.open_construction(human.capital_planet)
 
 
 func _save_screenshot() -> void:

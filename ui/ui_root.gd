@@ -24,6 +24,7 @@ var fleets_screen: FleetsScreen
 var designer_screen: DesignerScreen
 var battles_screen: BattlesScreen
 var diplomacy_screen: DiplomacyScreen
+var construction_screen: ConstructionScreen
 var _screens: Array[ScreenPanel] = []
 
 var _resume_unpauses := false
@@ -72,6 +73,8 @@ func _ready() -> void:
 	context_panel.colonise_requested.connect(func(pid: int) -> void:
 		_close_screens()
 		colonise_screen.open_for(pid))
+	context_panel.construction_requested.connect(open_construction)
+	alerts_screen.construction_requested.connect(open_construction)
 	EventBus.match_started.connect(show_hud)
 	if GameState.state != null:
 		show_hud()
@@ -106,13 +109,15 @@ func _build_hud() -> void:
 	designer_screen = DesignerScreen.new()
 	battles_screen = BattlesScreen.new()
 	diplomacy_screen = DiplomacyScreen.new()
+	construction_screen = ConstructionScreen.new()
 	diplomacy_screen.visibility_changed.connect(func() -> void:  # full screen (F14): side panels step aside
 		outliner.visible = not diplomacy_screen.visible
 		context_panel.visible = not diplomacy_screen.visible)
 	designer_screen.visibility_changed.connect(func() -> void:  # full screen (F10): side panels step aside
 		outliner.visible = not designer_screen.visible
 		context_panel.visible = not designer_screen.visible)
-	_screens = [sector_screen, logistics_screen, stockpile_screen, alerts_screen, colonise_screen, fleets_screen, designer_screen, battles_screen, diplomacy_screen]
+	_screens = [sector_screen, logistics_screen, stockpile_screen, alerts_screen, colonise_screen, fleets_screen, designer_screen, battles_screen, diplomacy_screen,
+		construction_screen]
 	for screen in _screens:
 		hud.add_child(screen)
 		screen.focus_requested.connect(func(kind: String, id: int) -> void:
@@ -130,6 +135,12 @@ func _show_only(screen: Control) -> void:
 		c.visible = c == screen
 	if screen == game_menu:
 		hud.visible = true
+
+
+## The Construction screen for a planet (M4 WP15), from the planet panel, an alert or the designer.
+func open_construction(pid: int) -> void:
+	_close_screens()
+	construction_screen.open_for(pid)
 
 
 ## Opens a management screen (closing any other), or closes it if it is already open.

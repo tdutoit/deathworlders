@@ -208,6 +208,15 @@ rules (CLAUDE.md), same tooling.*
   4 AIs): neutral 69 of 80 (accepted 65), species 70 of 80 (humans 19, Vess'kar 18, Thessari 17, Krothi 16 of
   20). Remaining B20 misses are mostly the alloy band's top (strong economies over 140 a month). Combat harness
   unchanged at A14 and the species target.
+- 2026-10-04 (WP15, owner decision 2026-10-03): player build controls. A Construction screen per planet
+  (from "Build..." in the planet panel, shown for own colonies, bodies in own systems, own stations and
+  claimable outposts; from the "Queue" button of the Shipyard idle alert, F12): the building queue (progress,
+  stalls, move up, cancel) and every building the planet can take now; the orbitals with upgrade and cancel and
+  every station a free slot allows; each own shipyard's queue (move up, cancel) with civilian hulls and the
+  empire's saved designs that fit the yard. Costs and days at the match pace. Only options the sim accepts are
+  listed (its reasons are log text, not loc keys); slot counts explain most blocks. The Ship Designer gets
+  "Build at" (a shipyard that can build the saved design). New Command `core:cmd/move_construction` reorders
+  a colony or shipyard queue (progress and paid materials go with the item). Dev flag `--screen=construction`.
 
 ---
 

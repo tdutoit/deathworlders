@@ -115,7 +115,9 @@ static func _station_alerts(state: MatchState, s: Station, out: Array) -> void:
 		if Shipyards.check_ship(state, s.owner, s.id, FREIGHTER_HULL) == "":
 			fix = _fix(CmdQueueShip.TYPE, {"station": s.id, "hull": FREIGHTER_HULL}, "FIX_QUEUE_SHIP",
 				{"name": _def_name(state, FREIGHTER_HULL)})
-		out.append(_alert(INFO, "ALERT_SHIPYARD_IDLE", {"name": name}, "planet", s.planet_id, fix))
+		var a := _alert(INFO, "ALERT_SHIPYARD_IDLE", {"name": name}, "planet", s.planet_id, fix)
+		a["build"] = s.planet_id  # F12 "[Queue]": the Construction screen (M4 WP15)
+		out.append(a)
 	if s.operational:
 		_overflow(state, s.id, name, s.stockpile, out)
 

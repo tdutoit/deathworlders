@@ -200,6 +200,26 @@ func _predict_row(state: MatchState, eid: int) -> void:
 		line(_prediction, "Mono", r)
 
 
+## "Build at": the saved design at one of the empire's shipyards that can build it (M4 WP15).
+func _build_at(state: MatchState, eid: int, r: Control) -> void:
+	var yards := OptionButton.new()
+	yards.name = "BuildAtYard"
+	yards.focus_mode = Control.FOCUS_ALL
+	for sid: int in state.stations.ordered():
+		var s: Station = state.stations.get_or(sid)
+		if s.owner == eid and Shipyards.check_design_ship(state, eid, sid, _design_id) == "":
+			yards.add_item(state.galaxy.planet(s.planet_id).name)
+			yards.set_item_metadata(yards.item_count - 1, sid)
+	if yards.item_count == 0:
+		yards.free()
+		line(TranslationServer.translate("DESIGNER_NO_YARD"), "Caption", r)
+		return
+	r.add_child(yards)
+	var design := _design_id
+	button(TranslationServer.translate("DESIGNER_BUILD_AT"), "BuildAt", func() -> void:
+		CommandQueue.submit_new(CmdQueueShip.TYPE, {"station": int(yards.get_selected_metadata()), "design": design}), r)
+
+
 func _actions(state: MatchState, eid: int) -> void:
 	var r := row()
 	var payload := {"name": _name, "hull": _hull, "components": Array(_components)}
@@ -213,6 +233,7 @@ func _actions(state: MatchState, eid: int) -> void:
 		_design_id = 0
 		_pick_newest_after_save.call_deferred(), r)
 	if _design_id != 0:
+		_build_at(state, eid, r)
 		button(TranslationServer.translate("DESIGNER_DELETE"), "Delete", func() -> void:
 			CommandQueue.submit_new(CmdDeleteDesign.TYPE, {"design": _design_id})
 			_hull = ""

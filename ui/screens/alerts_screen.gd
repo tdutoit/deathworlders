@@ -3,6 +3,8 @@ extends ScreenPanel
 ## Alerts panel (F12, D6): urgent first. Each alert can show its place on the map and, where D6 has one,
 ## offers a one-click fix whose Command is previewed in a line under it before it is issued.
 
+signal construction_requested(planet_id: int)  # an alert's "Queue": the Construction screen (M4 WP15)
+
 const GLYPHS := ["●", "◐", "○"]  # urgent / soon / info: shape as well as colour (F1, F18)
 
 
@@ -29,6 +31,10 @@ func _fill(state: MatchState, eid: int) -> void:
 			var id: int = a["id"]
 			button(TranslationServer.translate("ALERTS_SHOW"), "Show_%d" % i, func() -> void:
 				focus_requested.emit(kind, id), r)
+		if a.has("build"):
+			var pid: int = a["build"]
+			button(TranslationServer.translate("ALERTS_QUEUE"), "Queue_%d" % i, func() -> void:
+				construction_requested.emit(pid), r)
 		var fix: Dictionary = a["fix"]
 		if not fix.is_empty():
 			button(TranslationServer.translate("ALERTS_FIX"), "Fix_%d" % i, func() -> void:

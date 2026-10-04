@@ -195,3 +195,30 @@ func test_deficit_halts_construction() -> void:
 	_human(s).deficit_months = 1
 	Builder.day_tick(s)
 	assert_eq(c.queue[0].days_done, 0)
+
+
+func test_move_construction_reorders_and_keeps_progress() -> void:
+	var s := _match()
+	var c := _earth(s)
+	c.queue.clear()
+	for b in ["core:building/farm", "core:building/mine"]:
+		c.queue.append(BuildRules.new_construction(s, "building", b, {}, 90))
+	c.queue[0].days_done = 5
+	var first := c.queue[0].def_id
+	var mv := CommandRegistry.create(CmdMoveConstruction.TYPE, _human(s).id, {"planet": c.id, "index": 1, "to": 0})
+	assert_true(mv.validate(s))
+	mv.apply(s)
+	assert_eq(c.queue[1].def_id, first, "moved back, M4 WP15")
+	assert_eq(c.queue[1].days_done, 5, "keeps its progress")
+	var bad := CommandRegistry.create(CmdMoveConstruction.TYPE, _human(s).id, {"planet": c.id, "index": 2, "to": 0})
+	assert_false(bad.validate(s), "out of range")
+	var yard: Station = null
+	for st: Station in s.stations.values():
+		if st.owner == _human(s).id and st.def_id == "core:station/shipyard_t1":
+			yard = st
+	Shipyards.queue_ship(s, yard, "core:hull/freighter_light")
+	Shipyards.queue_ship(s, yard, "core:hull/scout")
+	var ship_mv := CommandRegistry.create(CmdMoveConstruction.TYPE, _human(s).id, {"station": yard.id, "ship_index": 1, "to": 0})
+	assert_true(ship_mv.validate(s))
+	ship_mv.apply(s)
+	assert_eq(yard.ship_queue[0].def_id, "core:hull/scout")
