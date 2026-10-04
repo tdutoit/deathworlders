@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ModifierKeyDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_key_def.gd" id="1_key"]
+
+[resource]
+script = ExtResource("1_key")
+scope = 5
+id = &"core:modifier_key/ship.signature"
+name_key = "MODKEY_SHIP_SIGNATURE"

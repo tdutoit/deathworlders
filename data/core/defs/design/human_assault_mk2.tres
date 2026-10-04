@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DesignDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_4m4ws"]
+[ext_resource type="Script" path="res://sim/defs/design_def.gd" id="2_ac7qa"]
+
+[resource]
+script = ExtResource("2_ac7qa")
+hull = &"core:hull/human_assault_mk2"
+components = Array[StringName]([&"core:component/autocannon_s", &"core:component/armor_plate", &"core:component/marine_barracks", &"core:component/marine_barracks", &"core:component/marine_barracks"])
+id = &"core:design/human_assault_mk2"
+name_key = "DESIGN_ASSAULT_MK2"

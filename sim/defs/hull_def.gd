@@ -4,7 +4,7 @@ extends Def
 ## whose hardpoints the validator checks. M2 adds civilian roles: freighters (B6) and colony ships (B10);
 ## M3 the combat fields (A1: size, crew, point defence, shield regen), defensive platforms and pirate raiders.
 
-const ROLES: Array[String] = ["warship", "freighter", "colony", "scout", "platform", "raider"]
+const ROLES: Array[String] = ["warship", "freighter", "colony", "scout", "platform", "raider", "salvage"]  # salvage: D13 tug (M5)
 const SIZES: Array[String] = ["S", "M", "L", "XL"]  # A1 size (targeting, boarding, B12 fuel)
 const YARD_SIZES: Array[String] = ["S", "M", "L"]  # B10: S up to destroyers, M up to battlecruisers/carriers, L all
 
@@ -78,6 +78,8 @@ func validate(_db: DefDatabase) -> Array[String]:
 	var seen := {}
 	for s in slots:
 		var hp := String(s.hardpoint)
+		if hp == "":
+			continue  # M5: Mk II/III extra slots reuse the Mk I model, which has no hardpoint for them (no turret shown)
 		if _hardpoint_re.search(hp) == null:
 			errors.append("slot hardpoint '%s' must look like HP_W_S_01 (C11)" % hp)
 		elif not hp.begins_with(s.expected_prefix() + "_"):

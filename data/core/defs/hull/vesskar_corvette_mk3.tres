@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_5lc32"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_g7tl4"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_du1vt"]
+
+[sub_resource type="Resource" id="Resource_uihfu"]
+script = ExtResource("3_du1vt")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_iwntq"]
+script = ExtResource("3_du1vt")
+hardpoint = &"HP_W_S_02"
+
+[sub_resource type="Resource" id="Resource_hc7bc"]
+script = ExtResource("3_du1vt")
+slot_type = 1
+hardpoint = &"HP_D_S_01"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_du1vt")
+
+[sub_resource type="Resource" id="Slot_extra_1"]
+script = ExtResource("3_du1vt")
+slot_type = 1
+
+[resource]
+script = ExtResource("2_g7tl4")
+requires_tech = Array[StringName]([&"core:tech/engineering_light_hulls_3"])
+species = &"core:species/vesskar"
+hull_class = &"corvette"
+mark = 3
+hull = 423
+armor = 29
+shield = 194
+evasion = 300
+speed = 8
+slots = Array[ExtResource("3_du1vt")]([SubResource("Resource_uihfu"), SubResource("Resource_iwntq"), SubResource("Resource_hc7bc"), SubResource("Slot_extra_0"), SubResource("Slot_extra_1")])
+cost = {
+&"core:resource/alloys": 102,
+&"core:resource/components": 17
+}
+build_days = 58
+model = "assets/models/ships/vesskar_corvette_mk1.glb"
+credit_upkeep_milli = 1700
+id = &"core:hull/vesskar_corvette_mk3"
+name_key = "HULL_VESSKAR_CORVETTE_MK3"

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DesignDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_cxpds"]
+[ext_resource type="Script" path="res://sim/defs/design_def.gd" id="2_w4orm"]
+
+[resource]
+script = ExtResource("2_w4orm")
+hull = &"core:hull/vesskar_battleship_mk3"
+components = Array[StringName]([&"core:component/pulse_laser_s", &"core:component/pulse_laser_s", &"core:component/heavy_laser_m", &"core:component/railgun_m", &"core:component/mass_driver_l", &"core:component/shield_gen", &"core:component/shield_gen", &"core:component/point_defence", &"", &"", &"core:component/mass_driver_l", &"core:component/shield_gen"])
+id = &"core:design/vesskar_battleship_mk3"
+name_key = "DESIGN_BATTLESHIP_MK3"

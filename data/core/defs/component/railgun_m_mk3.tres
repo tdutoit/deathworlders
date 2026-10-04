@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ComponentDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_n30gh"]
+[ext_resource type="Script" path="res://sim/defs/component_def.gd" id="2_5bcse"]
+
+[resource]
+script = ExtResource("2_5bcse")
+requires_tech = Array[StringName]([&"core:tech/physics_hypervelocity_rounds"])
+slot_type = &"weapon"
+slot_size = &"M"
+family = &"core:weapon_family/kinetic"
+damage = 150
+shots = 1
+accuracy = Array[int]([400, 750, 800])
+penetration = 40
+cost = {
+&"core:resource/alloys": 68,
+&"core:resource/components": 17
+}
+model = "assets/models/turrets/railgun_m.glb"
+id = &"core:component/railgun_m_mk3"
+name_key = "COMP_RAILGUN_M_MK3"

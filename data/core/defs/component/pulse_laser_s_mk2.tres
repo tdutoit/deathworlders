@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ComponentDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_8wehp"]
+[ext_resource type="Script" path="res://sim/defs/component_def.gd" id="2_r40oy"]
+
+[resource]
+script = ExtResource("2_r40oy")
+requires_tech = Array[StringName]([&"core:tech/physics_focused_lasers"])
+model = "assets/models/turrets/pulse_laser_s.glb"
+slot_type = &"weapon"
+family = &"core:weapon_family/energy"
+damage = 37
+shots = 3
+accuracy = Array[int]([200, 750, 850])
+cost = {
+&"core:resource/alloys": 13,
+&"core:resource/components": 10
+}
+id = &"core:component/pulse_laser_s_mk2"
+name_key = "COMP_PULSE_LASER_S_MK2"

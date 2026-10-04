@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_jghym"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_fnr0r"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_fgm4g"]
+
+[sub_resource type="Resource" id="Resource_y7xvo"]
+script = ExtResource("3_fgm4g")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_mw17o"]
+script = ExtResource("3_fgm4g")
+hardpoint = &"HP_W_S_02"
+
+[sub_resource type="Resource" id="Resource_epm8f"]
+script = ExtResource("3_fgm4g")
+slot_type = 1
+hardpoint = &"HP_D_S_01"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_fgm4g")
+
+[resource]
+script = ExtResource("2_fnr0r")
+requires_tech = Array[StringName]([&"core:tech/engineering_light_hulls_2"])
+species = &"core:species/ohlan"
+hull_class = &"corvette"
+mark = 2
+hull = 324
+armor = 24
+shield = 72
+evasion = 400
+speed = 8
+slots = Array[ExtResource("3_fgm4g")]([SubResource("Resource_y7xvo"), SubResource("Resource_mw17o"), SubResource("Resource_epm8f"), SubResource("Slot_extra_0")])
+cost = {
+&"core:resource/alloys": 78,
+&"core:resource/components": 13
+}
+build_days = 51
+model = "assets/models/ships/human_corvette_mk1.glb"
+credit_upkeep_milli = 1300
+id = &"core:hull/ohlan_corvette_mk2"
+name_key = "HULL_OHLAN_CORVETTE_MK2"

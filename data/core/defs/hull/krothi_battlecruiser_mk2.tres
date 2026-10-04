@@ -1,0 +1,77 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_v3pqd"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_jc4gh"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_1stpr"]
+
+[sub_resource type="Resource" id="Resource_74lb2"]
+script = ExtResource("3_1stpr")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_kvebe"]
+script = ExtResource("3_1stpr")
+slot_size = 1
+hardpoint = &"HP_W_M_01"
+
+[sub_resource type="Resource" id="Resource_qyluw"]
+script = ExtResource("3_1stpr")
+slot_size = 1
+hardpoint = &"HP_W_M_02"
+
+[sub_resource type="Resource" id="Resource_l5lc5"]
+script = ExtResource("3_1stpr")
+slot_size = 2
+hardpoint = &"HP_W_L_01"
+
+[sub_resource type="Resource" id="Resource_5lbh0"]
+script = ExtResource("3_1stpr")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_01"
+
+[sub_resource type="Resource" id="Resource_4n624"]
+script = ExtResource("3_1stpr")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_02"
+
+[sub_resource type="Resource" id="Resource_vf2ct"]
+script = ExtResource("3_1stpr")
+slot_type = 2
+slot_size = 1
+hardpoint = &"HP_U_M_01"
+
+[sub_resource type="Resource" id="Resource_kiqpx"]
+script = ExtResource("3_1stpr")
+slot_type = 3
+slot_size = 2
+hardpoint = &"HP_C_L_01"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_1stpr")
+slot_type = 1
+slot_size = 2
+
+[resource]
+script = ExtResource("2_jc4gh")
+requires_tech = Array[StringName]([&"core:tech/engineering_capital_hulls_2"])
+species = &"core:species/krothi"
+hull_class = &"battlecruiser"
+mark = 2
+hull = 2112
+armor = 96
+shield = 420
+evasion = 60
+speed = 6
+slots = Array[ExtResource("3_1stpr")]([SubResource("Resource_74lb2"), SubResource("Resource_kvebe"), SubResource("Resource_qyluw"), SubResource("Resource_l5lc5"), SubResource("Resource_5lbh0"), SubResource("Resource_4n624"), SubResource("Resource_vf2ct"), SubResource("Resource_kiqpx"), SubResource("Slot_extra_0")])
+cost = {
+&"core:resource/alloys": 496,
+&"core:resource/components": 118,
+&"core:resource/rare_earths": 23
+}
+build_days = 207
+size = &"L"
+shipyard_size = &"M"
+credit_upkeep_milli = 7098
+id = &"core:hull/krothi_battlecruiser_mk2"
+name_key = "HULL_KROTHI_BATTLECRUISER_MK2"

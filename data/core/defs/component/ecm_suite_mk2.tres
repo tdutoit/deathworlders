@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="ComponentDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_c767v"]
+[ext_resource type="Script" path="res://sim/defs/component_def.gd" id="2_xnv0i"]
+
+[sub_resource type="Resource" id="Resource_btrms"]
+script = ExtResource("1_c767v")
+key = &"ship.ecm"
+value = 1
+scope = 5
+
+[sub_resource type="Resource" id="Mod_ecm_strength"]
+script = ExtResource("1_c767v")
+key = &"ship.ecm_strength"
+value = 50
+scope = 5
+
+[resource]
+script = ExtResource("2_xnv0i")
+requires_tech = Array[StringName]([&"core:tech/military_electronic_warfare"])
+slot_type = &"defence"
+cost = {
+&"core:resource/alloys": 13,
+&"core:resource/components": 26
+}
+id = &"core:component/ecm_suite_mk2"
+name_key = "COMP_ECM_SUITE_MK2"
+modifiers = Array[ExtResource("1_c767v")]([SubResource("Resource_btrms"), SubResource("Mod_ecm_strength")])

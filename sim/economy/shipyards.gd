@@ -2,7 +2,7 @@ class_name Shipyards
 extends RefCounted
 ## Shipyards and civilian ships (Sub-spec B6, B10): parallel builds per dock, ship upkeep, freighter berths.
 
-const CIVILIAN_ROLES: Array[StringName] = [&"freighter", &"colony", &"scout"]  # M2: warships come with M3
+const CIVILIAN_ROLES: Array[StringName] = [&"freighter", &"colony", &"scout", &"salvage"]  # M2; salvage tugs M5 (harvest with D13 fields)
 
 
 static func check_ship(state: MatchState, empire_id: int, station_id: int, hull_id: String) -> String:

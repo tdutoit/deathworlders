@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ComponentDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_3hx6y"]
+[ext_resource type="Script" path="res://sim/defs/component_def.gd" id="2_vx4nn"]
+
+[resource]
+script = ExtResource("2_vx4nn")
+requires_tech = Array[StringName]([&"core:tech/military_missile_guidance"])
+model = "assets/models/turrets/missile_pod_m.glb"
+slot_type = &"weapon"
+slot_size = &"M"
+family = &"core:weapon_family/missile"
+damage = 118
+shots = 2
+accuracy = Array[int]([900, 700, 150])
+ammo_per_shot = 1
+cost = {
+&"core:resource/alloys": 52,
+&"core:resource/components": 19
+}
+id = &"core:component/missile_pod_m_mk2"
+name_key = "COMP_MISSILE_POD_M_MK2"

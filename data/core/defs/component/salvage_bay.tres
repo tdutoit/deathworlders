@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ComponentDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/component_def.gd" id="2_comp"]
+
+[sub_resource type="Resource" id="Mod_0"]
+script = ExtResource("1_mod")
+key = &"ship.salvage"
+value = 10
+scope = 5
+
+[resource]
+script = ExtResource("2_comp")
+requires_tech = Array[StringName]([&"core:tech/logistics_salvage_operations"])
+slot_type = &"utility"
+slot_size = &"M"
+cost = {
+&"core:resource/alloys": 30,
+&"core:resource/components": 10
+}
+id = &"core:component/salvage_bay"
+name_key = "COMP_SALVAGE_BAY"
+modifiers = Array[ExtResource("1_mod")]([SubResource("Mod_0")])

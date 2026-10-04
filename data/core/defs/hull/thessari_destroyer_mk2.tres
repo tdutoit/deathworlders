@@ -1,0 +1,54 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_abkvm"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_vkd17"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_s3fie"]
+
+[sub_resource type="Resource" id="Resource_shc1h"]
+script = ExtResource("3_s3fie")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_tcqhy"]
+script = ExtResource("3_s3fie")
+hardpoint = &"HP_W_S_02"
+
+[sub_resource type="Resource" id="Resource_wqh48"]
+script = ExtResource("3_s3fie")
+slot_size = 1
+hardpoint = &"HP_W_M_01"
+
+[sub_resource type="Resource" id="Resource_lfkn6"]
+script = ExtResource("3_s3fie")
+slot_type = 1
+slot_size = 1
+hardpoint = &"HP_D_M_01"
+
+[sub_resource type="Resource" id="Resource_udf80"]
+script = ExtResource("3_s3fie")
+slot_type = 2
+hardpoint = &"HP_U_S_01"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_s3fie")
+
+[resource]
+script = ExtResource("2_vkd17")
+requires_tech = Array[StringName]([&"core:tech/engineering_light_hulls_2"])
+species = &"core:species/thessari"
+hull_class = &"destroyer"
+mark = 2
+hull = 966
+armor = 62
+shield = 180
+evasion = 150
+speed = 6
+slots = Array[ExtResource("3_s3fie")]([SubResource("Resource_shc1h"), SubResource("Resource_tcqhy"), SubResource("Resource_wqh48"), SubResource("Resource_lfkn6"), SubResource("Resource_udf80"), SubResource("Slot_extra_0")])
+cost = {
+&"core:resource/alloys": 182,
+&"core:resource/components": 39
+}
+build_days = 86
+size = &"M"
+credit_upkeep_milli = 2600
+id = &"core:hull/thessari_destroyer_mk2"
+name_key = "HULL_THESSARI_DESTROYER_MK2"

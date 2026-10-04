@@ -359,13 +359,15 @@ static func _build(state: MatchState, eid: int, r: CombatRulesDef) -> void:
 	var budget := FixedMath.floor_div((e.credit_net + upkeep) * r.ai_military_share, 1000)
 	if ships >= r.ai_min_fleet_value and (upkeep >= budget or not threatened(state, eid, r)):
 		return
-	var by_class := {}  # hull class -> own standard design ID
+	var by_class := {}  # hull class -> own standard design ID, the highest Mk its research allows (M5)
+	var mark := {}
 	for did: int in state.designs.ordered():
 		var d: ShipDesign = state.designs.get_or(did)
-		if d.owner == eid and d.source != "":
+		if d.owner == eid and d.source != "" and Shipyards.design_tech(state, eid, d) == "":
 			var h := state.defs.get_def(StringName(d.hull)) as HullDef
-			if h != null and not by_class.has(String(h.hull_class)):
+			if h != null and h.mark > int(mark.get(String(h.hull_class), 0)):
 				by_class[String(h.hull_class)] = d.id
+				mark[String(h.hull_class)] = h.mark
 	var n := r.ai_build_classes.size()
 	for i in n:
 		var cls := String(r.ai_build_classes[posmod(count + i, n)])

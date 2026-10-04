@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DesignDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_v2x2w"]
+[ext_resource type="Script" path="res://sim/defs/design_def.gd" id="2_y2u44"]
+
+[resource]
+script = ExtResource("2_y2u44")
+hull = &"core:hull/human_destroyer_mk3"
+components = Array[StringName]([&"core:component/autocannon_s", &"core:component/autocannon_s", &"core:component/missile_pod_m", &"core:component/armor_plate", &"", &"core:component/autocannon_s", &"core:component/armor_plate"])
+id = &"core:design/human_destroyer_mk3"
+name_key = "DESIGN_DESTROYER_MK3"

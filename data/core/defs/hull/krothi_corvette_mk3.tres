@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_ma2ry"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_ehlgb"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_32c6w"]
+
+[sub_resource type="Resource" id="Resource_1c7ps"]
+script = ExtResource("3_32c6w")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_ac5aj"]
+script = ExtResource("3_32c6w")
+hardpoint = &"HP_W_S_02"
+
+[sub_resource type="Resource" id="Resource_s16xn"]
+script = ExtResource("3_32c6w")
+slot_type = 1
+hardpoint = &"HP_D_S_01"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_32c6w")
+
+[sub_resource type="Resource" id="Slot_extra_1"]
+script = ExtResource("3_32c6w")
+slot_type = 1
+
+[resource]
+script = ExtResource("2_ehlgb")
+requires_tech = Array[StringName]([&"core:tech/engineering_light_hulls_3"])
+species = &"core:species/krothi"
+hull_class = &"corvette"
+mark = 3
+hull = 348
+armor = 29
+shield = 87
+evasion = 300
+speed = 8
+slots = Array[ExtResource("3_32c6w")]([SubResource("Resource_1c7ps"), SubResource("Resource_ac5aj"), SubResource("Resource_s16xn"), SubResource("Slot_extra_0"), SubResource("Slot_extra_1")])
+cost = {
+&"core:resource/alloys": 91,
+&"core:resource/components": 13
+}
+build_days = 58
+model = "assets/models/ships/human_corvette_mk1.glb"
+credit_upkeep_milli = 1547
+id = &"core:hull/krothi_corvette_mk3"
+name_key = "HULL_KROTHI_CORVETTE_MK3"

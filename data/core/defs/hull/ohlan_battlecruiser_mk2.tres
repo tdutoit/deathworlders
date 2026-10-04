@@ -1,0 +1,77 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_w3r61"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_hxm6e"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_2aubb"]
+
+[sub_resource type="Resource" id="Resource_ejuyv"]
+script = ExtResource("3_2aubb")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_xmguh"]
+script = ExtResource("3_2aubb")
+slot_size = 1
+hardpoint = &"HP_W_M_01"
+
+[sub_resource type="Resource" id="Resource_t45nc"]
+script = ExtResource("3_2aubb")
+slot_size = 1
+hardpoint = &"HP_W_M_02"
+
+[sub_resource type="Resource" id="Resource_anku6"]
+script = ExtResource("3_2aubb")
+slot_size = 2
+hardpoint = &"HP_W_L_01"
+
+[sub_resource type="Resource" id="Resource_g17dl"]
+script = ExtResource("3_2aubb")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_01"
+
+[sub_resource type="Resource" id="Resource_y1nxl"]
+script = ExtResource("3_2aubb")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_02"
+
+[sub_resource type="Resource" id="Resource_mg8o0"]
+script = ExtResource("3_2aubb")
+slot_type = 2
+slot_size = 1
+hardpoint = &"HP_U_M_01"
+
+[sub_resource type="Resource" id="Resource_d0dt7"]
+script = ExtResource("3_2aubb")
+slot_type = 3
+slot_size = 2
+hardpoint = &"HP_C_L_01"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_2aubb")
+slot_type = 1
+slot_size = 2
+
+[resource]
+script = ExtResource("2_hxm6e")
+requires_tech = Array[StringName]([&"core:tech/engineering_capital_hulls_2"])
+species = &"core:species/ohlan"
+hull_class = &"battlecruiser"
+mark = 2
+hull = 2376
+armor = 96
+shield = 420
+evasion = 160
+speed = 6
+slots = Array[ExtResource("3_2aubb")]([SubResource("Resource_ejuyv"), SubResource("Resource_xmguh"), SubResource("Resource_t45nc"), SubResource("Resource_anku6"), SubResource("Resource_g17dl"), SubResource("Resource_y1nxl"), SubResource("Resource_mg8o0"), SubResource("Resource_d0dt7"), SubResource("Slot_extra_0")])
+cost = {
+&"core:resource/alloys": 546,
+&"core:resource/components": 130,
+&"core:resource/rare_earths": 26
+}
+build_days = 207
+size = &"L"
+shipyard_size = &"M"
+credit_upkeep_milli = 7800
+id = &"core:hull/ohlan_battlecruiser_mk2"
+name_key = "HULL_OHLAN_BATTLECRUISER_MK2"

@@ -1,0 +1,92 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_ekyqg"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_eq1dl"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_cmdp5"]
+
+[sub_resource type="Resource" id="Resource_ib7bm"]
+script = ExtResource("3_cmdp5")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_rtfk1"]
+script = ExtResource("3_cmdp5")
+hardpoint = &"HP_W_S_02"
+
+[sub_resource type="Resource" id="Resource_3kuln"]
+script = ExtResource("3_cmdp5")
+slot_size = 1
+hardpoint = &"HP_W_M_01"
+
+[sub_resource type="Resource" id="Resource_ufkck"]
+script = ExtResource("3_cmdp5")
+slot_size = 1
+hardpoint = &"HP_W_M_02"
+
+[sub_resource type="Resource" id="Resource_emlvy"]
+script = ExtResource("3_cmdp5")
+slot_size = 2
+hardpoint = &"HP_W_L_01"
+
+[sub_resource type="Resource" id="Resource_bqtay"]
+script = ExtResource("3_cmdp5")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_01"
+
+[sub_resource type="Resource" id="Resource_207m4"]
+script = ExtResource("3_cmdp5")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_02"
+
+[sub_resource type="Resource" id="Resource_ifn0h"]
+script = ExtResource("3_cmdp5")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_03"
+
+[sub_resource type="Resource" id="Resource_4a5uu"]
+script = ExtResource("3_cmdp5")
+slot_type = 2
+slot_size = 1
+hardpoint = &"HP_U_M_01"
+
+[sub_resource type="Resource" id="Resource_0tk4y"]
+script = ExtResource("3_cmdp5")
+slot_type = 3
+slot_size = 2
+hardpoint = &"HP_C_L_01"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_cmdp5")
+slot_size = 2
+
+[sub_resource type="Resource" id="Slot_extra_1"]
+script = ExtResource("3_cmdp5")
+slot_type = 1
+slot_size = 2
+
+[resource]
+script = ExtResource("2_eq1dl")
+requires_tech = Array[StringName]([&"core:tech/engineering_capital_hulls_3"])
+model = "assets/models/ships/human_battleship_mk1.glb"
+species = &"core:species/human"
+hull_class = &"battleship"
+mark = 3
+hull = 5220
+armor = 217
+shield = 1160
+evasion = 20
+speed = 4
+slots = Array[ExtResource("3_cmdp5")]([SubResource("Resource_ib7bm"), SubResource("Resource_rtfk1"), SubResource("Resource_3kuln"), SubResource("Resource_ufkck"), SubResource("Resource_emlvy"), SubResource("Resource_bqtay"), SubResource("Resource_207m4"), SubResource("Resource_ifn0h"), SubResource("Resource_4a5uu"), SubResource("Resource_0tk4y"), SubResource("Slot_extra_0"), SubResource("Slot_extra_1")])
+cost = {
+&"core:resource/alloys": 1428,
+&"core:resource/components": 367,
+&"core:resource/exotics": 40
+}
+build_days = 351
+size = &"XL"
+shipyard_size = &"L"
+credit_upkeep_milli = 20400
+id = &"core:hull/human_battleship_mk3"
+name_key = "HULL_HUMAN_BATTLESHIP_MK3"

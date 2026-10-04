@@ -1,0 +1,77 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_f5j3q"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_woetu"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_norja"]
+
+[sub_resource type="Resource" id="Resource_cno68"]
+script = ExtResource("3_norja")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_rw5t6"]
+script = ExtResource("3_norja")
+slot_size = 1
+hardpoint = &"HP_W_M_01"
+
+[sub_resource type="Resource" id="Resource_xhl1o"]
+script = ExtResource("3_norja")
+slot_size = 1
+hardpoint = &"HP_W_M_02"
+
+[sub_resource type="Resource" id="Resource_5th0c"]
+script = ExtResource("3_norja")
+slot_size = 2
+hardpoint = &"HP_W_L_01"
+
+[sub_resource type="Resource" id="Resource_lfhnb"]
+script = ExtResource("3_norja")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_01"
+
+[sub_resource type="Resource" id="Resource_jrh1s"]
+script = ExtResource("3_norja")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_02"
+
+[sub_resource type="Resource" id="Resource_0faxo"]
+script = ExtResource("3_norja")
+slot_type = 2
+slot_size = 1
+hardpoint = &"HP_U_M_01"
+
+[sub_resource type="Resource" id="Resource_u4r35"]
+script = ExtResource("3_norja")
+slot_type = 3
+slot_size = 2
+hardpoint = &"HP_C_L_01"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_norja")
+slot_type = 1
+slot_size = 2
+
+[resource]
+script = ExtResource("2_woetu")
+requires_tech = Array[StringName]([&"core:tech/engineering_capital_hulls_2"])
+species = &"core:species/vesskar"
+hull_class = &"battlecruiser"
+mark = 2
+hull = 2574
+armor = 96
+shield = 940
+evasion = 60
+speed = 6
+slots = Array[ExtResource("3_norja")]([SubResource("Resource_cno68"), SubResource("Resource_rw5t6"), SubResource("Resource_xhl1o"), SubResource("Resource_5th0c"), SubResource("Resource_lfhnb"), SubResource("Resource_jrh1s"), SubResource("Resource_0faxo"), SubResource("Resource_u4r35"), SubResource("Slot_extra_0")])
+cost = {
+&"core:resource/alloys": 546,
+&"core:resource/components": 130,
+&"core:resource/rare_earths": 26
+}
+build_days = 207
+size = &"L"
+shipyard_size = &"M"
+credit_upkeep_milli = 7800
+id = &"core:hull/vesskar_battlecruiser_mk2"
+name_key = "HULL_VESSKAR_BATTLECRUISER_MK2"

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DesignDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_c86wx"]
+[ext_resource type="Script" path="res://sim/defs/design_def.gd" id="2_c6gbx"]
+
+[resource]
+script = ExtResource("2_c6gbx")
+hull = &"core:hull/vesskar_destroyer_mk2"
+components = Array[StringName]([&"core:component/pulse_laser_s", &"core:component/pulse_laser_s", &"core:component/missile_pod_m", &"core:component/shield_gen", &"", &"core:component/pulse_laser_s"])
+id = &"core:design/vesskar_destroyer_mk2"
+name_key = "DESIGN_DESTROYER_MK2"

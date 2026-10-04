@@ -1,0 +1,54 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_yogs6"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_n0m3i"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_0c7rq"]
+
+[sub_resource type="Resource" id="Resource_pipkb"]
+script = ExtResource("3_0c7rq")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_hfal1"]
+script = ExtResource("3_0c7rq")
+hardpoint = &"HP_W_S_02"
+
+[sub_resource type="Resource" id="Resource_0jp81"]
+script = ExtResource("3_0c7rq")
+slot_size = 1
+hardpoint = &"HP_W_M_01"
+
+[sub_resource type="Resource" id="Resource_xjbyb"]
+script = ExtResource("3_0c7rq")
+slot_type = 1
+slot_size = 1
+hardpoint = &"HP_D_M_01"
+
+[sub_resource type="Resource" id="Resource_t2mmt"]
+script = ExtResource("3_0c7rq")
+slot_type = 2
+hardpoint = &"HP_U_S_01"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_0c7rq")
+
+[resource]
+script = ExtResource("2_n0m3i")
+requires_tech = Array[StringName]([&"core:tech/engineering_light_hulls_2"])
+species = &"core:species/ohlan"
+hull_class = &"destroyer"
+mark = 2
+hull = 756
+armor = 48
+shield = 180
+evasion = 250
+speed = 7
+slots = Array[ExtResource("3_0c7rq")]([SubResource("Resource_pipkb"), SubResource("Resource_hfal1"), SubResource("Resource_0jp81"), SubResource("Resource_xjbyb"), SubResource("Resource_t2mmt"), SubResource("Slot_extra_0")])
+cost = {
+&"core:resource/alloys": 182,
+&"core:resource/components": 39
+}
+build_days = 86
+size = &"M"
+credit_upkeep_milli = 2600
+id = &"core:hull/ohlan_destroyer_mk2"
+name_key = "HULL_OHLAN_DESTROYER_MK2"

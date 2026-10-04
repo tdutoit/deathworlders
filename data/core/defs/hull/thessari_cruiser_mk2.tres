@@ -1,0 +1,71 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_el3nj"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_8slaq"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_njxkd"]
+
+[sub_resource type="Resource" id="Resource_lxy52"]
+script = ExtResource("3_njxkd")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_ukck1"]
+script = ExtResource("3_njxkd")
+slot_size = 1
+hardpoint = &"HP_W_M_01"
+
+[sub_resource type="Resource" id="Resource_v0wbw"]
+script = ExtResource("3_njxkd")
+slot_size = 1
+hardpoint = &"HP_W_M_02"
+
+[sub_resource type="Resource" id="Resource_u2y0u"]
+script = ExtResource("3_njxkd")
+slot_type = 1
+slot_size = 1
+hardpoint = &"HP_D_M_01"
+
+[sub_resource type="Resource" id="Resource_pu8h6"]
+script = ExtResource("3_njxkd")
+slot_type = 1
+slot_size = 1
+hardpoint = &"HP_D_M_02"
+
+[sub_resource type="Resource" id="Resource_vfefh"]
+script = ExtResource("3_njxkd")
+slot_type = 2
+hardpoint = &"HP_U_S_01"
+
+[sub_resource type="Resource" id="Resource_nu5vw"]
+script = ExtResource("3_njxkd")
+slot_type = 3
+slot_size = 1
+hardpoint = &"HP_C_M_01"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_njxkd")
+slot_size = 1
+
+[resource]
+script = ExtResource("2_8slaq")
+requires_tech = Array[StringName]([&"core:tech/engineering_capital_hulls_2"])
+species = &"core:species/thessari"
+hull_class = &"cruiser"
+mark = 2
+hull = 2070
+armor = 93
+shield = 240
+evasion = 80
+speed = 4
+slots = Array[ExtResource("3_njxkd")]([SubResource("Resource_lxy52"), SubResource("Resource_ukck1"), SubResource("Resource_v0wbw"), SubResource("Resource_u2y0u"), SubResource("Resource_pu8h6"), SubResource("Resource_vfefh"), SubResource("Resource_nu5vw"), SubResource("Slot_extra_0")])
+cost = {
+&"core:resource/alloys": 338,
+&"core:resource/components": 78,
+&"core:resource/rare_earths": 13
+}
+build_days = 138
+model = "assets/models/ships/human_cruiser_mk1.glb"
+size = &"M"
+shipyard_size = &"M"
+credit_upkeep_milli = 5200
+id = &"core:hull/thessari_cruiser_mk2"
+name_key = "HULL_THESSARI_CRUISER_MK2"

@@ -1,0 +1,71 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_dbqb1"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_u3qyu"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_u2lqo"]
+
+[sub_resource type="Resource" id="Resource_hko07"]
+script = ExtResource("3_u2lqo")
+slot_type = 4
+slot_size = 2
+hardpoint = &"HP_H_L_01"
+
+[sub_resource type="Resource" id="Resource_2boah"]
+script = ExtResource("3_u2lqo")
+slot_type = 4
+slot_size = 2
+hardpoint = &"HP_H_L_02"
+
+[sub_resource type="Resource" id="Resource_4j4tq"]
+script = ExtResource("3_u2lqo")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_01"
+
+[sub_resource type="Resource" id="Resource_2b4yd"]
+script = ExtResource("3_u2lqo")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_02"
+
+[sub_resource type="Resource" id="Resource_23tho"]
+script = ExtResource("3_u2lqo")
+slot_type = 2
+slot_size = 1
+hardpoint = &"HP_U_M_01"
+
+[sub_resource type="Resource" id="Resource_sd54w"]
+script = ExtResource("3_u2lqo")
+slot_type = 3
+slot_size = 2
+hardpoint = &"HP_C_L_01"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_u2lqo")
+slot_type = 4
+slot_size = 2
+
+[resource]
+script = ExtResource("2_u3qyu")
+requires_tech = Array[StringName]([&"core:tech/military_carrier_doctrine_2"])
+model = "assets/models/ships/human_carrier_mk1.glb"
+species = &"core:species/human"
+hull_class = &"carrier"
+mark = 2
+hull = 2700
+armor = 96
+shield = 600
+evasion = 30
+speed = 4
+slots = Array[ExtResource("3_u2lqo")]([SubResource("Resource_hko07"), SubResource("Resource_2boah"), SubResource("Resource_4j4tq"), SubResource("Resource_2b4yd"), SubResource("Resource_23tho"), SubResource("Resource_sd54w"), SubResource("Slot_extra_0")])
+cost = {
+&"core:resource/alloys": 858,
+&"core:resource/components": 234,
+&"core:resource/exotics": 15
+}
+build_days = 276
+size = &"L"
+shipyard_size = &"M"
+credit_upkeep_milli = 12480
+id = &"core:hull/human_carrier_mk2"
+name_key = "HULL_HUMAN_CARRIER_MK2"

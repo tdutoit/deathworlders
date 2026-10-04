@@ -1,0 +1,57 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_1hnc1"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_ot8k0"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_cdswx"]
+
+[sub_resource type="Resource" id="Resource_iv0cx"]
+script = ExtResource("3_cdswx")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_55uvy"]
+script = ExtResource("3_cdswx")
+slot_type = 1
+slot_size = 1
+hardpoint = &"HP_D_M_01"
+
+[sub_resource type="Resource" id="Resource_rhsgo"]
+script = ExtResource("3_cdswx")
+slot_type = 2
+hardpoint = &"HP_U_S_01"
+
+[sub_resource type="Resource" id="Resource_6yi3o"]
+script = ExtResource("3_cdswx")
+slot_type = 2
+hardpoint = &"HP_U_S_02"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_cdswx")
+slot_type = 2
+
+[sub_resource type="Resource" id="Slot_extra_1"]
+script = ExtResource("3_cdswx")
+slot_type = 1
+slot_size = 1
+
+[resource]
+script = ExtResource("2_ot8k0")
+requires_tech = Array[StringName]([&"core:tech/military_carrier_doctrine_3"])
+model = "assets/models/ships/human_assault_mk1.glb"
+species = &"core:species/human"
+hull_class = &"assault"
+mark = 3
+hull = 913
+armor = 58
+shield = 217
+evasion = 150
+speed = 7
+slots = Array[ExtResource("3_cdswx")]([SubResource("Resource_iv0cx"), SubResource("Resource_55uvy"), SubResource("Resource_rhsgo"), SubResource("Resource_6yi3o"), SubResource("Slot_extra_0"), SubResource("Slot_extra_1")])
+cost = {
+&"core:resource/alloys": 285,
+&"core:resource/components": 61
+}
+build_days = 97
+size = &"M"
+credit_upkeep_milli = 4080
+id = &"core:hull/human_assault_mk3"
+name_key = "HULL_HUMAN_ASSAULT_MK3"

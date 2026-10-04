@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ComponentDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_hy40e"]
+[ext_resource type="Script" path="res://sim/defs/component_def.gd" id="2_cinyt"]
+
+[resource]
+script = ExtResource("2_cinyt")
+requires_tech = Array[StringName]([&"core:tech/physics_plasma_containment"])
+model = "assets/models/turrets/heavy_laser_m.glb"
+slot_type = &"weapon"
+slot_size = &"L"
+family = &"core:weapon_family/energy"
+damage = 140
+shots = 1
+accuracy = Array[int]([350, 800, 850])
+cost = {
+&"core:resource/alloys": 60,
+&"core:resource/components": 30
+}
+id = &"core:component/plasma_lance_l"
+name_key = "COMP_PLASMA_LANCE_L"

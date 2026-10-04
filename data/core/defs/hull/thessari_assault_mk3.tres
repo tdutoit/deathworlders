@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_dxa73"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_yxoel"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_s7i2m"]
+
+[sub_resource type="Resource" id="Resource_nh0vi"]
+script = ExtResource("3_s7i2m")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_igg25"]
+script = ExtResource("3_s7i2m")
+slot_type = 1
+slot_size = 1
+hardpoint = &"HP_D_M_01"
+
+[sub_resource type="Resource" id="Resource_uaweq"]
+script = ExtResource("3_s7i2m")
+slot_type = 2
+hardpoint = &"HP_U_S_01"
+
+[sub_resource type="Resource" id="Resource_8n0bg"]
+script = ExtResource("3_s7i2m")
+slot_type = 2
+hardpoint = &"HP_U_S_02"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_s7i2m")
+slot_type = 2
+
+[sub_resource type="Resource" id="Slot_extra_1"]
+script = ExtResource("3_s7i2m")
+slot_type = 1
+slot_size = 1
+
+[resource]
+script = ExtResource("2_yxoel")
+requires_tech = Array[StringName]([&"core:tech/military_carrier_doctrine_3"])
+species = &"core:species/thessari"
+hull_class = &"assault"
+mark = 3
+hull = 1167
+armor = 75
+shield = 217
+evasion = 150
+speed = 6
+slots = Array[ExtResource("3_s7i2m")]([SubResource("Resource_nh0vi"), SubResource("Resource_igg25"), SubResource("Resource_uaweq"), SubResource("Resource_8n0bg"), SubResource("Slot_extra_0"), SubResource("Slot_extra_1")])
+cost = {
+&"core:resource/alloys": 238,
+&"core:resource/components": 51
+}
+build_days = 97
+size = &"M"
+credit_upkeep_milli = 3400
+id = &"core:hull/thessari_assault_mk3"
+name_key = "HULL_THESSARI_ASSAULT_MK3"

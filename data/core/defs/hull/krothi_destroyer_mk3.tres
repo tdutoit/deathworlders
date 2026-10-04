@@ -1,0 +1,59 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_to2d7"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_v537q"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_f5i8x"]
+
+[sub_resource type="Resource" id="Resource_j3tno"]
+script = ExtResource("3_f5i8x")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_fu1bu"]
+script = ExtResource("3_f5i8x")
+hardpoint = &"HP_W_S_02"
+
+[sub_resource type="Resource" id="Resource_6r4ho"]
+script = ExtResource("3_f5i8x")
+slot_size = 1
+hardpoint = &"HP_W_M_01"
+
+[sub_resource type="Resource" id="Resource_jitic"]
+script = ExtResource("3_f5i8x")
+slot_type = 1
+slot_size = 1
+hardpoint = &"HP_D_M_01"
+
+[sub_resource type="Resource" id="Resource_mo7wv"]
+script = ExtResource("3_f5i8x")
+slot_type = 2
+hardpoint = &"HP_U_S_01"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_f5i8x")
+
+[sub_resource type="Resource" id="Slot_extra_1"]
+script = ExtResource("3_f5i8x")
+slot_type = 1
+slot_size = 1
+
+[resource]
+script = ExtResource("2_v537q")
+requires_tech = Array[StringName]([&"core:tech/engineering_light_hulls_3"])
+species = &"core:species/krothi"
+hull_class = &"destroyer"
+mark = 3
+hull = 812
+armor = 58
+shield = 217
+evasion = 150
+speed = 7
+slots = Array[ExtResource("3_f5i8x")]([SubResource("Resource_j3tno"), SubResource("Resource_fu1bu"), SubResource("Resource_6r4ho"), SubResource("Resource_jitic"), SubResource("Resource_mo7wv"), SubResource("Slot_extra_0"), SubResource("Slot_extra_1")])
+cost = {
+&"core:resource/alloys": 215,
+&"core:resource/components": 44
+}
+build_days = 97
+size = &"M"
+credit_upkeep_milli = 3094
+id = &"core:hull/krothi_destroyer_mk3"
+name_key = "HULL_KROTHI_DESTROYER_MK3"

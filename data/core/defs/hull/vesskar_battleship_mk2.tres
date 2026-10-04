@@ -1,0 +1,86 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_lpat3"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_ixkyl"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_f8s3c"]
+
+[sub_resource type="Resource" id="Resource_obsj4"]
+script = ExtResource("3_f8s3c")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_2arvj"]
+script = ExtResource("3_f8s3c")
+hardpoint = &"HP_W_S_02"
+
+[sub_resource type="Resource" id="Resource_k45gn"]
+script = ExtResource("3_f8s3c")
+slot_size = 1
+hardpoint = &"HP_W_M_01"
+
+[sub_resource type="Resource" id="Resource_xydit"]
+script = ExtResource("3_f8s3c")
+slot_size = 1
+hardpoint = &"HP_W_M_02"
+
+[sub_resource type="Resource" id="Resource_bimvt"]
+script = ExtResource("3_f8s3c")
+slot_size = 2
+hardpoint = &"HP_W_L_01"
+
+[sub_resource type="Resource" id="Resource_rwk0x"]
+script = ExtResource("3_f8s3c")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_01"
+
+[sub_resource type="Resource" id="Resource_ywume"]
+script = ExtResource("3_f8s3c")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_02"
+
+[sub_resource type="Resource" id="Resource_p3x3h"]
+script = ExtResource("3_f8s3c")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_03"
+
+[sub_resource type="Resource" id="Resource_qv7uv"]
+script = ExtResource("3_f8s3c")
+slot_type = 2
+slot_size = 1
+hardpoint = &"HP_U_M_01"
+
+[sub_resource type="Resource" id="Resource_land7"]
+script = ExtResource("3_f8s3c")
+slot_type = 3
+slot_size = 2
+hardpoint = &"HP_C_L_01"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_f8s3c")
+slot_size = 2
+
+[resource]
+script = ExtResource("2_ixkyl")
+requires_tech = Array[StringName]([&"core:tech/engineering_capital_hulls_2"])
+species = &"core:species/vesskar"
+hull_class = &"battleship"
+mark = 2
+hull = 4680
+armor = 180
+shield = 2150
+evasion = 20
+speed = 4
+slots = Array[ExtResource("3_f8s3c")]([SubResource("Resource_obsj4"), SubResource("Resource_2arvj"), SubResource("Resource_k45gn"), SubResource("Resource_xydit"), SubResource("Resource_bimvt"), SubResource("Resource_rwk0x"), SubResource("Resource_ywume"), SubResource("Resource_p3x3h"), SubResource("Resource_qv7uv"), SubResource("Resource_land7"), SubResource("Slot_extra_0")])
+cost = {
+&"core:resource/alloys": 910,
+&"core:resource/components": 234,
+&"core:resource/exotics": 26
+}
+build_days = 310
+size = &"XL"
+shipyard_size = &"L"
+credit_upkeep_milli = 13000
+id = &"core:hull/vesskar_battleship_mk2"
+name_key = "HULL_VESSKAR_BATTLESHIP_MK2"

@@ -32,6 +32,22 @@ with the workflow change below.*
   `empire.sector_cap` adds to the D3 sector cap. Until WP11, AI empires keep their slots filled with the
   cheapest researchable techs (ties by ID); players' queues are left alone. `tools/smoke.gd` is the
   per-WP compile and run check (small 4-AI match, N months).
+- 2026-10-04 (WP3, owner decisions): Mk II and Mk III hulls for the 8 warship classes of every species,
+  derived from that species' Mk I (so species differences carry over): Mk II hull, armour and shields +20%,
+  cost and upkeep +30%, build days +15%, one extra slot; Mk III +45%, +70%, +30%, two extra slots (corvette
+  W-S then D-S, frigate D-S then W-S, destroyer W-S then D-M, assault U-S then D-M, cruiser W-M then D-M,
+  battlecruiser D-L then W-L, battleship W-L then D-L, carrier H-L then D-L); evasion and speed unchanged.
+  They reuse the Mk I model; extra slots have no hardpoint (empty hardpoints are allowed, no turret shown
+  until the art pass). Gated by Light Hulls, Capital Hulls and Carrier Doctrine Mk II/III. Standard designs
+  `<species>_<class>_mk2/mk3` keep the Mk I parts and fill extra slots with a Mk I part of the same slot
+  type and size. The AI builds the highest Mk standard design its research allows. Components: Mk II +25%
+  main stat (damage, or module value) and +30% cost, Mk III +50% and +70%, same slot size (ECM Mk II keeps one
+  suite and adds ECM strength 50); Plasma Lance (energy L, Heavy Laser damage +40%; Mk II +75%), Stealth
+  Plating (defence S, `ship.signature` -20, read by fog in WP5), Salvage Bay (utility M, `ship.salvage` 10,
+  inert until salvage fields). Fast Courier (B6: 50 cargo, speed 10, 60 alloys + 10 components, upkeep 2
+  credits + 2 fuel) and Salvage Tug (D13: new `salvage` role, 70 alloys + 10 components, 45 days, hold
+  150; idle until salvage fields exist). Foundry II and Fabricator II: B13 advanced cost (150 alloys + 30
+  components, 150 days), 5/3 of the jobs, double upkeep (placeholder).
 
 ## Goal of M5
 

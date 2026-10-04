@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DesignDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_25t00"]
+[ext_resource type="Script" path="res://sim/defs/design_def.gd" id="2_t0m40"]
+
+[resource]
+script = ExtResource("2_t0m40")
+hull = &"core:hull/krothi_corvette_mk2"
+components = Array[StringName]([&"core:component/autocannon_s", &"core:component/autocannon_s", &"core:component/armor_plate", &"core:component/autocannon_s"])
+id = &"core:design/krothi_corvette_mk2"
+name_key = "DESIGN_CORVETTE_MK2"

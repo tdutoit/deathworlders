@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ComponentDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_65p6d"]
+[ext_resource type="Script" path="res://sim/defs/component_def.gd" id="2_px5rw"]
+
+[resource]
+script = ExtResource("2_px5rw")
+requires_tech = Array[StringName]([&"core:tech/physics_heavy_accelerators"])
+model = "assets/models/turrets/mass_driver_l.glb"
+slot_type = &"weapon"
+slot_size = &"L"
+family = &"core:weapon_family/kinetic"
+damage = 375
+shots = 1
+accuracy = Array[int]([550, 750, 700])
+penetration = 70
+cost = {
+&"core:resource/alloys": 78,
+&"core:resource/components": 32
+}
+id = &"core:component/mass_driver_l_mk2"
+name_key = "COMP_MASS_DRIVER_L_MK2"

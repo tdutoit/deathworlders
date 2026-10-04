@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_eptrw"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_2mh5o"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_w0qr4"]
+
+[resource]
+script = ExtResource("2_2mh5o")
+requires_tech = Array[StringName]([&"core:tech/logistics_salvage_operations"])
+role = &"salvage"
+hull_class = &"salvage_tug"
+hull = 200
+evasion = 100
+cost = {
+&"core:resource/alloys": 70,
+&"core:resource/components": 10
+}
+build_days = 45
+cargo_capacity = 150
+lane_speed = 6
+upkeep = {
+&"core:resource/credits": 1,
+&"core:resource/fuel": 1
+}
+id = &"core:hull/salvage_tug"
+name_key = "HULL_SALVAGE_TUG"

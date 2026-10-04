@@ -1,0 +1,50 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_3faa1"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_yonep"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_r1q6e"]
+
+[sub_resource type="Resource" id="Resource_jyndj"]
+script = ExtResource("3_r1q6e")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_34df8"]
+script = ExtResource("3_r1q6e")
+slot_type = 1
+hardpoint = &"HP_D_S_01"
+
+[sub_resource type="Resource" id="Resource_bgacp"]
+script = ExtResource("3_r1q6e")
+slot_type = 1
+hardpoint = &"HP_D_S_02"
+
+[sub_resource type="Resource" id="Resource_wgr1j"]
+script = ExtResource("3_r1q6e")
+slot_type = 2
+hardpoint = &"HP_U_S_01"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_r1q6e")
+slot_type = 1
+
+[resource]
+script = ExtResource("2_yonep")
+requires_tech = Array[StringName]([&"core:tech/engineering_light_hulls_2"])
+model = "assets/models/ships/human_frigate_mk1.glb"
+species = &"core:species/human"
+hull_class = &"frigate"
+mark = 2
+hull = 540
+armor = 36
+shield = 120
+evasion = 200
+speed = 7
+slots = Array[ExtResource("3_r1q6e")]([SubResource("Resource_jyndj"), SubResource("Resource_34df8"), SubResource("Resource_bgacp"), SubResource("Resource_wgr1j"), SubResource("Slot_extra_0")])
+cost = {
+&"core:resource/alloys": 140,
+&"core:resource/components": 23
+}
+build_days = 69
+credit_upkeep_milli = 2340
+id = &"core:hull/human_frigate_mk2"
+name_key = "HULL_HUMAN_FRIGATE_MK2"

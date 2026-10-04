@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_kvefx"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_gu271"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_skaet"]
+
+[sub_resource type="Resource" id="Resource_kgfyr"]
+script = ExtResource("3_skaet")
+slot_type = 4
+slot_size = 2
+hardpoint = &"HP_H_L_01"
+
+[sub_resource type="Resource" id="Resource_3nvjw"]
+script = ExtResource("3_skaet")
+slot_type = 4
+slot_size = 2
+hardpoint = &"HP_H_L_02"
+
+[sub_resource type="Resource" id="Resource_igc7q"]
+script = ExtResource("3_skaet")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_01"
+
+[sub_resource type="Resource" id="Resource_dg7by"]
+script = ExtResource("3_skaet")
+slot_type = 1
+slot_size = 2
+hardpoint = &"HP_D_L_02"
+
+[sub_resource type="Resource" id="Resource_l6pef"]
+script = ExtResource("3_skaet")
+slot_type = 2
+slot_size = 1
+hardpoint = &"HP_U_M_01"
+
+[sub_resource type="Resource" id="Resource_ybic4"]
+script = ExtResource("3_skaet")
+slot_type = 3
+slot_size = 2
+hardpoint = &"HP_C_L_01"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_skaet")
+slot_type = 4
+slot_size = 2
+
+[resource]
+script = ExtResource("2_gu271")
+requires_tech = Array[StringName]([&"core:tech/military_carrier_doctrine_2"])
+species = &"core:species/ohlan"
+hull_class = &"carrier"
+mark = 2
+hull = 2700
+armor = 96
+shield = 600
+evasion = 130
+speed = 4
+slots = Array[ExtResource("3_skaet")]([SubResource("Resource_kgfyr"), SubResource("Resource_3nvjw"), SubResource("Resource_igc7q"), SubResource("Resource_dg7by"), SubResource("Resource_l6pef"), SubResource("Resource_ybic4"), SubResource("Slot_extra_0")])
+cost = {
+&"core:resource/alloys": 715,
+&"core:resource/components": 195,
+&"core:resource/exotics": 13
+}
+build_days = 276
+size = &"L"
+shipyard_size = &"M"
+credit_upkeep_milli = 10400
+id = &"core:hull/ohlan_carrier_mk2"
+name_key = "HULL_OHLAN_CARRIER_MK2"

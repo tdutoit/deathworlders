@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ComponentDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_bvv0x"]
+[ext_resource type="Script" path="res://sim/defs/component_def.gd" id="2_8y0v0"]
+
+[resource]
+script = ExtResource("2_8y0v0")
+requires_tech = Array[StringName]([&"core:tech/military_carrier_doctrine_2"])
+slot_type = &"hangar"
+slot_size = &"M"
+family = &"core:weapon_family/fighter"
+damage = 50
+shots = 4
+accuracy = Array[int]([800, 750, 700])
+cost = {
+&"core:resource/alloys": 39,
+&"core:resource/components": 26
+}
+id = &"core:component/fighter_wing_mk2"
+name_key = "COMP_FIGHTER_WING_MK2"
+tags = Array[StringName]([&"ignores_screening"])

@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="HullDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_b8glh"]
+[ext_resource type="Script" path="res://sim/defs/hull_def.gd" id="2_i2cdk"]
+[ext_resource type="Script" path="res://sim/defs/slot_def.gd" id="3_ei77r"]
+
+[sub_resource type="Resource" id="Resource_egsnw"]
+script = ExtResource("3_ei77r")
+hardpoint = &"HP_W_S_01"
+
+[sub_resource type="Resource" id="Resource_awmvx"]
+script = ExtResource("3_ei77r")
+slot_type = 1
+slot_size = 1
+hardpoint = &"HP_D_M_01"
+
+[sub_resource type="Resource" id="Resource_vsghh"]
+script = ExtResource("3_ei77r")
+slot_type = 2
+hardpoint = &"HP_U_S_01"
+
+[sub_resource type="Resource" id="Resource_46qx6"]
+script = ExtResource("3_ei77r")
+slot_type = 2
+hardpoint = &"HP_U_S_02"
+
+[sub_resource type="Resource" id="Slot_extra_0"]
+script = ExtResource("3_ei77r")
+slot_type = 2
+
+[sub_resource type="Resource" id="Slot_extra_1"]
+script = ExtResource("3_ei77r")
+slot_type = 1
+slot_size = 1
+
+[resource]
+script = ExtResource("2_i2cdk")
+requires_tech = Array[StringName]([&"core:tech/military_carrier_doctrine_3"])
+species = &"core:species/ohlan"
+hull_class = &"assault"
+mark = 3
+hull = 913
+armor = 58
+shield = 217
+evasion = 250
+speed = 7
+slots = Array[ExtResource("3_ei77r")]([SubResource("Resource_egsnw"), SubResource("Resource_awmvx"), SubResource("Resource_vsghh"), SubResource("Resource_46qx6"), SubResource("Slot_extra_0"), SubResource("Slot_extra_1")])
+cost = {
+&"core:resource/alloys": 238,
+&"core:resource/components": 51
+}
+build_days = 97
+size = &"M"
+credit_upkeep_milli = 3400
+id = &"core:hull/ohlan_assault_mk3"
+name_key = "HULL_OHLAN_ASSAULT_MK3"

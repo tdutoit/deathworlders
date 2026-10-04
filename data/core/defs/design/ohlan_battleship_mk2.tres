@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DesignDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_5fqbg"]
+[ext_resource type="Script" path="res://sim/defs/design_def.gd" id="2_6hueo"]
+
+[resource]
+script = ExtResource("2_6hueo")
+hull = &"core:hull/ohlan_battleship_mk2"
+components = Array[StringName]([&"core:component/autocannon_s", &"core:component/autocannon_s", &"core:component/missile_pod_m", &"core:component/railgun_m", &"core:component/mass_driver_l", &"core:component/armor_plate", &"core:component/armor_plate", &"core:component/ecm_suite", &"", &"", &"core:component/mass_driver_l"])
+id = &"core:design/ohlan_battleship_mk2"
+name_key = "DESIGN_BATTLESHIP_MK2"

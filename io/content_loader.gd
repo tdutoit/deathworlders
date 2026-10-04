@@ -285,7 +285,7 @@ func _check_hull_model(hull: HullDef) -> Array[String]:
 	if not errors.is_empty():
 		return errors
 	for s in hull.slots:
-		if not String(s.hardpoint) in names:
+		if s.hardpoint != &"" and not String(s.hardpoint) in names:
 			errors.append("hardpoint '%s' is not in %s" % [s.hardpoint, path])
 	return errors
 

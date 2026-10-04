@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ComponentDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_vkxfk"]
+[ext_resource type="Script" path="res://sim/defs/component_def.gd" id="2_wyu1e"]
+
+[sub_resource type="Resource" id="Resource_kc8hv"]
+script = ExtResource("1_vkxfk")
+key = &"ship.shield"
+value = 313
+scope = 5
+
+[resource]
+script = ExtResource("2_wyu1e")
+requires_tech = Array[StringName]([&"core:tech/physics_shield_harmonics"])
+slot_type = &"defence"
+cost = {
+&"core:resource/alloys": 19,
+&"core:resource/components": 19
+}
+id = &"core:component/shield_gen_mk2"
+name_key = "COMP_SHIELD_GEN_MK2"
+modifiers = Array[ExtResource("1_vkxfk")]([SubResource("Resource_kc8hv")])
