@@ -119,6 +119,11 @@ with the workflow change below.*
   WP11: one agent on its strongest contact (an enemy first; sabotage at war, intel otherwise) once it holds
   80 influence.
 
+## Status (2026-10-04, project shelved by the owner)
+
+WP1-WP9 done (commits in docs/SESSION_HANDOFF.md); **next: WP10** (ask the owner what the research pact's
+"shared branches" means first), then WP11-WP14. Items found for WP14 are listed in SESSION_HANDOFF.md.
+
 ## Goal of M5
 
 A match where knowledge is a resource:
