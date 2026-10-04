@@ -28,6 +28,14 @@ static func day_tick(state: MatchState, day: int) -> void:
 			continue
 		var permille := 1000 + mining_bonus(state, s)
 		for res: StringName in IdMap.sort_keys(def.outputs.keys()):
+			if Economy._is_global(state.defs, String(res)):
+				# M5: research stations credit the owner's treasury (Academies: research_station.output)
+				var e := state.empire(s.owner)
+				if e != null:
+					var boosted := FixedMath.mul_permille(int(def.outputs[res]) * Stockpile.MILLI,
+						1000 + SpeciesTraits.empire_permille(state, s.owner, "research_station.output"))
+					Economy._credit(e, String(res), Economy.share(boosted, day))
+				continue
 			var total := FixedMath.mul_permille(int(def.outputs[res]) * Stockpile.MILLI, permille)
 			s.stockpile.add(String(res), Economy.share(total, day), cap_milli(state, s, String(res)))
 

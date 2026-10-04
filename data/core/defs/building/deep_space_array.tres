@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="BuildingDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/building_def.gd" id="2_b"]
+
+[sub_resource type="Resource" id="Mod_0"]
+script = ExtResource("1_mod")
+key = &"planet.sensor_range"
+value = 3
+scope = 2
+
+[resource]
+script = ExtResource("2_b")
+requires_tech = Array[StringName]([&"core:tech/physics_deep_space_sensors"])
+cost = {
+&"core:resource/alloys": 150,
+&"core:resource/components": 30
+}
+build_days = 150
+upkeep = {
+&"core:resource/credits": 3
+}
+unique = true
+core_building = true
+id = &"core:building/deep_space_array"
+name_key = "BUILDING_DEEP_SPACE_ARRAY"
+modifiers = Array[ExtResource("1_mod")]([SubResource("Mod_0")])

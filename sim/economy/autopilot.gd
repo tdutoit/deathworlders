@@ -12,6 +12,8 @@ extends RefCounted
 ##   7. steer the Core Sector directive: Research (Labs + Exchanges) while credits are short, else Industrial Core.
 ## Actions go through each Command's validate/apply but are not logged: replay re-derives them from state.
 
+const RESEARCH_STATION := "core:station/research_station"  # M5 WP4
+const LISTENING_POST := "core:station/listening_post_t1"
 const BUSY_PERMILLE := 600  # add a freighter when more than 60% are working (B20 expects 20-40 by year 15)
 const OUTPOST_RANGE := 2  # lanes from own territory
 const MIN_SHIPYARDS := 2
@@ -56,6 +58,7 @@ static func empire_month(state: MatchState, eid: int) -> void:
 	_colonise(state, eid)
 	_outpost(state, eid)
 	_mining(state, eid)
+	_sensors(state, eid)
 	_freighters(state, eid)
 	_logistics(state, eid)
 	_shipyards(state, eid)
@@ -282,6 +285,49 @@ static func _mining(state: MatchState, eid: int) -> void:
 						continue
 					if _do(state, eid, CmdQueueStation.TYPE, {"planet": pid, "station": String(def.id)}):
 						return
+
+
+## M5 WP4 (placeholder rule): one station a month, none while another sensor or research station is being
+## built: a Research Station in the capital system first, then a Listening Post in each own system next to a
+## foreign or pirate-held system, then listening post upgrades as research allows.
+static func _sensors(state: MatchState, eid: int) -> void:
+	if _has_site(state, eid, &"sensor") or _has_site(state, eid, &"research"):
+		return
+	var e := state.empire(eid)
+	var have := {}  # function -> {system: true}
+	for sid: int in state.stations.ordered():
+		var s: Station = state.stations.get_or(sid)
+		if s.owner == eid:
+			var f := String((state.defs.get_def(StringName(s.def_id)) as StationDef).function)
+			if not have.has(f):
+				have[f] = {}
+			have[f][s.system_id] = true
+	var capital := state.galaxy.planet(e.capital_planet) if e.capital_planet != StateIO.NONE else null
+	if capital != null and not have.has("research"):
+		for pid in state.galaxy.system(capital.system_id).planet_ids:
+			if _do(state, eid, CmdQueueStation.TYPE, {"planet": pid, "station": RESEARCH_STATION}):
+				return
+	var sensors: Dictionary = have.get("sensor", {})
+	for sys_id: int in state.galaxy.systems.ordered():
+		var sys := state.galaxy.system(sys_id)
+		if sys.owner != eid or sensors.has(sys_id):
+			continue
+		var border := false
+		for lid in sys.lane_ids:
+			var other := state.galaxy.lane(lid).other_end(sys_id)
+			var o := state.galaxy.system(other).owner
+			if (o != StateIO.NONE and o != eid) or state.pirate_bases.has(other):
+				border = true
+		if not border:
+			continue
+		for pid in sys.planet_ids:
+			if _do(state, eid, CmdQueueStation.TYPE, {"planet": pid, "station": LISTENING_POST}):
+				return
+	for sid: int in state.stations.ordered():
+		var s: Station = state.stations.get_or(sid)
+		if s.owner == eid and (state.defs.get_def(StringName(s.def_id)) as StationDef).function == &"sensor" \
+				and _do(state, eid, CmdUpgradeStation.TYPE, {"station": s.id}):
+			return
 
 
 ## M4 WP14: short of rare earths, a colony on a rare earths deposit builds a mine (governor templates don't).

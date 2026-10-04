@@ -14,6 +14,7 @@ extends Def
 @export var capital_stations: Array[StringName] = []  # station IDs placed in the capital's orbit
 @export var belt_stations: Array[StringName] = []  # station IDs placed at the system's asteroid belt
 @export var ships: Array[StringName] = []  # hull IDs of the starting ships, at the capital (B19)
+@export var outer_stations: Array[StringName] = []  # station IDs at the outermost planet (B19: Neptune's Listening Post)
 
 
 func category() -> String:
@@ -22,6 +23,7 @@ func category() -> String:
 
 func schema() -> Dictionary:
 	return {
+		"outer_stations": {"type": "id_list", "ref": "station"},
 		"pops": {"type": "int", "min": 1},
 		"buildings": {"type": "id_list", "ref": "building"},
 		"primary_focus": {"type": "id", "ref": "focus"},

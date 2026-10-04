@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="StationDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/station_def.gd" id="1_st"]
+
+[resource]
+script = ExtResource("1_st")
+requires_tech = Array[StringName]([&"core:tech/physics_quantum_sensors"])
+function = &"sensor"
+tier = 3
+cost = {
+&"core:resource/alloys": 320,
+&"core:resource/components": 80
+}
+build_days = 60
+upkeep = {
+&"core:resource/credits": 3
+}
+sensor_range = 4
+sensor_strength = 100
+security = 10
+id = &"core:station/listening_post_t3"
+name_key = "STATION_LISTENING_POST_T3"

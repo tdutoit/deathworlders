@@ -44,6 +44,10 @@ static func apply(state: MatchState, db: DefDatabase) -> void:
 			var belt := _belt_of(state, planet)
 			for st in start.belt_stations:
 				_place_built(state, e.id, belt.id, String(st))
+		var outer := _outer_of(state, planet)  # B19: Earth's Listening Post at Neptune (M5)
+		if outer != null:
+			for st in start.outer_stations:
+				_place_built(state, e.id, outer.id, String(st))
 		# The capital anchors the Core Sector (D3); its logistics station keeps the sector stockpile (D5).
 		var core_hub := planet.id
 		for st in BuildRules.stations_at(state, planet.id):
@@ -65,6 +69,18 @@ static func _place_built(state: MatchState, empire_id: int, planet_id: int, stat
 	s.system_id = state.galaxy.planet(planet_id).system_id
 	s.operational = true
 	state.stations.put(s.id, s)
+
+
+## The outermost planet of the home system with an orbital slot (not the capital or a belt), or null.
+static func _outer_of(state: MatchState, capital: Planet) -> Planet:
+	var best: Planet = null
+	for pid in state.galaxy.system(capital.system_id).planet_ids:
+		var p := state.galaxy.planet(pid)
+		if p.id == capital.id or p.orbital_slots <= 0 or p.planet_type == "core:planet_type/asteroid_belt":
+			continue
+		if best == null or p.orbit_radius > best.orbit_radius:
+			best = p
+	return best
 
 
 ## The home system's asteroid belt; one is added (outermost orbit) if the system has none, so every

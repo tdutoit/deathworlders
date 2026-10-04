@@ -48,6 +48,18 @@ with the workflow change below.*
   credits + 2 fuel) and Salvage Tug (D13: new `salvage` role, 70 alloys + 10 components, 45 days, hold
   150; idle until salvage fields exist). Foundry II and Fabricator II: B13 advanced cost (150 alloys + 30
   components, 150 days), 5/3 of the jobs, double upkeep (placeholder).
+- 2026-10-04 (WP4, placeholders): Listening Post T1/T2/T3 (station function `sensor`): B13 cost 80 alloys +
+  20 components, 60 days, upgrades x2 / x4; coverage 2/3/4 lanes (`sensor_range`), sensor strength 40/70/100
+  against D12 signatures (S 20, M 40, L 70, XL 100), security +10 (D9), upkeep 1/2/3 credits; T2 needs
+  Passive Sensors, T3 Quantum Sensors. Research Station (function `research`, free): 120 alloys + 30
+  components, 90 days, upkeep 2 credits, +15 research a month (B14) straight into the owner's treasury,
+  boosted by `research_station.output` (Academies). Deep Space Array: a D8 Core building (new
+  `BuildingDef.core_building`: only on a Core-stage colony, one Core building per planet), 150 alloys + 30
+  components, 150 days, upkeep 3 credits, `planet.sensor_range` +3 (read by WP5). Every start places a
+  Listening Post T1 at the home system's outermost planet with an orbital slot (`StartDef.outer_stations`;
+  Neptune in Sol, B19). AI rule (Autopilot, one station a month): a Research Station in the capital system,
+  then a Listening Post in each own system next to a foreign or pirate-held system, then upgrades. Governors
+  don't build these (stations are the autopilot's job; Deep Space Array waits for Core building AI).
 
 ## Goal of M5
 

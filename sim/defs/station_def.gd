@@ -3,7 +3,7 @@ extends Def
 ## An orbital station tier (main spec 5, Sub-spec B5/B6/B10/B11/B12). One Def per tier; a tier names the
 ## next one in upgrades_to. Stations occupy a planet's orbital slot; placement limits the planet types.
 
-const FUNCTIONS: Array[String] = ["outpost", "mining", "logistics", "shipyard", "depot", "defence"]
+const FUNCTIONS: Array[String] = ["outpost", "mining", "logistics", "shipyard", "depot", "defence", "sensor", "research"]  # sensor, research: M5
 const SHIP_SIZES: Array[String] = ["S", "M", "L"]
 
 @export var function: StringName
@@ -26,6 +26,8 @@ const SHIP_SIZES: Array[String] = ["S", "M", "L"]
 @export var security: int  # D9: +10 for defensive platforms and listening posts (none in M2)
 @export var buildable: bool = true  # false: placed by rules only (M4 Sanctuary planetary defences)
 @export var requires_tech: Array[StringName] = []  # techs needed to build or upgrade to it (M5); empty = free
+@export var sensor_range: int  # D12: lanes of sensor coverage around its system (listening posts 2/3/4; M5)
+@export var sensor_strength: int  # D12: detects contacts whose signature minus stealth is at most this (M5)
 
 
 func category() -> String:
@@ -34,6 +36,8 @@ func category() -> String:
 
 func schema() -> Dictionary:
 	return {
+		"sensor_strength": {"type": "int", "min": 0},
+		"sensor_range": {"type": "int", "min": 0},
 		"requires_tech": {"type": "id_list", "ref": "tech"},
 		"function": {"type": "enum", "values": FUNCTIONS, "required": true},
 		"tier": {"type": "int", "min": 1, "max": 3},

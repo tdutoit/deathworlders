@@ -32,5 +32,12 @@ func _init() -> void:
 		var e := state.empire(eid)
 		print("empire %d %s: %d techs %s, queue %s, RP banked %d" % [eid, e.species, e.techs.size(),
 			IdMap.sort_keys(e.techs.keys()), e.research_queue, int(e.treasury.get(Research.RES, 0)) / 1000])
+		var funcs := {}
+		for sid: int in state.stations.ordered():
+			var s: Station = state.stations.get_or(sid)
+			if s.owner == eid:
+				var f := String((loader.db.get_def(StringName(s.def_id)) as StationDef).function) + ("" if s.operational else "(building)")
+				funcs[f] = int(funcs.get(f, 0)) + 1
+		print("  stations ", funcs)
 	print("smoke OK: %d months in %d ms, checksum %d" % [months, Time.get_ticks_msec() - t0, state.checksum()["total"]])
 	quit(0)

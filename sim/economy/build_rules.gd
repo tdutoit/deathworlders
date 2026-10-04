@@ -46,6 +46,12 @@ static func check_building(state: MatchState, empire: int, planet_id: int, build
 			return "no free building slot"
 	if b.unique and building_id in planned:
 		return "only one %s per planet" % building_id
+	if b.core_building:  # D8 (M5): Core buildings need a Core world, one per planet
+		if c.stage != "core":
+			return "needs a Core world"
+		for other in planned:
+			if (db.get_def(StringName(other)) as BuildingDef).core_building:
+				return "one Core building per planet"
 	if b.requires_focus != &"" and StringName(c.primary_focus) != b.requires_focus:
 		return "needs %s as Primary focus" % b.requires_focus
 	if b.requires_deposit != &"":

@@ -28,6 +28,7 @@ treasury = {
 }
 capital_stations = Array[StringName]([&"core:station/logistics_t1", &"core:station/shipyard_t1"])
 belt_stations = Array[StringName]([&"core:station/mining_belt", &"core:station/mining_belt", &"core:station/mining_belt"])
+outer_stations = Array[StringName]([&"core:station/listening_post_t1"])
 ships = Array[StringName]([&"core:hull/freighter_light", &"core:hull/freighter_light", &"core:hull/freighter_light", &"core:hull/scout", &"core:hull/colony_ship"])
 id = &"core:start/default"
 name_key = "START_DEFAULT"

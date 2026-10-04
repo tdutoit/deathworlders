@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="StationDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/station_def.gd" id="1_st"]
+
+[resource]
+script = ExtResource("1_st")
+function = &"research"
+tier = 1
+cost = {
+&"core:resource/alloys": 120,
+&"core:resource/components": 30
+}
+build_days = 90
+upkeep = {
+&"core:resource/credits": 2
+}
+outputs = {
+&"core:resource/research": 15
+}
+id = &"core:station/research_station"
+name_key = "STATION_RESEARCH_STATION"
