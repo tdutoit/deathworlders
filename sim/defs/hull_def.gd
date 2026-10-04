@@ -33,6 +33,7 @@ static var _hardpoint_re := RegEx.create_from_string("^HP_[WDUCH]_[SML]_\\d{2}$"
 @export var shield_regen: int  # permille of shield_max per round; 0 = combat_rules.shield_regen
 @export var shipyard_size: StringName = &"S"  # smallest shipyard that can build it (B10)
 @export var credit_upkeep_milli: int  # B10 credits per month in milli (fractional values); 0 = upkeep's credits
+@export var requires_tech: Array[StringName] = []  # techs needed to build it (M5); empty = free
 
 
 func category() -> String:
@@ -41,6 +42,7 @@ func category() -> String:
 
 func schema() -> Dictionary:
 	return {
+		"requires_tech": {"type": "id_list", "ref": "tech"},
 		"role": {"type": "enum", "values": ROLES, "required": true},
 		"species": {"type": "id", "ref": "species"},
 		"hull_class": {"type": "name", "required": true},

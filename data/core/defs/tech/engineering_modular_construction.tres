@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="TechDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/tech_def.gd" id="2_tech"]
+
+[sub_resource type="Resource" id="Mod_0"]
+script = ExtResource("1_mod")
+key = &"planet.build_time"
+mode = 1
+value = -100
+scope = 2
+
+[resource]
+script = ExtResource("2_tech")
+branch = &"engineering"
+tier = 1
+cost = 250
+id = &"core:tech/engineering_modular_construction"
+name_key = "TECH_ENGINEERING_MODULAR_CONSTRUCTION"
+desc_key = "TECH_ENGINEERING_MODULAR_CONSTRUCTION_DESC"
+modifiers = Array[ExtResource("1_mod")]([SubResource("Mod_0")])

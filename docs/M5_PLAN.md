@@ -9,6 +9,14 @@ with the workflow change below.*
 **Change log**
 - 2026-10-04: plan created. Scope decisions below agreed with the project owner, including the workflow
   change: testing and balance move to the end of the milestone (WP14).
+- 2026-10-04 (WP1, owner decisions): the tech tree in docs/M5_TECH_TREE.md approved as proposed (101 techs:
+  6 branches x 16 at 3/4/4/3/2 per tier, 5 species nodes, exclusive pairs Kinetic Supremacy / Energy Mastery
+  and Shock / Attrition Doctrine). M4 content stays free (no `requires_tech`); research only adds content and
+  bonuses; no starting techs. `TechDef`, `requires_tech` on hulls, components, buildings, stations and
+  treaties, `SpeciesDef.starting_techs`, and a `research_rules` Def (tier rule 3, 2 slots, 100 fragments,
+  50% reverse cost). Tech effects are modifiers on 53 new keys; most keys are read from the WP that owns
+  their system (research and sectors WP2, sensors WP5, intel WP6, refits WP7, fragments WP8, agents WP9,
+  the rest in WP3 or WP14). Unlock links are set on the unlocked content in WP3/WP4/WP10.
 
 ## Goal of M5
 

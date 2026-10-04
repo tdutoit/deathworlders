@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="TechDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/tech_def.gd" id="2_tech"]
+
+[sub_resource type="Resource" id="Mod_0"]
+script = ExtResource("1_mod")
+key = &"empire.anomaly_fragments"
+value = 5
+scope = 1
+
+[resource]
+script = ExtResource("2_tech")
+branch = &"xeno"
+tier = 3
+cost = 2200
+id = &"core:tech/xeno_xenoarchaeology"
+name_key = "TECH_XENO_XENOARCHAEOLOGY"
+desc_key = "TECH_XENO_XENOARCHAEOLOGY_DESC"
+modifiers = Array[ExtResource("1_mod")]([SubResource("Mod_0")])

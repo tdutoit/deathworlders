@@ -14,6 +14,7 @@ extends Def
 @export var unique: bool  # at most one per planet
 @export var buildable: bool = true  # false: placed by scenario/start only (capital)
 @export var uses_slot: bool = true  # false: doesn't take a building slot (capital)
+@export var requires_tech: Array[StringName] = []  # techs needed to build it (M5); empty = free
 
 
 func category() -> String:
@@ -22,6 +23,7 @@ func category() -> String:
 
 func schema() -> Dictionary:
 	return {
+		"requires_tech": {"type": "id_list", "ref": "tech"},
 		"jobs": {"type": "int_map", "key_ref": "job", "min": 1},
 		"outputs": {"type": "int_map", "key_ref": "resource", "min": 0},
 		"cost": {"type": "int_map", "key_ref": "resource", "min": 0},

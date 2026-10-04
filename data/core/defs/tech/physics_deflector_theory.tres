@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="TechDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/tech_def.gd" id="2_tech"]
+
+[sub_resource type="Resource" id="Mod_0"]
+script = ExtResource("1_mod")
+key = &"ship.shield"
+mode = 1
+value = 100
+scope = 5
+
+[resource]
+script = ExtResource("2_tech")
+branch = &"physics"
+tier = 1
+cost = 250
+id = &"core:tech/physics_deflector_theory"
+name_key = "TECH_PHYSICS_DEFLECTOR_THEORY"
+desc_key = "TECH_PHYSICS_DEFLECTOR_THEORY_DESC"
+modifiers = Array[ExtResource("1_mod")]([SubResource("Mod_0")])

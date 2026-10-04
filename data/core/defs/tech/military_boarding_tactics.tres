@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="TechDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/tech_def.gd" id="2_tech"]
+
+[sub_resource type="Resource" id="Mod_0"]
+script = ExtResource("1_mod")
+key = &"ship.marines"
+mode = 1
+value = 250
+scope = 5
+
+[resource]
+script = ExtResource("2_tech")
+branch = &"military"
+tier = 2
+cost = 800
+id = &"core:tech/military_boarding_tactics"
+name_key = "TECH_MILITARY_BOARDING_TACTICS"
+desc_key = "TECH_MILITARY_BOARDING_TACTICS_DESC"
+modifiers = Array[ExtResource("1_mod")]([SubResource("Mod_0")])

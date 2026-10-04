@@ -19,6 +19,7 @@ const KINDS: Array[String] = ["", "defensive", "trade"]  # which E11 personality
 @export var break_trust_zero: bool  # the victim's trust in the breaker drops to 0 (E3 says every break does)
 @export var kind: StringName
 @export var effects: Array[StringName] = []
+@export var requires_tech: Array[StringName] = []  # techs the proposer needs (M5 research pact, intel sharing)
 
 
 func category() -> String:
@@ -27,6 +28,7 @@ func category() -> String:
 
 func schema() -> Dictionary:
 	return {
+		"requires_tech": {"type": "id_list", "ref": "tech"},
 		"influence": {"type": "int", "min": 0},
 		"min_opinion": {"type": "int", "min": -100, "max": 100},
 		"min_trust": {"type": "int", "min": 0, "max": 100},

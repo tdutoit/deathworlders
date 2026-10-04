@@ -25,6 +25,7 @@ const SHIP_SIZES: Array[String] = ["S", "M", "L"]
 @export var design: StringName  # defence stations: the design it fights with (a platform hull, M3)
 @export var security: int  # D9: +10 for defensive platforms and listening posts (none in M2)
 @export var buildable: bool = true  # false: placed by rules only (M4 Sanctuary planetary defences)
+@export var requires_tech: Array[StringName] = []  # techs needed to build or upgrade to it (M5); empty = free
 
 
 func category() -> String:
@@ -33,6 +34,7 @@ func category() -> String:
 
 func schema() -> Dictionary:
 	return {
+		"requires_tech": {"type": "id_list", "ref": "tech"},
 		"function": {"type": "enum", "values": FUNCTIONS, "required": true},
 		"tier": {"type": "int", "min": 1, "max": 3},
 		"upgrades_to": {"type": "id", "ref": "station"},

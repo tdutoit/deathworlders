@@ -17,6 +17,7 @@ const SIZES: Array[String] = ["S", "M", "L"]
 @export var ammo_per_shot: int  # 0 = no ammunition
 @export var cost: Dictionary = {}  # resource ID -> amount
 @export var model: String  # turret / module model for the hardpoint (C11)
+@export var requires_tech: Array[StringName] = []  # techs needed to fit it (M5); empty = free
 
 
 func category() -> String:
@@ -25,6 +26,7 @@ func category() -> String:
 
 func schema() -> Dictionary:
 	return {
+		"requires_tech": {"type": "id_list", "ref": "tech"},
 		"slot_type": {"type": "enum", "values": Array(SlotDef.type_names()), "required": true},
 		"slot_size": {"type": "enum", "values": SIZES, "required": true},
 		"family": {"type": "id", "ref": "weapon_family"},

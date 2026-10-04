@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="TechDef" format=3]
+
+[ext_resource type="Script" path="res://sim/defs/modifier_def.gd" id="1_mod"]
+[ext_resource type="Script" path="res://sim/defs/tech_def.gd" id="2_tech"]
+
+[sub_resource type="Resource" id="Mod_0"]
+script = ExtResource("1_mod")
+key = &"job.output"
+mode = 1
+value = 100
+scope = 2
+
+[resource]
+script = ExtResource("2_tech")
+branch = &"society"
+tier = 5
+cost = 12000
+id = &"core:tech/society_post_scarcity"
+name_key = "TECH_SOCIETY_POST_SCARCITY"
+desc_key = "TECH_SOCIETY_POST_SCARCITY_DESC"
+modifiers = Array[ExtResource("1_mod")]([SubResource("Mod_0")])

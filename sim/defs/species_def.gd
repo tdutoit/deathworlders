@@ -15,6 +15,7 @@ const PERSONALITY: Array[String] = ["aggression", "expansion", "honour", "xenoph
 @export var personality_key: String  # loc key of the personality name ("Stubborn Wildcards")
 @export var affinity: Dictionary = {}  # species ID -> base opinion toward that species (E2), -100..100
 @export var signature_mechanic: StringName  # "legend", "precedence", "brood_surge", "contracts", "sanctuary"
+@export var starting_techs: Array[StringName] = []  # techs researched at match start (M5)
 
 
 func category() -> String:
@@ -23,6 +24,7 @@ func category() -> String:
 
 func schema() -> Dictionary:
 	return {
+		"starting_techs": {"type": "id_list", "ref": "tech"},
 		"color": {"type": "color", "required": true},
 		"habitability": {"type": "int_map", "key_ref": "planet_type", "min": 0, "max": 2000},
 		"home_template": {"type": "enum", "values": ["sol", "standard"], "required": true},

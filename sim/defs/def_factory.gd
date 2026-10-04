@@ -35,6 +35,8 @@ static var SCRIPTS := {  # class refs are not constant expressions
 	"signature_rules": SignatureRulesDef,
 	"ai_rules": AiRulesDef,
 	"difficulty": DifficultyDef,
+	"tech": TechDef,
+	"research_rules": ResearchRulesDef,
 }
 
 const META_FIELDS: Array[String] = ["op", "category", "id"]

@@ -3,6 +3,12 @@
 *Version 0.1. Companion to the main Game Design Spec v1.0 (sections 16, 18, 18b) and Sub-specs A & B. Target: Godot 4.x, GDScript.*
 
 **Change log**
+- 2026-10-04 (M5 WP1) C3: `tech` has no stored `unlocks[]`: what a tech unlocks is every hull, component,
+  building, station or treaty whose `requires_tech` lists it (TechTree.unlocks), so the link has one source.
+  Tech modifier conditions: `hull_class`, `hull`, `planet_size`, `resource` or `tech`, each a list. Tree
+  validation: prereqs must be of a lower tier (so no cycles), exclusive partners list each other and share
+  branch and tier, and every tier above 1 has at least `research_rules.tier_prereqs` techs below it that
+  one empire can research (one per exclusive pair). New singleton `research_rules` (core:research_rules/default).
 - 2026-10-01 (M1 WP3) C6/C9: loading a `.tres` can run embedded script code, so mods may ship `.tres`
   Defs only if `mod.json` sets `has_scripts: true` (warning badge). Data-only mods use `.json`; core uses `.tres`.
 - 2026-10-01 (M1 WP3) C6: a `.json` Def file holds one Def object or an array of them. A `.tres` Def takes its
