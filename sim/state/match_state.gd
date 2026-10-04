@@ -206,7 +206,7 @@ func checksum() -> Dictionary:
 	var parts := {
 		"meta": DetHash.hash_value([d["tick"], d["match_seed"], d["settings"], d["next_id"], d["paused"], d["speed"]]),
 		"galaxy": DetHash.hash_value(d["galaxy"]),
-		"empires": DetHash.hash_value(d["empires"]),
+		"empires": DetHash.hash_value(d["empires"]),  # includes research (M5): techs, queue, progress
 		"units": DetHash.hash_value([d["units"], d["pirate_bases"]]),
 		"economy": DetHash.hash_value([d["colonies"], d["stations"], d["sectors"]]),
 		"logistics": DetHash.hash_value([d["routes"], d["demands"], d["reserves"]]),

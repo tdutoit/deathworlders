@@ -30,6 +30,9 @@ static func check_building(state: MatchState, empire: int, planet_id: int, build
 		return "planet %d is not your colony" % planet_id
 	if not b.buildable:
 		return "%s cannot be built" % building_id
+	var tech := Research.missing(state, empire, b.requires_tech)  # M5
+	if tech != "":
+		return tech
 	var planned: Array[String] = c.buildings.duplicate()
 	for q in c.queue:
 		planned.append(q.def_id)
@@ -39,7 +42,7 @@ static func check_building(state: MatchState, empire: int, planet_id: int, build
 		for id in planned:
 			if (db.get_def(StringName(id)) as BuildingDef).uses_slot:
 				used += 1
-		if used >= Economy.slots(c, planet, db):
+		if used >= Economy.slots(state, c, planet, db):
 			return "no free building slot"
 	if b.unique and building_id in planned:
 		return "only one %s per planet" % building_id
@@ -70,6 +73,9 @@ static func check_station(state: MatchState, empire: int, planet_id: int, statio
 		return "%s can't be built" % station_id
 	if def.tier != 1:
 		return "build tier 1 and upgrade it"
+	var tech := Research.missing(state, empire, def.requires_tech)  # M5
+	if tech != "":
+		return tech
 	var planet := state.galaxy.planet(planet_id)
 	if planet == null:
 		return "unknown planet %d" % planet_id
@@ -100,7 +106,8 @@ static func check_upgrade(state: MatchState, empire: int, station_id: int) -> St
 	var def: StationDef = state.defs.get_def(StringName(s.def_id))
 	if def.upgrades_to == &"":
 		return "already at the top tier"
-	return ""
+	var next := state.defs.get_def(def.upgrades_to) as StationDef
+	return Research.missing(state, empire, next.requires_tech) if next != null else ""  # M5
 
 
 ## Stations (built or building) around a body, in ID order.

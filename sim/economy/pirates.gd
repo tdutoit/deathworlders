@@ -20,7 +20,7 @@ static func security(state: MatchState, system_id: int, reach: Dictionary = {}, 
 	for pid in sys.planet_ids:
 		var c := state.colony(pid)
 		if c != null and c.owner == sys.owner:
-			sec += r.security_per_garrison * PlanetMods.of(c, state.defs).add("planet.garrison")
+			sec += r.security_per_garrison * PlanetMods.of(state, c).add("planet.garrison")
 	var by_system: Dictionary = station_security if station_security != null else station_security_map(state)
 	sec += int(by_system.get(system_id, 0))
 	sec += int(patrol_security_map(state).get(system_id, 0))

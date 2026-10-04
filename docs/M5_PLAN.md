@@ -17,6 +17,21 @@ with the workflow change below.*
   50% reverse cost). Tech effects are modifiers on 53 new keys; most keys are read from the WP that owns
   their system (research and sectors WP2, sensors WP5, intel WP6, refits WP7, fragments WP8, agents WP9,
   the rest in WP3 or WP14). Unlock links are set on the unlocked content in WP3/WP4/WP10.
+- 2026-10-04 (WP2, owner decision): research points are split evenly across the active slots (a second
+  slot gives breadth, not speed; remainder to the first). At about 55 RP a month a tier-1 tech takes about
+  9 months per slot against B14's 4-6, so WP14 tunes costs or output to the B14 table. Each month (phase 1)
+  an empire spends its whole research treasury, boosted by `empire.research`, on the first researchable
+  techs of its queue (`set_research` replaces the queue; entries wait until their tier rule and prereqs are
+  met); a finished tech returns its overflow to the treasury; with nothing researchable the points stay
+  banked. Slots = `research_rules.slots` + `empire.research_slots`; cost = TechDef.cost x pace x
+  `tech.cost` modifiers aimed at it. Tech modifiers reach the game through the empire's modifier source
+  (species + researched techs): EMPIRE keys via SpeciesTraits, SHIP keys via ShipStats (hull_class and hull
+  conditions), PLANET keys via PlanetMods for the colony's owner (conditioned planet keys wait for the system
+  that reads them). Gating: buildings, stations, upgrades, civilian hulls, designs (hull and every
+  component; a design may be saved before its techs) and treaty proposals check `requires_tech`.
+  `empire.sector_cap` adds to the D3 sector cap. Until WP11, AI empires keep their slots filled with the
+  cheapest researchable techs (ties by ID); players' queues are left alone. `tools/smoke.gd` is the
+  per-WP compile and run check (small 4-AI match, N months).
 
 ## Goal of M5
 

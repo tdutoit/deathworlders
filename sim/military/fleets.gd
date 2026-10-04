@@ -215,7 +215,7 @@ static func commission(state: MatchState, u: Unit) -> void:
 
 ## Full combat state from the unit's hull and components.
 static func arm(state: MatchState, u: Unit) -> void:
-	var st := ShipStats.of(state.defs, u.hull_id, u.components, SpeciesTraits.species_of(state, u.owner))
+	var st := ShipStats.of(state.defs, u.hull_id, u.components, SpeciesTraits.source_of(state, u.owner))
 	u.hp = st.hull
 	u.armor = st.armor
 	u.shield = st.shield

@@ -217,7 +217,7 @@ static func _sources(state: MatchState, holders: Array[int], d: Dictionary, prom
 			for h in holders:
 				var c := state.colony(h)
 				info.append([h, Holders.stockpile(state, h), _sys_of(state, base, h), _body_of(state, base, h), c,
-					PlanetMods.of(c, state.defs) if c != null else null, state.station(h)])
+					PlanetMods.of(state, c) if c != null else null, state.station(h)])
 			base["hinfo"] = info
 		var cand := []  # [holder, "holder:res" key, system, body, stock minus reserve]
 		var res: String = d["resource"]

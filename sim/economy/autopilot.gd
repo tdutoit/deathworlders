@@ -49,6 +49,7 @@ static func empire_month(state: MatchState, eid: int) -> void:
 	if not is_ai(state, eid):
 		return
 	_directive(state, eid)
+	Research.auto_queue(state, eid)  # M5 WP2: cheapest first until WP11's research priorities
 	MilitaryAutopilot.month_tick(state, eid, can_expand(state, eid))  # M3 WP10
 	if not can_expand(state, eid):
 		return  # new colonies, stations and ships all add upkeep (B13)

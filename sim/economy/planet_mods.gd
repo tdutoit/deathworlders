@@ -1,8 +1,9 @@
 class_name PlanetMods
 extends RefCounted
 ## Modifier sums for one colony (Sub-spec C4): from its buildings (not the one on strike), employed jobs
-## (per pop), Primary focus, Secondary focus (at the rules' share), the matching synergy and the PLANET-scope
-## traits of the species most of its pops belong to.
+## (per pop), Primary focus, Secondary focus (at the rules' share), the matching synergy, the PLANET-scope
+## traits of the species most of its pops belong to, and the owner's researched techs (M5 WP2; tech modifiers
+## with a condition are left to the system that reads them).
 ## Built once per colony per tick: get(key) -> [add, permille].
 
 var _sums := {}  # key -> [add, permille]
@@ -12,17 +13,25 @@ var syn: SynergyDef
 var caps := {}  # resource ID -> stockpile cap (milli), filled by Economy.cap_milli
 
 
-static func of(c: Colony, db: DefDatabase) -> PlanetMods:
+static func of(state: MatchState, c: Colony) -> PlanetMods:
 	# Memoised on the colony: the sums depend only on these inputs (and on the frozen content).
+	var db := state.defs
 	var species := SpeciesTraits.dominant(c)
-	var key := [c.buildings, c.offline_building, c.primary_focus, c.secondary_focus, c.jobs, db, species]
+	var owner_source := SpeciesTraits.source_of(state, c.owner)
+	var key := [c.buildings, c.offline_building, c.primary_focus, c.secondary_focus, c.jobs, db, species, owner_source]
 	if not c.mods_cache.is_empty() and c.mods_cache[0] == key:
 		return c.mods_cache[1]
 	var m := _build(c, db)
 	var traits: Array[ModifierDef] = []
 	traits.assign(SpeciesTraits.modifiers(db, species, ModifierDef.Scope.PLANET))
 	m._add_all(traits, 1, 1000)  # species traits of the colony's main species (M4 WP1)
-	c.mods_cache = [[c.buildings.duplicate(), c.offline_building, c.primary_focus, c.secondary_focus, c.jobs.duplicate(), db, species], m]
+	var techs: Array[ModifierDef] = []
+	var tech_source := "|" + owner_source.get_slice("|", 1) if owner_source.contains("|") else ""
+	for mod: ModifierDef in SpeciesTraits.modifiers(db, tech_source, ModifierDef.Scope.PLANET):
+		if mod.condition.is_empty():
+			techs.append(mod)
+	m._add_all(techs, 1, 1000)  # the owner's techs (M5 WP2); species traits follow the pops (above)
+	c.mods_cache = [[c.buildings.duplicate(), c.offline_building, c.primary_focus, c.secondary_focus, c.jobs.duplicate(), db, species, owner_source], m]
 	return m
 
 

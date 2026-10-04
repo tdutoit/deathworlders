@@ -36,7 +36,7 @@ func _buildings(state: MatchState, eid: int, c: Colony, p: Planet) -> void:
 	for b in c.buildings:
 		if (db.get_def(StringName(b)) as BuildingDef).uses_slot:
 			used += 1
-	heading("BUILD_BUILDINGS", {"n": used, "max": Economy.slots(c, p, db)})
+	heading("BUILD_BUILDINGS", {"n": used, "max": Economy.slots(state, c, p, db)})
 	if c.autonomy == "automated":
 		line(TranslationServer.translate("BUILD_AUTOMATED"), "Caption")
 	for i in c.queue.size():

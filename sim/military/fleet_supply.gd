@@ -40,7 +40,7 @@ static func day_tick(state: MatchState) -> void:
 						pts.append_array(points.get(other, []))  # military access: their stockpiles supply us (E4)
 				usable[u.owner] = pts
 			sources_at[key] = Supply.sources_at(state, usable[u.owner], u.system_id)
-		var st := ShipStats.cached(state.defs, u.hull_id, u.components, SpeciesTraits.species_of(state, u.owner))
+		var st := ShipStats.cached(state.defs, u.hull_id, u.components, SpeciesTraits.source_of(state, u.owner))
 		var sources: Array = sources_at[key]
 		var in_supply := not sources.is_empty() and not u.is_moving()
 		if not sources.is_empty():

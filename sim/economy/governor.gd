@@ -130,7 +130,7 @@ static func next_building(state: MatchState, c: Colony) -> String:
 	for b: String in have:
 		if (db.get_def(StringName(b)) as BuildingDef).uses_slot:
 			used += int(have[b])
-	var slots_full := used >= Economy.slots(c, state.galaxy.planet(c.id), db)
+	var slots_full := used >= Economy.slots(state, c, state.galaxy.planet(c.id), db)
 	var wanted := {}
 	for entry in t.build_order:
 		var b := String(entry)

@@ -20,6 +20,9 @@ static func check_ship(state: MatchState, empire_id: int, station_id: int, hull_
 	var e := state.empire(empire_id)
 	if hull.species != &"" and String(hull.species) != e.species:
 		return "%s is a %s hull" % [hull_id, hull.species]
+	var tech := Research.missing(state, empire_id, hull.requires_tech)  # M5
+	if tech != "":
+		return tech
 	if hull.pop_cost > 0 and pop_source(state, s, hull.pop_cost) == null:
 		return "a colony ship needs a colony in this system with %d pops to spare" % hull.pop_cost
 	return ""
@@ -42,6 +45,9 @@ static func check_design_ship(state: MatchState, empire_id: int, station_id: int
 		return "unknown hull %s" % d.hull
 	if HullDef.YARD_SIZES.find(String(def.shipyard_size)) < HullDef.YARD_SIZES.find(String(hull.shipyard_size)):
 		return "a %s hull needs a size %s shipyard" % [hull.hull_class, hull.shipyard_size]
+	var tech := design_tech(state, empire_id, d)  # M5: a design can be saved before its techs, not built
+	if tech != "":
+		return tech
 	return Wars.check_disarmament(state, empire_id, Wars._cost_value(state, ShipStats.cost(state.defs, d.hull, d.components)))  # E7
 
 
@@ -79,7 +85,7 @@ static func build_speed_permille(state: MatchState, s: Station) -> int:
 	var c := state.colony(s.planet_id)
 	if c == null or c.owner != s.owner:
 		return 0
-	return PlanetMods.of(c, state.defs).permille("shipyard.build_speed")
+	return PlanetMods.of(state, c).permille("shipyard.build_speed")
 
 
 static func day_tick(state: MatchState) -> void:
@@ -161,7 +167,7 @@ static func berths(state: MatchState, hub_id: int) -> int:
 		return (state.defs.get_def(StringName(s.def_id)) as StationDef).berths if s.operational else 0
 	var c := state.colony(hub_id)
 	if c != null:
-		return PlanetMods.of(c, state.defs).resolve("planet.freighter_berths", 0)
+		return PlanetMods.of(state, c).resolve("planet.freighter_berths", 0)
 	return 0
 
 
@@ -221,3 +227,18 @@ static func upkeep(state: MatchState) -> Dictionary:
 		if credits > 0:
 			due[u.owner] = due.get(u.owner, 0) + credits
 	return due
+
+
+## The first tech a design's hull or components still need ("" = buildable by research), M5.
+static func design_tech(state: MatchState, empire_id: int, d: ShipDesign) -> String:
+	var hull := state.defs.get_def(StringName(d.hull)) as HullDef
+	var why := Research.missing(state, empire_id, hull.requires_tech) if hull != null else ""
+	if why != "":
+		return why
+	for cid: Variant in d.components:
+		var c := state.defs.get_def(StringName(cid)) as ComponentDef if String(cid) != "" else null
+		if c != null:
+			why = Research.missing(state, empire_id, c.requires_tech)
+			if why != "":
+				return why
+	return ""

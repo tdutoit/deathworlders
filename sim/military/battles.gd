@@ -58,7 +58,7 @@ static func loadout(state: MatchState, id: int) -> Array:
 static func stats(state: MatchState, id: int) -> ShipStats:
 	var l := loadout(state, id)
 	var e: Object = entity(state, id)
-	return ShipStats.cached(state.defs, l[0], l[1], SpeciesTraits.species_of(state, int(e.get("owner"))) if e != null else "")
+	return ShipStats.cached(state.defs, l[0], l[1], SpeciesTraits.source_of(state, int(e.get("owner"))) if e != null else "")
 
 
 ## Battle value in credits (A1 cost): resources at their base value.

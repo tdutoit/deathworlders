@@ -94,7 +94,7 @@ static func _month_tick(state: MatchState) -> void:
 
 
 ## The rest of the monthly work runs in the hours after the boundary, so no single hour carries it all (M2
-## perf pass): 1 fuel supply, 2 pirates, 3 governors, 4 diplomacy (M4), then each AI empire's turn in its own
+## perf pass): 1 fuel supply and research (M5), 2 pirates, 3 governors, 4 diplomacy (M4), then each AI empire's turn in its own
 ## hour (economic and military autopilot, then the strategic AI; M4 WP14), then the signature mechanics.
 static func _month_phase(state: MatchState, hour: int) -> void:
 	if state.defs == null:
@@ -102,6 +102,7 @@ static func _month_phase(state: MatchState, hour: int) -> void:
 	match hour:
 		1:
 			Supply.month_tick(state)
+			Research.month_tick(state)  # M5: research points into the queued techs
 		2:
 			Pirates.month_tick(state)
 		3:

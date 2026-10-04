@@ -66,6 +66,9 @@ static func check_propose(state: MatchState, from: int, to: int, def_id: String)
 		return "unknown treaty %s" % def_id
 	if from == to or state.empire(to) == null:
 		return "not another empire"
+	var tech := Research.missing(state, from, d.requires_tech)  # M5: research pact, intel sharing
+	if tech != "":
+		return tech
 	if not Relations.has_contact(state, from, to):
 		return "no contact yet"
 	if state.wars.has(Battles.war_key(from, to)):

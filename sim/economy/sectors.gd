@@ -14,8 +14,9 @@ static func check_hub(state: MatchState, eid: int, hub: int) -> String:
 	for sid: int in state.sectors.ordered():
 		if (state.sectors.get_or(sid) as Sector).hub == hub:
 			return "already a sector hub"
-	if count(state, eid) >= r.sector_cap:
-		return "sector cap reached (%d)" % r.sector_cap
+	var cap := r.sector_cap + SpeciesTraits.empire_add(state, eid, "empire.sector_cap")  # D3: +1 per tech step (M5)
+	if count(state, eid) >= cap:
+		return "sector cap reached (%d)" % cap
 	var s := state.station(hub)
 	if s != null:
 		if not s.operational or (state.defs.get_def(StringName(s.def_id)) as StationDef).sector_range <= 0:

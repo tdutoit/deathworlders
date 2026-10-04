@@ -214,7 +214,7 @@ func _colony_section(state: MatchState, c: Colony) -> void:
 	for b in c.buildings:
 		if (db.get_def(StringName(b)) as BuildingDef).uses_slot:
 			used += 1
-	_line("CTX_BUILDINGS", "Caption", {"n": used, "max": Economy.slots(c, p, db)})
+	_line("CTX_BUILDINGS", "Caption", {"n": used, "max": Economy.slots(state, c, p, db)})
 	var counts := {}
 	for b in c.buildings:
 		counts[b] = counts.get(b, 0) + 1

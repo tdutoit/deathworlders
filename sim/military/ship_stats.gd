@@ -2,8 +2,8 @@ class_name ShipStats
 extends RefCounted
 ## A design's effective combat stats and cost (Sub-spec A1, C5): hull values plus its modules' SHIP-scope
 ## modifiers, summed per key and applied once (A0): final = (base + sum ADD) * (1000 + sum PERMILLE) / 1000.
-## Pure function of content: hull ID + component IDs + the owner's species (its SHIP-scope trait modifiers,
-## M4 WP1; a trait modifier may be limited to hull classes by its condition).
+## Pure function of content: hull ID + component IDs + the owner's modifier source (SHIP-scope species traits,
+## M4 WP1, and researched techs, M5 WP2; a modifier may be limited by a hull_class or hull condition).
 ## Weapon modifiers: ship.damage.<family> (permille), ship.accuracy and ship.accuracy.<family> (add, permille
 ## points of hit chance), ship.ecm_strength (extra missile penalty per own ECM suite).
 
@@ -75,6 +75,8 @@ static func of(db: DefDatabase, hull_id: String, components: Array, species := "
 				per[m.key] = int(per.get(m.key, 0)) + m.value
 	for m: ModifierDef in SpeciesTraits.modifiers(db, species, ModifierDef.Scope.SHIP):
 		if m.condition.has("hull_class") and not String(h.hull_class) in (m.condition["hull_class"] as Array):
+			continue
+		if m.condition.has("hull") and not hull_id in (m.condition["hull"] as Array):
 			continue
 		if m.mode == ModifierDef.Mode.ADD:
 			add[m.key] = int(add.get(m.key, 0)) + m.value

@@ -94,7 +94,7 @@ static func job_order(db: DefDatabase) -> Array:
 ## Job inputs come from the colony's stockpile, then (orbital transfer, like construction in B10) from its
 ## owner's stations orbiting it, in station ID order: a hub over the capital feeds its Foundries directly.
 static func _produce(state: MatchState, c: Colony, db: DefDatabase, day: int, order: Array, orbit: Array = []) -> void:
-	var mods := PlanetMods.of(c, db)
+	var mods := PlanetMods.of(state, c)
 	var e := state.empire(c.owner)
 	# Empire-wide output modifiers, the same for every job and resource of this colony today.
 	var empire_extra := SignatureMechanics.output_permille(state, c.owner) + e.ai_output  # WP9 stagnation, E13
@@ -233,8 +233,8 @@ static func size_def(planet: Planet, db: DefDatabase) -> PlanetSizeDef:
 
 
 ## Building slots (B2 + modifiers such as the capital's +2).
-static func slots(c: Colony, planet: Planet, db: DefDatabase) -> int:
-	return PlanetMods.of(c, db).resolve("planet.building_slots", size_def(planet, db).building_slots)
+static func slots(state: MatchState, c: Colony, planet: Planet, db: DefDatabase) -> int:
+	return PlanetMods.of(state, c).resolve("planet.building_slots", size_def(planet, db).building_slots)
 
 
 static func used_slots(c: Colony, db: DefDatabase) -> int:
@@ -249,7 +249,7 @@ static func used_slots(c: Colony, db: DefDatabase) -> int:
 static func housing(state: MatchState, c: Colony, planet: Planet, db: DefDatabase, mods: PlanetMods = null) -> int:
 	var species: SpeciesDef = db.get_def(StringName(state.empire(c.owner).species))
 	var hab: int = species.habitability.get(StringName(planet.planet_type), 0)
-	var base := (mods if mods != null else PlanetMods.of(c, db)).resolve("planet.housing", size_def(planet, db).housing)
+	var base := (mods if mods != null else PlanetMods.of(state, c)).resolve("planet.housing", size_def(planet, db).housing)
 	return FixedMath.mul_permille(base, hab)
 
 
@@ -300,7 +300,7 @@ static func _month_colony(state: MatchState, c: Colony, db: DefDatabase, r: Econ
 	var eaten := int(c.consumed.get(food, 0))
 	var surplus: bool = not c.starving and (int(c.produced.get(food, 0)) > eaten
 			or (eaten > 0 and c.stockpile.milli(food) >= eaten * r.food_buffer_months))
-	var mods := PlanetMods.of(c, db)
+	var mods := PlanetMods.of(state, c)
 	if c.starving:
 		c.starving_months += 1
 		if c.starving_months % r.starvation_pop_loss_months == 0 and c.total_pops() > 1:

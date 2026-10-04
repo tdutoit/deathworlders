@@ -25,6 +25,10 @@ var demob_until := 0  # demobilisation stability dip until this tick
 var personality := {}  # E11 weight -> 0..100 (species defaults +-15, rolled at match start; M4 WP10)
 var ai_actions := 0  # E13 strategic actions a month (0 = ai_rules default; difficulty sets it, WP12)
 var ai_output := 0  # E13 difficulty output bonus on job output, permille (AI slots)
+var techs := {}  # M5: researched tech ID -> tick researched (starting techs: 0)
+var research_queue: Array[String] = []  # M5: tech IDs in order; the first researchable ones take the slots
+var research_progress := {}  # M5: tech ID -> research points put in, milli
+var _source := ""  # runtime: modifier source key (species + techs), see source()
 
 
 func to_dict() -> Dictionary:
@@ -33,7 +37,8 @@ func to_dict() -> Dictionary:
 		"losses": losses.duplicate(true), "tech_fragments": tech_fragments, "mechanic": mechanic.duplicate(true), "reputation": reputation, "war_exhaustion": war_exhaustion,
 		"prewar_fleet": prewar_fleet, "exhausted_since": exhausted_since, "disarm_until": disarm_until, "disarm_cap": disarm_cap,
 		"footing": footing, "footing_until": footing_until, "demob_until": demob_until,
-		"personality": personality.duplicate(), "ai_actions": ai_actions, "ai_output": ai_output}
+		"personality": personality.duplicate(), "ai_actions": ai_actions, "ai_output": ai_output,
+		"techs": techs.duplicate(), "research_queue": research_queue.duplicate(), "research_progress": research_progress.duplicate()}
 
 
 static func from_dict(d: Dictionary) -> Empire:
@@ -60,8 +65,24 @@ static func from_dict(d: Dictionary) -> Empire:
 	e.personality = StateIO.ints_deep(d.get("personality", {}))
 	e.ai_actions = int(d.get("ai_actions", 0))
 	e.ai_output = int(d.get("ai_output", 0))
+	e.techs = StateIO.int_map(d.get("techs", {}))
+	for t: Variant in d.get("research_queue", []):
+		e.research_queue.append(String(t))
+	e.research_progress = StateIO.int_map(d.get("research_progress", {}))
 	for l: Dictionary in d.get("losses", []):
 		e.losses.append({"tick": int(l["tick"]), "unit": int(l["unit"]), "system": int(l["system"]),
 			"hull": String(l["hull"]), "cargo": StateIO.int_map(l["cargo"]), "hub": int(l.get("hub", StateIO.NONE)),
 			"by": String(l.get("by", "pirates"))})
 	return e
+
+
+## The empire's modifier source: "species|tech,tech,..." (techs sorted). SpeciesTraits, ShipStats and
+## PlanetMods cache modifier sums by it, so researching a tech starts fresh sums. Runtime only.
+func source() -> String:
+	if _source == "":
+		_source = species + "|" + ",".join(PackedStringArray(IdMap.sort_keys(techs.keys())))
+	return _source
+
+
+func invalidate_source() -> void:
+	_source = ""

@@ -47,7 +47,7 @@ static func cap_milli(state: MatchState, id: int, res: String, mods_cache: Varia
 		if mods_cache != null and (mods_cache as Dictionary).has(id):
 			mods = mods_cache[id]
 		else:
-			mods = PlanetMods.of(c, state.defs)
+			mods = PlanetMods.of(state, c)
 			if mods_cache != null:
 				mods_cache[id] = mods
 		return Economy.cap_milli(c, state.defs, mods, res)
@@ -60,7 +60,7 @@ static func space_milli(state: MatchState, id: int, res: String) -> int:
 	var cap := 0
 	var c := state.colony(id)
 	if c != null:
-		cap = Economy.cap_milli(c, state.defs, PlanetMods.of(c, state.defs), res)
+		cap = Economy.cap_milli(c, state.defs, PlanetMods.of(state, c), res)
 	else:
 		var s := state.station(id)
 		if s == null:

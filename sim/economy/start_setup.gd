@@ -29,6 +29,7 @@ static func apply(state: MatchState, db: DefDatabase) -> void:
 			e.treasury[String(res)] = e.treasury.get(String(res), 0) + int(start.treasury[res]) * Stockpile.MILLI
 		c.stage = String(start.stage)
 		Designs.give_standard(state, e.id)  # M3: the species' standard warship designs
+		Research.init_empire(state, e.id)  # M5: species starting techs
 		var mech := SignatureMechanics.of(state, e)  # M4: the species' signature mechanic state
 		if mech != null:
 			mech.init_state(state, e)

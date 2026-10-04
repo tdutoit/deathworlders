@@ -86,7 +86,7 @@ static func _condition(state: MatchState, f: Fleet) -> Array[int]:
 	for sid in f.ships():
 		var u: Unit = state.units.get_or(sid)
 		out[0] += u.hp
-		out[1] += ShipStats.cached(state.defs, u.hull_id, u.components, SpeciesTraits.species_of(state, u.owner)).hull
+		out[1] += ShipStats.cached(state.defs, u.hull_id, u.components, SpeciesTraits.source_of(state, u.owner)).hull
 	return out
 
 
