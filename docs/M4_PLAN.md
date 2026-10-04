@@ -417,18 +417,22 @@ uses them, but no milestone gave the player the controls, so a human could only 
 
 ## D3. M4 Definition of Done
 
-- [ ] All WP acceptance criteria met.
-- [ ] `tools/run_tests.sh` green; determinism harness green (20 seeds × 4 sizes, with diplomacy checksums).
-- [ ] Diplomacy harness meets the E16 targets: no unprovoked AI war on a human neighbour before year 10 on
+- [x] All WP acceptance criteria met.
+- [x] `tools/run_tests.sh` green; determinism harness green (20 seeds × 4 sizes, with diplomacy checksums).
+- [x] Diplomacy harness meets the E16 targets: no unprovoked AI war on a human neighbour before year 10 on
       Officer; an honourable player can reach an alliance with at least one AI by year 30 in a Medium galaxy
       (scripted honourable-player bot); breaking a major treaty costs 15-25 years of trust; Council
       resolutions pass 40-60% of the time.
-- [ ] Economy harness at least at the accepted level (65 of 80); combat harness at the A14 targets.
-- [ ] Huge galaxy, 8 AI empires at year 15 with wars under way: 8× speed holds ≥ 60 fps; worst hour under
+- [x] Economy harness at least at the accepted level (65 of 80); combat harness at the A14 targets.
+- [x] Huge galaxy, 8 AI empires at year 15 with wars under way: 8× speed holds ≥ 60 fps; worst hour under
       50 ms headless.
-- [ ] No Sub-spec E numbers in code (data only); content validation green.
-- [ ] Sim lint green; every player-facing string uses a loc key; all M4 screens keyboard-navigable.
-- [ ] Spec change logs updated with every decision made during the build.
+- [x] No Sub-spec E numbers in code (data only); content validation green.
+- [x] Sim lint green; every player-facing string uses a loc key; all M4 screens keyboard-navigable.
+- [x] Spec change logs updated with every decision made during the build.
+
+M4 signed off 2026-10-04: full determinism run 80/80 identical (20 seeds x 4 sizes x 60 months, 9508 s);
+test suite green (WP15 commit); sim lint and content validation clean; diplomacy, economy (neutral 69/80, species 70/80),
+combat and performance (huge worst hour 41 ms, 8x 60.8-61.6 fps) results as recorded in the WP14 entry.
 
 ## D4. Open Questions (to settle at the WP, recorded in the change logs)
 
